@@ -5,7 +5,7 @@ export default function AboutPage() {
     <>
       {/* Hero */}
       <section className="relative h-[50vh] min-h-[300px] flex items-center justify-center">
-        <Image src="/images/ground-1.jpg" alt="The Bleach Green with clubhouse" fill className="object-cover" priority />
+        <Image src="/images/ground-2.jpg" alt="The Bleach Green with clubhouse" fill className="object-cover" priority />
         <div className="absolute inset-0 bg-navy-dark/60" />
         <div className="relative text-center text-white px-4">
           <h1 className="font-heading text-4xl sm:text-5xl font-bold mb-2">About Ardmore CC</h1>
@@ -136,7 +136,7 @@ export default function AboutPage() {
 
       {/* Team Photo */}
       <section className="relative h-[40vh] min-h-[250px]">
-        <Image src="/images/ground-1.jpg" alt="The Bleach Green" fill className="object-cover" />
+        <Image src="/images/ground-2.jpg" alt="The Bleach Green" fill className="object-cover" />
         <div className="absolute inset-0 bg-navy-dark/40" />
         <div className="relative h-full flex items-center justify-center">
           <a href="/draw" className="bg-gold text-navy font-bold px-10 py-4 rounded-md text-lg hover:bg-gold-light transition-colors">

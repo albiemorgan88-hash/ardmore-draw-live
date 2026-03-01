@@ -80,7 +80,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <GalleryImage src="/images/trophy-1.jpg" alt="Team celebrating with trophy" className="sm:col-span-2 lg:col-span-1 lg:row-span-2" tall />
             <GalleryImage src="/images/team-1.jpg" alt="Cup-winning squad photo" />
-            <GalleryImage src="/images/ground-1.jpg" alt="The Bleach Green with clubhouse" />
+            <GalleryImage src="/images/ground-3.jpg" alt="The Bleach Green with clubhouse" />
             <GalleryImage src="/images/team-2.jpg" alt="Squad photo" />
           </div>
         </div>
