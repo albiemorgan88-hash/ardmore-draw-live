@@ -87,23 +87,32 @@ export async function GET(req: NextRequest) {
 
   const drawDate = new Date().toISOString().split("T")[0];
 
+  // Get next draw number
+  const { data: maxDraw } = await supabase
+    .from("draws")
+    .select("draw_number")
+    .eq("club_id", CLUB_ID)
+    .order("draw_number", { ascending: false })
+    .limit(1)
+    .single();
+  const drawNumber = (maxDraw?.draw_number || 0) + 1;
+
   // Insert draw record
   const { error: drawErr } = await supabase.from("draws").insert({
     club_id: CLUB_ID,
-    draw_date: drawDate,
-    winning_numbers: winningNumbers,
-    total_entries: totalEntries,
-    total_pot: totalPotPence,
-    prizes: {
-      first: { number: winningNumbers[0], amount: prizes.first },
-      second: { number: winningNumbers[1], amount: prizes.second },
-      third: { number: winningNumbers[2], amount: prizes.third },
-      club: prizes.club,
-      platform: prizes.platform,
-      fees: prizes.fees,
-    },
-    status: "completed",
+    draw_number: drawNumber,
+    status: "drawn",
+    scheduled_at: new Date().toISOString(),
+    drawn_at: new Date().toISOString(),
     seed: drawSeed,
+    seed_hash: crypto.createHash("sha256").update(drawSeed).digest("hex"),
+    drawn_numbers: winningNumbers,
+    total_entries: totalEntries,
+    pot_amount: totalPotPence,
+    prize_pool: prizes.first + prizes.second + prizes.third,
+    platform_fee: prizes.platform,
+    club_share: prizes.club,
+    rollover_amount: 0,
   });
 
   if (drawErr) {

@@ -168,11 +168,11 @@ export default function DrawPage() {
 
   const previousResults = drawResults.length > 0
     ? drawResults.map((d: any) => ({
-        date: new Date(d.draw_date).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }),
-        first: d.winning_numbers[0],
-        second: d.winning_numbers[1],
-        third: d.winning_numbers[2],
-        pot: "£" + (d.total_pot / 100).toFixed(2),
+        date: new Date(d.drawn_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }),
+        first: d.drawn_numbers[0],
+        second: d.drawn_numbers[1],
+        third: d.drawn_numbers[2],
+        pot: "£" + (d.pot_amount / 100).toFixed(2),
       }))
     : [
         { date: "Coming soon", first: "?", second: "?", third: "?", pot: "TBD" },
