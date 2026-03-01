@@ -8,7 +8,7 @@ function getResend(): Resend {
   return _resend;
 }
 
-const FROM = "Ardmore Cricket Club <draw@ardmorecricket.com>";
+const FROM = process.env.RESEND_FROM || "Ardmore Cricket Club <onboarding@resend.dev>";
 
 const baseStyle = `
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
