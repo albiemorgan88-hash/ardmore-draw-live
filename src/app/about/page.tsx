@@ -23,8 +23,8 @@ export default function AboutPage() {
               Playing in the club colours of Blue and Sky Blue, the club competes in the North West Cricket Union.
             </p>
             <p>
-              Our home ground, The Bleach Green, sits at 10 Green Road, Ardmore, BT47 3RG, Co. Derry — 
-              a stunning setting with the Sperrin Mountains as a backdrop that has hosted cricket for well over a century.
+              Our home ground, The Bleach Green, sits at 12 Green Road, Ardmore, BT47 3RG, Co. Derry — 
+              a stunning setting with the Faughan Valley as a backdrop that has hosted cricket for well over a century.
             </p>
           </div>
         </div>

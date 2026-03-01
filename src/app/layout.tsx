@@ -48,16 +48,39 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 function Footer() {
   return (
     <footer className="bg-navy-dark text-white">
+      {/* Contact Form */}
+      <div className="bg-navy border-b border-navy-light">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <h3 className="font-heading text-2xl font-bold text-center mb-2">Contact Us</h3>
+          <p className="text-gray-300 text-center text-sm mb-6">Got a question? Want to join? Get in touch.</p>
+          <form action="https://formsubmit.co/Ardmorecc1879@hotmail.com" method="POST" className="space-y-4">
+            <input type="hidden" name="_subject" value="Ardmore CC Website Enquiry" />
+            <input type="hidden" name="_captcha" value="false" />
+            <input type="hidden" name="_next" value="https://ardmorecricket.com/?contacted=true" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <input type="text" name="name" placeholder="Your Name" required className="w-full px-4 py-3 bg-navy-dark border border-navy-light rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-gold" />
+              <input type="email" name="email" placeholder="Your Email" required className="w-full px-4 py-3 bg-navy-dark border border-navy-light rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-gold" />
+            </div>
+            <textarea name="message" placeholder="Your message..." rows={4} required className="w-full px-4 py-3 bg-navy-dark border border-navy-light rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-gold resize-none" />
+            <div className="text-center">
+              <button type="submit" className="bg-gold text-navy px-8 py-3 rounded-lg font-semibold hover:bg-gold-light transition-colors">Send Message</button>
+            </div>
+          </form>
+          <p className="text-center text-gray-400 text-sm mt-4">Or email us directly at <a href="mailto:Ardmorecc1879@hotmail.com" className="text-gold hover:underline">Ardmorecc1879@hotmail.com</a></p>
+        </div>
+      </div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <h3 className="font-heading text-xl font-bold mb-3">Ardmore Cricket Club</h3>
             <p className="text-sm text-gray-300 leading-relaxed">
               The Bleach Green<br />
-              10 Green Road, Ardmore<br />
+              12 Green Road, Ardmore<br />
               BT47 3RG, Co. Derry
             </p>
             <p className="text-sm text-gold mt-2">Est. 1879</p>
+            <a href="mailto:Ardmorecc1879@hotmail.com" className="text-sm text-gray-300 hover:text-gold transition-colors mt-1 block">Ardmorecc1879@hotmail.com</a>
           </div>
           <div>
             <h4 className="font-heading text-lg font-semibold mb-3">Quick Links</h4>
@@ -85,8 +108,15 @@ function Footer() {
             </div>
           </div>
         </div>
-        <div className="border-t border-navy-light mt-8 pt-6 text-center text-sm text-gray-400">
-          © {new Date().getFullYear()} Ardmore Cricket Club. All rights reserved.
+        {/* Supported By */}
+        <div className="border-t border-navy-light mt-8 pt-6">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
+            <span className="text-xs text-gray-400 uppercase tracking-wider">Supported by</span>
+            <img src="/images/derry-strabane-council.jpg" alt="Derry City & Strabane District Council" className="h-12 object-contain" />
+          </div>
+          <div className="text-center text-sm text-gray-400">
+            © {new Date().getFullYear()} Ardmore Cricket Club. All rights reserved.
+          </div>
         </div>
       </div>
     </footer>
