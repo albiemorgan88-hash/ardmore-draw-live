@@ -82,14 +82,32 @@ async function handleOneOffPayment(supabase: any, session: Stripe.Checkout.Sessi
   const numbers: number[] = JSON.parse(meta.numbers);
   const names: Record<string, string> = JSON.parse(meta.names || "{}");
 
-  const { error: selError } = await supabase.from("number_selections").insert({
-    club_id: clubId,
-    profile_id: userId,
-    numbers: numbers,
-    status: "active",
-    stripe_subscription_id: session.id,
-  });
-  if (selError) console.error("Error inserting selection:", selError);
+  // Check if user already has selections — merge if so
+  const { data: existing } = await supabase
+    .from("number_selections")
+    .select("id, numbers")
+    .eq("club_id", clubId)
+    .eq("profile_id", userId)
+    .eq("status", "active")
+    .single();
+
+  if (existing) {
+    const merged = [...new Set([...existing.numbers, ...numbers])];
+    const { error: selError } = await supabase
+      .from("number_selections")
+      .update({ numbers: merged, updated_at: new Date().toISOString() })
+      .eq("id", existing.id);
+    if (selError) console.error("Error updating selection:", selError);
+  } else {
+    const { error: selError } = await supabase.from("number_selections").insert({
+      club_id: clubId,
+      profile_id: userId,
+      numbers: numbers,
+      status: "active",
+      stripe_subscription_id: session.id,
+    });
+    if (selError) console.error("Error inserting selection:", selError);
+  }
 
   const { error: payError } = await supabase.from("payments").insert({
     profile_id: userId,
