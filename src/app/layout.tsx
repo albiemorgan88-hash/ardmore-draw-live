@@ -116,6 +116,10 @@ function Footer() {
           </div>
           <div className="text-center text-sm text-gray-400">
             © {new Date().getFullYear()} Ardmore Cricket Club. All rights reserved.
+            <div className="mt-2 space-x-4">
+              <a href="/terms" className="hover:text-gold transition-colors">Terms &amp; Conditions</a>
+              <a href="/privacy" className="hover:text-gold transition-colors">Privacy Policy</a>
+            </div>
           </div>
         </div>
       </div>

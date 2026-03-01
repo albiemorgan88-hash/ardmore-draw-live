@@ -10,6 +10,7 @@ export default function SignupPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [agreed, setAgreed] = useState(false);
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,8 +67,14 @@ export default function SignupPage() {
             <label className="block text-sm font-medium text-navy mb-1">Password</label>
             <input type="password" value={password} onChange={e => setPassword(e.target.value)} required minLength={8} className="w-full px-4 py-2.5 border border-gray-200 rounded-md focus:ring-2 focus:ring-gold focus:border-gold outline-none" />
           </div>
+          <div className="flex items-start gap-2">
+            <input type="checkbox" id="terms" checked={agreed} onChange={e => setAgreed(e.target.checked)} required className="mt-1 accent-gold" />
+            <label htmlFor="terms" className="text-sm text-navy/70">
+              I agree to the <a href="/terms" className="text-gold font-semibold hover:underline" target="_blank">Terms &amp; Conditions</a> and <a href="/privacy" className="text-gold font-semibold hover:underline" target="_blank">Privacy Policy</a>
+            </label>
+          </div>
           {error && <p className="text-red-500 text-sm">{error}</p>}
-          <button type="submit" disabled={loading} className="w-full bg-navy text-white font-semibold py-3 rounded-md hover:bg-navy-light transition-colors disabled:opacity-50">
+          <button type="submit" disabled={loading || !agreed} className="w-full bg-navy text-white font-semibold py-3 rounded-md hover:bg-navy-light transition-colors disabled:opacity-50">
             {loading ? "Creating account..." : "Create Account"}
           </button>
         </form>
