@@ -82,7 +82,6 @@ export default function HomePage() {
             <GalleryImage src="/images/team-1.jpg" alt="Cup-winning squad photo" />
             <GalleryImage src="/images/ground-1.jpg" alt="The Bleach Green with clubhouse" />
             <GalleryImage src="/images/team-2.jpg" alt="Squad photo" />
-            <GalleryImage src="/images/community-1.jpg" alt="Community gathering at the ground" className="sm:col-span-2 lg:col-span-2" />
           </div>
         </div>
       </section>

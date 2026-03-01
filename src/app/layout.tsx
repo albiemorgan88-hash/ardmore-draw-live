@@ -1,68 +1,29 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import AuthProvider from "@/components/AuthProvider";
+import Navigation from "@/components/Navigation";
 
 export const metadata: Metadata = {
   title: "Ardmore Cricket Club | Est. 1879",
   description: "Home of Ardmore Cricket Club, The Bleach Green, Ardmore, Co. Derry. North West Cricket Union. Founded 1879.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en"><head><link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" /><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" /></head>
+    <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+      </head>
       <body className="antialiased">
-        <Navigation />
-        <main>{children}</main>
-        <Footer />
+        <AuthProvider>
+          <Navigation />
+          <main>{children}</main>
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
-  );
-}
-
-function Navigation() {
-  return (
-    <nav className="bg-navy text-white sticky top-0 z-50 shadow-lg">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <a href="/" className="flex items-center gap-3">
-            <span className="font-heading text-xl font-bold tracking-wide">Ardmore CC</span>
-            <span className="hidden sm:inline text-gold text-sm font-body">Est. 1879</span>
-          </a>
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium">
-            <a href="/" className="hover:text-gold transition-colors">Home</a>
-            <a href="/about" className="hover:text-gold transition-colors">About</a>
-            <a href="/draw" className="bg-gold text-navy px-4 py-2 rounded-md font-semibold hover:bg-gold-light transition-colors">Weekly Draw</a>
-            <a href="/sponsors" className="hover:text-gold transition-colors">Sponsors</a>
-            <a href="/login" className="hover:text-gold transition-colors">Login</a>
-          </div>
-          <div className="md:hidden">
-            <MobileMenu />
-          </div>
-        </div>
-      </div>
-    </nav>
-  );
-}
-
-function MobileMenu() {
-  return (
-    <details className="relative">
-      <summary className="list-none cursor-pointer p-2">
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </summary>
-      <div className="absolute right-0 top-full mt-2 w-48 bg-navy-dark rounded-lg shadow-xl py-2 border border-navy-light">
-        <a href="/" className="block px-4 py-2 hover:bg-navy-light">Home</a>
-        <a href="/about" className="block px-4 py-2 hover:bg-navy-light">About</a>
-        <a href="/draw" className="block px-4 py-2 hover:bg-navy-light text-gold font-semibold">Weekly Draw</a>
-        <a href="/sponsors" className="block px-4 py-2 hover:bg-navy-light">Sponsors</a>
-        <a href="/login" className="block px-4 py-2 hover:bg-navy-light">Login</a>
-      </div>
-    </details>
   );
 }
 

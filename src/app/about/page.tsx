@@ -51,11 +51,18 @@ export default function AboutPage() {
       <section className="py-16 bg-cream">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <h2 className="font-heading text-3xl font-bold text-navy mb-8">Our Teams</h2>
-          <p className="text-navy/70 mb-6">Captain: <span className="font-semibold text-navy">Rachit Gaur</span></p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            {["1st XI", "2nd XI", "3rd XI", "Midweek XI", "U13", "U11"].map(team => (
-              <div key={team} className="bg-white rounded-lg p-4 text-center shadow-sm border border-gray-100">
-                <div className="font-heading text-xl font-bold text-navy">{team}</div>
+            {[
+              { name: "1st XI", captain: "Harry Zimmerman" },
+              { name: "2nd XI", captain: "Vivek Sheroan" },
+              { name: "3rd XI", captain: "Steven Barrow" },
+              { name: "Midweek XI", captain: "Mark Chambers" },
+              { name: "U13", captain: null },
+              { name: "U11", captain: null },
+            ].map(team => (
+              <div key={team.name} className="bg-white rounded-lg p-4 text-center shadow-sm border border-gray-100">
+                <div className="font-heading text-xl font-bold text-navy">{team.name}</div>
+                {team.captain && <div className="text-sm text-navy/60 mt-1">Captain: {team.captain}</div>}
               </div>
             ))}
           </div>
@@ -109,7 +116,7 @@ export default function AboutPage() {
 
       {/* Team Photo */}
       <section className="relative h-[40vh] min-h-[250px]">
-        <Image src="/images/community-1.jpg" alt="Ardmore community" fill className="object-cover" />
+        <Image src="/images/ground-1.jpg" alt="The Bleach Green" fill className="object-cover" />
         <div className="absolute inset-0 bg-navy-dark/40" />
         <div className="relative h-full flex items-center justify-center">
           <a href="/draw" className="bg-gold text-navy font-bold px-10 py-4 rounded-md text-lg hover:bg-gold-light transition-colors">
