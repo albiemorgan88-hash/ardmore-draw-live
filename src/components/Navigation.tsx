@@ -22,6 +22,7 @@ export default function Navigation() {
           <div className="hidden md:flex items-center gap-8 text-sm font-medium">
             <a href="/" className="hover:text-gold transition-colors">Home</a>
             <a href="/about" className="hover:text-gold transition-colors">About</a>
+            <a href="/committee" className="hover:text-gold transition-colors">Committee</a>
             <a href="/news" className="hover:text-gold transition-colors">News</a>
             <a href="/draw" className="bg-gold text-navy px-4 py-2 rounded-md font-semibold hover:bg-gold-light transition-colors">Weekly Draw</a>
             <a href="/sponsors" className="hover:text-gold transition-colors">Sponsors</a>
@@ -54,6 +55,7 @@ function MobileMenu({ user, loading, onLogout }: { user: any; loading: boolean; 
       <div className="absolute right-0 top-full mt-2 w-48 bg-navy-dark rounded-lg shadow-xl py-2 border border-navy-light">
         <a href="/" className="block px-4 py-2 hover:bg-navy-light">Home</a>
         <a href="/about" className="block px-4 py-2 hover:bg-navy-light">About</a>
+        <a href="/committee" className="block px-4 py-2 hover:bg-navy-light">Committee</a>
         <a href="/news" className="block px-4 py-2 hover:bg-navy-light">News</a>
         <a href="/draw" className="block px-4 py-2 hover:bg-navy-light text-gold font-semibold">Weekly Draw</a>
         <a href="/sponsors" className="block px-4 py-2 hover:bg-navy-light">Sponsors</a>

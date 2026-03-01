@@ -45,6 +45,7 @@ function Footer() {
             <h4 className="font-heading text-lg font-semibold mb-3">Quick Links</h4>
             <div className="flex flex-col gap-2 text-sm text-gray-300">
               <a href="/about" className="hover:text-gold transition-colors">About the Club</a>
+              <a href="/committee" className="hover:text-gold transition-colors">Committee</a>
               <a href="/news" className="hover:text-gold transition-colors">Club News</a>
               <a href="/draw" className="hover:text-gold transition-colors">Weekly Draw</a>
               <a href="/sponsors" className="hover:text-gold transition-colors">Sponsors</a>
