@@ -79,6 +79,15 @@ export default function DrawPage() {
         });
       }
 
+      // Merge optimistic purchases
+      const optimistic = localStorage.getItem("optimistic_purchased");
+      if (optimistic) {
+        try {
+          const nums: number[] = JSON.parse(optimistic);
+          nums.forEach((n) => taken.add(n));
+        } catch {}
+      }
+
       setTakenNumbers(taken);
       setSubscribedNumbers(subbed);
       setTotalSold(taken.size);
@@ -119,6 +128,7 @@ export default function DrawPage() {
     const names = Object.fromEntries(selectedNumbers.entries());
 
     localStorage.setItem("purchased_numbers", JSON.stringify(nums));
+    localStorage.setItem("optimistic_purchased", JSON.stringify(nums));
 
     try {
       const res = await fetch("/api/checkout", {
@@ -145,11 +155,28 @@ export default function DrawPage() {
     }
   }, [user, selectedNumbers, paymentMode]);
 
-  const previousResults = [
-    { date: "21 Feb 2026", first: 234, second: 77, third: 456, pot: "£420" },
-    { date: "14 Feb 2026", first: 100, second: 333, third: 12, pot: "£385" },
-    { date: "7 Feb 2026", first: 42, second: 175, third: 490, pot: "£410" },
-  ];
+  const [drawResults, setDrawResults] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch("/api/draw/results")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.results) setDrawResults(data.results);
+      })
+      .catch(() => {});
+  }, []);
+
+  const previousResults = drawResults.length > 0
+    ? drawResults.map((d: any) => ({
+        date: new Date(d.draw_date).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }),
+        first: d.winning_numbers[0],
+        second: d.winning_numbers[1],
+        third: d.winning_numbers[2],
+        pot: "£" + (d.total_pot / 100).toFixed(2),
+      }))
+    : [
+        { date: "Coming soon", first: "?", second: "?", third: "?", pot: "TBD" },
+      ];
 
   return (
     <>

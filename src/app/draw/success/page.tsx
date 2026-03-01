@@ -15,6 +15,7 @@ function SuccessContent() {
     if (stored) {
       setNumbers(JSON.parse(stored));
       localStorage.removeItem("purchased_numbers");
+      localStorage.removeItem("optimistic_purchased");
     }
   }, []);
 
