@@ -13,15 +13,9 @@ export default function SponsorsPage() {
       </section>
 
       <section className="py-16 bg-cream">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <h2 className="font-heading text-2xl font-bold text-navy text-center mb-10">Current Sponsors</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-            {Array.from({ length: 8 }, (_, i) => (
-              <div key={i} className="bg-white rounded-lg h-32 flex items-center justify-center text-navy/20 border border-gray-200 shadow-sm">
-                <span className="text-sm">Sponsor Logo</span>
-              </div>
-            ))}
-          </div>
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
+          <h2 className="font-heading text-2xl font-bold text-navy mb-4">Join Our Sponsors</h2>
+          <p className="text-navy/60 mb-6">We&apos;re building our sponsor family for the 2026 season. Be among the first to partner with Ardmore Cricket Club and get premium visibility across matchdays, digital platforms, and our community of members and supporters.</p>
         </div>
       </section>
 

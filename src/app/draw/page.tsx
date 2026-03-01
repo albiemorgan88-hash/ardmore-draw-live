@@ -175,8 +175,17 @@ export default function DrawPage() {
         <div className="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-center sm:text-left">
             <p className="text-gold text-sm uppercase tracking-wider font-medium">Current Pot</p>
-            <p className="font-heading text-4xl font-bold">£{potPounds}</p>
-            <p className="text-sm text-gray-400">{totalSold} numbers sold this week</p>
+            {totalSold > 0 ? (
+              <>
+                <p className="font-heading text-4xl font-bold">£{potPounds}</p>
+                <p className="text-sm text-gray-400">{totalSold} numbers sold this week</p>
+              </>
+            ) : (
+              <>
+                <p className="font-heading text-3xl font-bold">Building...</p>
+                <p className="text-sm text-gray-400">Be the first to pick this week!</p>
+              </>
+            )}
           </div>
           <div className="flex gap-8 text-center">
             <div>
@@ -198,7 +207,8 @@ export default function DrawPage() {
       {/* How It Works */}
       <section className="py-12 bg-cream">
         <div className="max-w-4xl mx-auto px-4">
-          <h2 className="font-heading text-2xl font-bold text-navy text-center mb-8">How It Works</h2>
+          <h2 className="font-heading text-2xl font-bold text-navy text-center mb-4">How It Works</h2>
+          <p className="text-navy/60 max-w-2xl mx-auto mb-8 text-left sm:text-center">Every Friday at 7PM, we draw 3 winning numbers from 500. Pick yours for just £1 each — 50% of the pot goes to winners, and 40% goes straight to the club.</p>
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
             {[
               { step: "1", title: "Pick Numbers", desc: "Choose from 500 available numbers" },
@@ -236,8 +246,8 @@ export default function DrawPage() {
           <div className="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4">
             <h2 className="font-heading text-2xl font-bold text-navy">Pick Your Numbers</h2>
             {!user && (
-              <a href="/login" className="text-sm text-gold font-semibold hover:underline">
-                Sign in to pick numbers →
+              <a href="/login" className="bg-gold text-navy font-semibold px-6 py-2.5 rounded-md hover:bg-gold-light transition-colors text-sm">
+                Sign In to Pick Numbers
               </a>
             )}
           </div>
@@ -258,7 +268,18 @@ export default function DrawPage() {
           </div>
 
           {/* Grid */}
-          <div className="grid grid-cols-10 gap-1 sm:gap-1.5">
+          {!user && (
+            <div className="bg-navy/5 border-2 border-dashed border-navy/20 rounded-xl p-8 text-center mb-6">
+              <p className="text-2xl mb-2">🏏</p>
+              <p className="font-heading text-xl font-bold text-navy mb-2">Ready to pick your numbers?</p>
+              <p className="text-navy/60 text-sm mb-4">Sign in or create an account — takes 30 seconds</p>
+              <a href="/login" className="inline-block bg-gold text-navy font-bold px-8 py-3 rounded-md hover:bg-gold-light transition-colors">
+                Sign In to Play
+              </a>
+              <p className="text-xs text-navy/40 mt-3">Don&apos;t have an account? <a href="/signup" className="text-gold font-semibold hover:underline">Sign up free</a></p>
+            </div>
+          )}
+          <div className="grid grid-cols-5 sm:grid-cols-10 gap-2 sm:gap-1.5">
             {Array.from({ length: numbersPerPage }, (_, i) => {
               const num = pageStart + i;
               const taken = takenNumbers.has(num);
@@ -270,7 +291,7 @@ export default function DrawPage() {
                   onClick={() => toggleNumber(num)}
                   disabled={taken}
                   title={isSubscribed ? "Subscribed (auto-renews)" : taken ? "Taken" : "Available"}
-                  className={`aspect-square rounded text-xs sm:text-sm font-medium transition-all ${
+                  className={`aspect-square rounded text-sm sm:text-sm font-medium transition-all min-h-[44px] ${
                     taken
                       ? isSubscribed
                         ? "bg-purple-100 text-purple-400 cursor-not-allowed"

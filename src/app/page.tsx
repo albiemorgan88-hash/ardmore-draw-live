@@ -19,7 +19,7 @@ export default function HomePage() {
             Ardmore<br />Cricket Club
           </h1>
           <p className="text-lg sm:text-xl text-gray-200 mb-8 max-w-xl mx-auto">
-            The Bleach Green, Ardmore, Co. Derry — Home of cricket in the North West since 1879
+            <span className="hidden sm:inline">The Bleach Green, Ardmore, Co. Derry — </span>Home of cricket in the North West since 1879
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="/draw" className="bg-gold text-navy font-semibold px-8 py-3 rounded-md hover:bg-gold-light transition-colors text-lg">
@@ -36,13 +36,12 @@ export default function HomePage() {
       <section className="py-16 sm:py-20 bg-cream">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
           <h2 className="font-heading text-3xl sm:text-4xl font-bold text-navy mb-6">Welcome to The Bleach Green</h2>
-          <p className="text-lg text-navy/70 leading-relaxed max-w-3xl mx-auto mb-8">
+          <p className="text-lg text-navy/70 leading-relaxed max-w-3xl mx-auto mb-8 text-left sm:text-center">
             Nestled beneath the Sperrin Mountains in Ardmore, Co. Derry, our club has been the heart of cricket in the North West since 1879. From senior league champions to thriving youth teams, Ardmore Cricket Club is built on community, competition, and a love of the game.
           </p>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-10">
+          <div className="grid grid-cols-3 sm:grid-cols-3 gap-6 mt-10">
             <Stat value="1879" label="Founded" />
             <Stat value="6" label="Teams" />
-            <Stat value="145+" label="Years" />
             <Stat value="2" label="Honours" />
           </div>
         </div>
@@ -86,17 +85,27 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Fixtures placeholder */}
+      {/* Latest News */}
       <section className="py-16 bg-white">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="font-heading text-3xl sm:text-4xl font-bold text-navy mb-6">Latest News</h2>
-          <p className="text-navy/60 mb-8">Stay up to date with the latest from The Bleach Green.</p>
-          <div className="flex justify-center gap-4">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <h2 className="font-heading text-3xl sm:text-4xl font-bold text-navy mb-8 text-center">Latest News</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+            <div className="bg-cream rounded-lg p-6 border border-gray-100">
+              <span className="text-xs font-semibold text-violet-700 bg-violet-100 px-2 py-1 rounded-full">Preview</span>
+              <span className="text-xs text-navy/40 ml-2">March 2026</span>
+              <h3 className="font-heading text-lg font-bold text-navy mt-3 mb-2">2026 Championship Season Ahead</h3>
+              <p className="text-sm text-navy/70 leading-relaxed">Ardmore target an immediate bounce-back to the Premiership with two new overseas signings and the core squad intact.</p>
+            </div>
+            <div className="bg-cream rounded-lg p-6 border border-gray-100">
+              <span className="text-xs font-semibold text-sky-800 bg-sky-100 px-2 py-1 rounded-full">Transfer News</span>
+              <span className="text-xs text-navy/40 ml-2">February 2026</span>
+              <h3 className="font-heading text-lg font-bold text-navy mt-3 mb-2">Double Signing Boost for Ardmore</h3>
+              <p className="text-sm text-navy/70 leading-relaxed">Two overseas signings unveiled as Ardmore look to bounce back to the Premiership at the first attempt.</p>
+            </div>
+          </div>
+          <div className="text-center">
             <a href="/news" className="bg-navy text-white px-6 py-3 rounded-md hover:bg-navy-light transition-colors font-medium">
               View All News
-            </a>
-            <a href="https://northwestcricket.com/clubs/ardmore-cricket-club/" target="_blank" rel="noopener noreferrer" className="border-2 border-navy text-navy px-6 py-3 rounded-md hover:bg-navy hover:text-white transition-colors font-medium">
-              NWCU Profile
             </a>
           </div>
         </div>
@@ -105,17 +114,10 @@ export default function HomePage() {
       {/* Sponsors */}
       <section className="py-16 bg-cream">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="font-heading text-3xl sm:text-4xl font-bold text-navy mb-4">Our Sponsors</h2>
-          <p className="text-navy/60 mb-10">Proudly supported by local businesses</p>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-10">
-            {[1,2,3,4].map(i => (
-              <div key={i} className="bg-white rounded-lg h-24 flex items-center justify-center text-navy/20 border border-gray-200">
-                <span className="text-sm">Sponsor Logo</span>
-              </div>
-            ))}
-          </div>
+          <h2 className="font-heading text-3xl sm:text-4xl font-bold text-navy mb-4">Sponsor Your Club</h2>
+          <p className="text-navy/60 mb-8 max-w-2xl mx-auto">Partner with Ardmore Cricket Club and connect your brand with over 145 years of sporting heritage in the North West.</p>
           <a href="/sponsors" className="inline-block bg-gold text-navy font-semibold px-8 py-3 rounded-md hover:bg-gold-light transition-colors">
-            Become a Sponsor
+            Sponsorship Packages
           </a>
         </div>
       </section>
