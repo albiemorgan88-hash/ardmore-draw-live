@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useAuth } from "./AuthProvider";
 import { supabase } from "@/lib/supabase";
 
@@ -16,6 +17,7 @@ export default function Navigation() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <a href="/" className="flex items-center gap-3">
+            <Image src="/images/ardmore-crest.png" alt="Ardmore CC Crest" width={40} height={40} className="rounded-full" />
             <span className="font-heading text-xl font-bold tracking-wide">Ardmore CC</span>
             <span className="hidden sm:inline text-gold text-sm font-body">Est. 1879</span>
           </a>

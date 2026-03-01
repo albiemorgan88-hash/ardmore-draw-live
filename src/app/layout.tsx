@@ -6,6 +6,24 @@ import Navigation from "@/components/Navigation";
 export const metadata: Metadata = {
   title: "Ardmore Cricket Club | Est. 1879",
   description: "Home of Ardmore Cricket Club, The Bleach Green, Ardmore, Co. Derry. North West Cricket Union. Founded 1879.",
+  openGraph: {
+    title: "Ardmore Cricket Club | Est. 1879",
+    description: "Home of Ardmore Cricket Club, The Bleach Green. North West Cricket Union. Founded 1879. Support the club through our weekly draw!",
+    url: "https://ardmorecricket.com",
+    siteName: "Ardmore Cricket Club",
+    images: [{ url: "https://ardmorecricket.com/ardmore-og.png", width: 512, height: 512, alt: "Ardmore Cricket Club Crest" }],
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Ardmore Cricket Club | Est. 1879",
+    description: "Home of Ardmore Cricket Club, The Bleach Green. North West Cricket Union. Founded 1879.",
+    images: ["https://ardmorecricket.com/ardmore-og.png"],
+  },
+  icons: {
+    icon: "/favicon-32.png",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
