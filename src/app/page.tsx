@@ -89,11 +89,11 @@ export default function HomePage() {
       {/* Fixtures placeholder */}
       <section className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="font-heading text-3xl sm:text-4xl font-bold text-navy mb-6">Fixtures & News</h2>
-          <p className="text-navy/60 mb-8">Latest fixtures and news coming soon. Follow us on social media for updates.</p>
+          <h2 className="font-heading text-3xl sm:text-4xl font-bold text-navy mb-6">Latest News</h2>
+          <p className="text-navy/60 mb-8">Stay up to date with the latest from The Bleach Green.</p>
           <div className="flex justify-center gap-4">
-            <a href="https://www.instagram.com/ardmorecricketclub/" target="_blank" rel="noopener noreferrer" className="bg-navy text-white px-6 py-3 rounded-md hover:bg-navy-light transition-colors font-medium">
-              Follow on Instagram
+            <a href="/news" className="bg-navy text-white px-6 py-3 rounded-md hover:bg-navy-light transition-colors font-medium">
+              View All News
             </a>
             <a href="https://northwestcricket.com/clubs/ardmore-cricket-club/" target="_blank" rel="noopener noreferrer" className="border-2 border-navy text-navy px-6 py-3 rounded-md hover:bg-navy hover:text-white transition-colors font-medium">
               NWCU Profile

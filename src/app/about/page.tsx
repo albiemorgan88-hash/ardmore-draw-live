@@ -47,8 +47,28 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Teams */}
+      {/* Office Bearers */}
       <section className="py-16 bg-cream">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+          <h2 className="font-heading text-3xl font-bold text-navy mb-8">Office Bearers</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {[
+              { role: "Chairman", name: "Dermot Ward" },
+              { role: "President", name: "George Chambers" },
+              { role: "Treasurer", name: "Kevin Brolly" },
+              { role: "Secretary", name: "George Brolly" },
+            ].map(bearer => (
+              <div key={bearer.role} className="bg-white rounded-lg p-5 text-center shadow-sm border border-gray-100">
+                <div className="text-gold font-heading text-sm font-semibold uppercase tracking-wider mb-1">{bearer.role}</div>
+                <div className="font-heading text-lg font-bold text-navy">{bearer.name}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Teams */}
+      <section className="py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <h2 className="font-heading text-3xl font-bold text-navy mb-8">Our Teams</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -70,7 +90,7 @@ export default function AboutPage() {
       </section>
 
       {/* Facilities */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-cream">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <h2 className="font-heading text-3xl font-bold text-navy mb-8">Facilities</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -94,17 +114,17 @@ export default function AboutPage() {
       </section>
 
       {/* Training */}
-      <section className="py-16 bg-cream">
+      <section className="py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <h2 className="font-heading text-3xl font-bold text-navy mb-8">Training Times</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div className="bg-white rounded-lg p-6 shadow-sm">
+            <div className="bg-cream rounded-lg p-6 shadow-sm">
               <h3 className="font-heading text-xl font-bold text-navy mb-2">Adults (14+)</h3>
               <p className="text-navy/70">Tuesday & Friday</p>
               <p className="text-navy font-semibold">6:30 – 8:30 PM</p>
               <p className="text-sm text-navy/50 mt-1">April – August</p>
             </div>
-            <div className="bg-white rounded-lg p-6 shadow-sm">
+            <div className="bg-cream rounded-lg p-6 shadow-sm">
               <h3 className="font-heading text-xl font-bold text-navy mb-2">Juniors (U14)</h3>
               <p className="text-navy/70">Monday</p>
               <p className="text-navy font-semibold">6:30 – 7:30 PM</p>
