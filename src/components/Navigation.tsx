@@ -24,6 +24,7 @@ export default function Navigation() {
             <a href="/about" className="hover:text-gold transition-colors">About</a>
             <a href="/draw" className="bg-gold text-navy px-4 py-2 rounded-md font-semibold hover:bg-gold-light transition-colors">Weekly Draw</a>
             <a href="/sponsors" className="hover:text-gold transition-colors">Sponsors</a>
+            {user && <a href="/draw/manage" className="hover:text-gold transition-colors">My Numbers</a>}
             {loading ? null : user ? (
               <button onClick={handleLogout} className="hover:text-gold transition-colors">
                 Logout
@@ -54,6 +55,7 @@ function MobileMenu({ user, loading, onLogout }: { user: any; loading: boolean; 
         <a href="/about" className="block px-4 py-2 hover:bg-navy-light">About</a>
         <a href="/draw" className="block px-4 py-2 hover:bg-navy-light text-gold font-semibold">Weekly Draw</a>
         <a href="/sponsors" className="block px-4 py-2 hover:bg-navy-light">Sponsors</a>
+        {user && <a href="/draw/manage" className="block px-4 py-2 hover:bg-navy-light">My Numbers</a>}
         {loading ? null : user ? (
           <button onClick={onLogout} className="block w-full text-left px-4 py-2 hover:bg-navy-light">Logout</button>
         ) : (

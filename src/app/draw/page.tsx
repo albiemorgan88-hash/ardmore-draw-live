@@ -39,31 +39,51 @@ export default function DrawPage() {
 
   const [selectedNumbers, setSelectedNumbers] = useState<Map<number, string>>(new Map());
   const [takenNumbers, setTakenNumbers] = useState<Set<number>>(new Set());
+  const [subscribedNumbers, setSubscribedNumbers] = useState<Set<number>>(new Set());
   const [gridPage, setGridPage] = useState(0);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [totalSold, setTotalSold] = useState(0);
+  const [paymentMode, setPaymentMode] = useState<"subscription" | "one-off">("subscription");
 
   const numbersPerPage = 100;
   const totalPages = 5;
   const pageStart = gridPage * numbersPerPage + 1;
 
-  // Fetch taken numbers from existing number_selections table
+  // Fetch taken numbers from number_selections + subscriptions
   useEffect(() => {
-    supabase
-      .from("number_selections")
-      .select("numbers")
-      .eq("club_id", CLUB_ID)
-      .eq("status", "active")
-      .then(({ data }) => {
-        if (data) {
-          const taken = new Set<number>();
-          data.forEach((row: { numbers: number[] }) => {
-            if (row.numbers) row.numbers.forEach((n) => taken.add(n));
-          });
-          setTakenNumbers(taken);
-          setTotalSold(taken.size);
-        }
-      });
+    const fetchTaken = async () => {
+      const [selectionsRes, subsRes] = await Promise.all([
+        supabase
+          .from("number_selections")
+          .select("numbers")
+          .eq("club_id", CLUB_ID)
+          .eq("status", "active"),
+        supabase
+          .from("draw_subscriptions")
+          .select("numbers")
+          .eq("club_id", CLUB_ID)
+          .in("status", ["active", "past_due"]),
+      ]);
+
+      const taken = new Set<number>();
+      const subbed = new Set<number>();
+
+      if (selectionsRes.data) {
+        selectionsRes.data.forEach((row: { numbers: number[] }) => {
+          if (row.numbers) row.numbers.forEach((n) => taken.add(n));
+        });
+      }
+      if (subsRes.data) {
+        subsRes.data.forEach((row: { numbers: number[] }) => {
+          if (row.numbers) row.numbers.forEach((n) => { taken.add(n); subbed.add(n); });
+        });
+      }
+
+      setTakenNumbers(taken);
+      setSubscribedNumbers(subbed);
+      setTotalSold(taken.size);
+    };
+    fetchTaken();
   }, []);
 
   const potPence = totalSold * 100;
@@ -109,6 +129,7 @@ export default function DrawPage() {
           userId: user.id,
           userEmail: user.email,
           names,
+          paymentMode,
         }),
       });
       const data = await res.json();
@@ -122,7 +143,7 @@ export default function DrawPage() {
       alert("Something went wrong");
       setCheckoutLoading(false);
     }
-  }, [user, selectedNumbers]);
+  }, [user, selectedNumbers, paymentMode]);
 
   const previousResults = [
     { date: "21 Feb 2026", first: 234, second: 77, third: 456, pot: "£420" },
@@ -241,15 +262,19 @@ export default function DrawPage() {
             {Array.from({ length: numbersPerPage }, (_, i) => {
               const num = pageStart + i;
               const taken = takenNumbers.has(num);
+              const isSubscribed = subscribedNumbers.has(num);
               const selected = selectedNumbers.has(num);
               return (
                 <button
                   key={num}
                   onClick={() => toggleNumber(num)}
                   disabled={taken}
+                  title={isSubscribed ? "Subscribed (auto-renews)" : taken ? "Taken" : "Available"}
                   className={`aspect-square rounded text-xs sm:text-sm font-medium transition-all ${
                     taken
-                      ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                      ? isSubscribed
+                        ? "bg-purple-100 text-purple-400 cursor-not-allowed"
+                        : "bg-gray-200 text-gray-400 cursor-not-allowed"
                       : selected
                       ? "bg-gold text-navy ring-2 ring-gold-light scale-105"
                       : "bg-sky/20 text-navy hover:bg-sky/40 cursor-pointer"
@@ -262,10 +287,11 @@ export default function DrawPage() {
           </div>
 
           {/* Legend */}
-          <div className="flex gap-6 mt-4 text-sm text-navy/60 justify-center">
+          <div className="flex flex-wrap gap-4 sm:gap-6 mt-4 text-sm text-navy/60 justify-center">
             <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-sky/20" /> Available</div>
             <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-gold" /> Selected</div>
             <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-gray-200" /> Taken</div>
+            <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-purple-100" /> Subscribed</div>
           </div>
 
           {/* Selected summary with name inputs */}
@@ -297,14 +323,70 @@ export default function DrawPage() {
                     </div>
                   ))}
               </div>
-              <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-navy/10">
-                <p className="text-navy font-medium">Total: £{selectedNumbers.size}.00</p>
+
+              {/* Payment Mode Toggle */}
+              <div className="mt-5 pt-4 border-t border-navy/10">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-4">
+                  <button
+                    onClick={() => setPaymentMode("subscription")}
+                    className={`flex-1 px-4 py-3 rounded-lg border-2 text-left transition-all ${
+                      paymentMode === "subscription"
+                        ? "border-gold bg-gold/10"
+                        : "border-gray-200 hover:border-gray-300"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                        paymentMode === "subscription" ? "border-gold" : "border-gray-300"
+                      }`}>
+                        {paymentMode === "subscription" && <div className="w-2 h-2 rounded-full bg-gold" />}
+                      </div>
+                      <div>
+                        <p className="font-semibold text-navy text-sm">Subscribe weekly</p>
+                        <p className="text-xs text-navy/50">£{selectedNumbers.size}.00/week · Auto-renews every Friday</p>
+                      </div>
+                    </div>
+                    {paymentMode === "subscription" && (
+                      <p className="text-xs text-green-600 mt-1 ml-6">✓ Set it and forget it — your numbers enter every week automatically</p>
+                    )}
+                  </button>
+                  <button
+                    onClick={() => setPaymentMode("one-off")}
+                    className={`flex-1 px-4 py-3 rounded-lg border-2 text-left transition-all ${
+                      paymentMode === "one-off"
+                        ? "border-gold bg-gold/10"
+                        : "border-gray-200 hover:border-gray-300"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                        paymentMode === "one-off" ? "border-gold" : "border-gray-300"
+                      }`}>
+                        {paymentMode === "one-off" && <div className="w-2 h-2 rounded-full bg-gold" />}
+                      </div>
+                      <div>
+                        <p className="font-semibold text-navy text-sm">Pay once</p>
+                        <p className="text-xs text-navy/50">£{selectedNumbers.size}.00 · This week only</p>
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p className="text-navy font-medium">
+                  Total: £{selectedNumbers.size}.00{paymentMode === "subscription" ? "/week" : ""}
+                </p>
                 <button
                   onClick={handleCheckout}
                   disabled={checkoutLoading}
                   className="bg-navy text-white font-semibold px-8 py-3 rounded-md hover:bg-navy-light transition-colors w-full sm:w-auto disabled:opacity-50"
                 >
-                  {checkoutLoading ? "Redirecting to Stripe..." : `Pay £${selectedNumbers.size}.00`}
+                  {checkoutLoading
+                    ? "Redirecting to Stripe..."
+                    : paymentMode === "subscription"
+                    ? `Subscribe — £${selectedNumbers.size}.00/week`
+                    : `Pay £${selectedNumbers.size}.00`}
                 </button>
               </div>
             </div>
