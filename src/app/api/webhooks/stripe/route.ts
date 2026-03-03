@@ -126,7 +126,7 @@ async function handleOneOffPayment(supabase: any, session: Stripe.Checkout.Sessi
   const customerEmail = session.customer_details?.email || session.customer_email;
   if (customerEmail && process.env.RESEND_API_KEY) {
     try {
-      await sendPurchaseConfirmation(customerEmail, numbers, session.amount_total || numbers.length * 100);
+      await sendPurchaseConfirmation(customerEmail, numbers, session.amount_total || numbers.length * 100, names);
     } catch (err) {
       console.error("Failed to send purchase confirmation:", err);
     }
@@ -191,7 +191,7 @@ async function handleSubscriptionCreated(supabase: any, session: Stripe.Checkout
   const customerEmail = session.customer_details?.email || session.customer_email;
   if (customerEmail && process.env.RESEND_API_KEY) {
     try {
-      await sendPurchaseConfirmation(customerEmail, numbers, numbers.length * 100);
+      await sendPurchaseConfirmation(customerEmail, numbers, numbers.length * 100, names);
     } catch (err) {
       console.error("Failed to send subscription confirmation:", err);
     }

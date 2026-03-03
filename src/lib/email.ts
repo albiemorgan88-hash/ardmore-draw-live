@@ -35,15 +35,26 @@ function layout(content: string) {
 export async function sendPurchaseConfirmation(
   email: string,
   numbers: number[],
-  amountPence: number
+  amountPence: number,
+  names?: Record<string, string>
 ) {
   const sorted = [...numbers].sort((a, b) => a - b);
   const balls = sorted
     .map(
-      (n) =>
-        `<span style="display:inline-block;background:#c9a84c;color:#1a365d;font-weight:bold;width:40px;height:40px;line-height:40px;border-radius:50%;text-align:center;margin:4px;font-size:16px;">${n}</span>`
+      (n) => {
+        const name = names?.[String(n)];
+        return `<div style="display:inline-block;text-align:center;margin:6px;">
+          <span style="display:block;background:#c9a84c;color:#1a365d;font-weight:bold;width:40px;height:40px;line-height:40px;border-radius:50%;margin:0 auto;font-size:16px;">${n}</span>
+          ${name ? `<span style="display:block;font-size:11px;color:#666;margin-top:4px;max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${name}</span>` : ""}
+        </div>`;
+      }
     )
     .join("");
+
+  const numberList = sorted.map(n => {
+    const name = names?.[String(n)];
+    return name ? `${n} (${name})` : `${n}`;
+  }).join(", ");
 
   const html = layout(`
     <h2 style="color:#1a365d;margin:0 0 16px;">You're in this week's draw! 🎉</h2>
@@ -51,7 +62,7 @@ export async function sendPurchaseConfirmation(
     <div style="text-align:center;margin:24px 0;">${balls}</div>
     <div style="background:#f5f5f0;border-radius:8px;padding:16px;margin:16px 0;">
       <p style="margin:0;color:#333;"><strong>Amount paid:</strong> £${(amountPence / 100).toFixed(2)}</p>
-      <p style="margin:8px 0 0;color:#333;"><strong>Numbers:</strong> ${sorted.join(", ")}</p>
+      <p style="margin:8px 0 0;color:#333;"><strong>Numbers:</strong> ${numberList}</p>
     </div>
     <p style="color:#666;font-size:14px;">Good luck! Results will be emailed after the draw.</p>
   `);
