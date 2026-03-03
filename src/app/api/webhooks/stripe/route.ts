@@ -144,6 +144,11 @@ async function handleSubscriptionCreated(supabase: any, session: Stripe.Checkout
   // Get subscription details from Stripe
   const subscription = await stripe.subscriptions.retrieve(subscriptionId) as any;
 
+  // Period dates moved to items in newer Stripe API versions
+  const item = subscription.items?.data?.[0];
+  const periodStart = subscription.current_period_start || item?.current_period_start || subscription.start_date;
+  const periodEnd = subscription.current_period_end || item?.current_period_end;
+
   // Create subscription record
   const { error: subError } = await supabase.from("draw_subscriptions").insert({
     club_id: clubId,
@@ -154,8 +159,8 @@ async function handleSubscriptionCreated(supabase: any, session: Stripe.Checkout
     assigned_names: names,
     amount_pence: numbers.length * 100,
     status: "active",
-    current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
-    current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+    current_period_start: periodStart ? new Date(periodStart * 1000).toISOString() : new Date().toISOString(),
+    current_period_end: periodEnd ? new Date(periodEnd * 1000).toISOString() : null,
   });
   if (subError) console.error("Error inserting subscription:", subError);
 
@@ -210,12 +215,15 @@ async function handleSubscriptionRenewal(supabase: any, invoice: any) {
 
   // Update subscription period
   const stripeSubscription = await stripe.subscriptions.retrieve(subscriptionId) as any;
+  const renewalItem = stripeSubscription.items?.data?.[0];
+  const renewalStart = stripeSubscription.current_period_start || renewalItem?.current_period_start || stripeSubscription.start_date;
+  const renewalEnd = stripeSubscription.current_period_end || renewalItem?.current_period_end;
   await supabase
     .from("draw_subscriptions")
     .update({
       status: "active",
-      current_period_start: new Date(stripeSubscription.current_period_start * 1000).toISOString(),
-      current_period_end: new Date(stripeSubscription.current_period_end * 1000).toISOString(),
+      current_period_start: renewalStart ? new Date(renewalStart * 1000).toISOString() : new Date().toISOString(),
+      current_period_end: renewalEnd ? new Date(renewalEnd * 1000).toISOString() : null,
       updated_at: new Date().toISOString(),
     })
     .eq("stripe_subscription_id", subscriptionId);
