@@ -28,6 +28,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
     }
   } else {
+    // In production, reject unsigned webhooks
+    if (process.env.NODE_ENV === "production" && webhookSecret) {
+      console.error("Webhook received without valid signature");
+      return NextResponse.json({ error: "Missing signature" }, { status: 400 });
+    }
+    // Dev/testing fallback only
     event = JSON.parse(body) as Stripe.Event;
   }
 
