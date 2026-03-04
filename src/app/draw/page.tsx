@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, Fragment } from "react";
 import Image from "next/image";
 import { useAuth } from "@/components/AuthProvider";
 import { supabase } from "@/lib/supabase";
@@ -235,7 +235,7 @@ export default function DrawPage() {
       <section className="py-12 bg-cream">
         <div className="max-w-4xl mx-auto px-4">
           <h2 className="font-heading text-2xl font-bold text-navy text-center mb-4">How It Works</h2>
-          <p className="text-navy/60 max-w-2xl mx-auto mb-8 text-left sm:text-center">Every Friday at 7PM, we draw 3 winning numbers from 500. Pick yours for just £1 each — 50% of the pot goes to winners, and 40% goes straight to the club.</p>
+          <p className="text-navy/60 max-w-2xl mx-auto mb-8 text-left sm:text-center">Every Friday at 7PM, we draw 3 winning numbers from 500. Pick yours for just £1 each — 50% of the pot goes to winners, and 50% goes straight to the club.</p>
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
             {[
               { step: "1", title: "Pick Numbers", desc: "Choose from 500 available numbers" },
@@ -257,12 +257,11 @@ export default function DrawPage() {
       <section className="py-8 bg-white border-b">
         <div className="max-w-4xl mx-auto px-4">
           <h2 className="font-heading text-xl font-bold text-navy text-center mb-4">Where Your Money Goes</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 text-center text-sm">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-sm">
             <div className="bg-gold/10 rounded-lg p-3"><p className="font-bold text-navy text-lg">25%</p><p className="text-navy/60">1st Prize</p></div>
             <div className="bg-gold/10 rounded-lg p-3"><p className="font-bold text-navy text-lg">15%</p><p className="text-navy/60">2nd Prize</p></div>
             <div className="bg-gold/10 rounded-lg p-3"><p className="font-bold text-navy text-lg">10%</p><p className="text-navy/60">3rd Prize</p></div>
-            <div className="bg-green-50 rounded-lg p-3"><p className="font-bold text-green-700 text-lg">40%</p><p className="text-green-600/70">Club Funds</p></div>
-            <div className="bg-gray-50 rounded-lg p-3 col-span-2 sm:col-span-1"><p className="font-bold text-gray-500 text-lg">10%</p><p className="text-gray-400">Platform & Fees</p></div>
+            <div className="bg-green-50 rounded-lg p-3"><p className="font-bold text-green-700 text-lg">50%</p><p className="text-green-600/70">Club Funds</p></div>
           </div>
         </div>
       </section>
@@ -472,7 +471,85 @@ export default function DrawPage() {
           </div>
         </div>
       </section>
+
+      {/* FAQ */}
+      <FAQSection />
     </>
+  );
+}
+
+const faqItems = [
+  {
+    q: "What is the Weekly Draw?",
+    a: "A weekly numbers draw to raise funds for Ardmore Cricket Club. Pick your lucky numbers for just £1 each — 50% of the pot goes to 3 lucky winners, and 50% goes directly to supporting the club.",
+  },
+  {
+    q: "How does it work?",
+    a: "Pick numbers from 1–500, pay £1 per number per week. Every Friday at 7PM, 3 winning numbers are drawn using a provably fair system. Winners are notified by email.",
+  },
+  {
+    q: "How are winners chosen?",
+    a: "We use a cryptographically secure random number generator (SHA-256) to ensure every draw is provably fair and transparent.",
+  },
+  {
+    q: "How do I get paid if I win?",
+    a: "Winners are contacted by email after each draw. Prizes are paid out by the club committee directly.",
+  },
+  {
+    q: "Can I subscribe weekly?",
+    a: "Yes! Choose \"Subscribe weekly\" at checkout and your numbers will automatically enter every Friday's draw. You can cancel anytime.",
+  },
+  {
+    q: "What happens to the club's 50%?",
+    a: "Every penny goes directly to Ardmore Cricket Club — ground maintenance, equipment, youth development, and running costs.",
+  },
+  {
+    q: "Is it legal?",
+    a: "Yes. This is a small society lottery registered with Derry City & Strabane District Council, run in accordance with the Gambling Act 2005 and Betting, Gaming, Lotteries and Amusements (NI) Order 1985.",
+  },
+];
+
+function FAQSection() {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  return (
+    <section className="py-12 bg-white">
+      <div className="max-w-3xl mx-auto px-4">
+        <h2 className="font-heading text-2xl font-bold text-navy text-center mb-8">Frequently Asked Questions</h2>
+        <div className="space-y-3">
+          {faqItems.map((item, i) => {
+            const isOpen = openIndex === i;
+            return (
+              <div key={i} className="border border-navy/10 rounded-lg overflow-hidden">
+                <button
+                  onClick={() => setOpenIndex(isOpen ? null : i)}
+                  className="w-full flex items-center justify-between px-5 py-4 text-left bg-navy/[0.02] hover:bg-navy/[0.05] transition-colors"
+                >
+                  <span className="font-semibold text-navy pr-4">{item.q}</span>
+                  <svg
+                    className={`w-5 h-5 text-gold shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <div
+                  className="overflow-hidden transition-all duration-200 ease-out"
+                  style={{ maxHeight: isOpen ? "200px" : "0px", opacity: isOpen ? 1 : 0 }}
+                >
+                  <div className="px-5 pb-4 pt-1 text-navy/70 text-sm leading-relaxed">
+                    {item.a}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
   );
 }
 

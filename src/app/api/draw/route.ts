@@ -75,14 +75,14 @@ export async function GET(req: NextRequest) {
   const drawSeed = crypto.randomUUID();
   const winningNumbers = pickWinners(allNumbers, 3, drawSeed);
 
-  // Calculate prizes (in pence)
+  // Calculate prizes (in pence) — 50/50 split: 50% winners, 50% club
   const prizes = {
     first: Math.round(totalPotPence * 0.25),
     second: Math.round(totalPotPence * 0.15),
     third: Math.round(totalPotPence * 0.10),
-    club: Math.round(totalPotPence * 0.40),
-    platform: Math.round(totalPotPence * 0.075),
-    fees: Math.round(totalPotPence * 0.025),
+    club: Math.round(totalPotPence * 0.50),
+    platform: 0,
+    fees: 0,
   };
 
   const drawDate = new Date().toISOString().split("T")[0];
@@ -110,7 +110,7 @@ export async function GET(req: NextRequest) {
     total_entries: totalEntries,
     pot_amount: totalPotPence,
     prize_pool: prizes.first + prizes.second + prizes.third,
-    platform_fee: prizes.platform,
+    platform_fee: 0,
     club_share: prizes.club,
     rollover_amount: 0,
   });

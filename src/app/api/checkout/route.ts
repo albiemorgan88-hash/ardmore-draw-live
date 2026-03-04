@@ -119,7 +119,7 @@ export async function POST(req: NextRequest) {
         names: JSON.stringify(names),
         mode: "one-off",
       },
-      success_url: `${siteUrl}/draw/success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${siteUrl}/draw/success?session_id={CHECKOUT_SESSION_ID}&mode=one-off`,
       cancel_url: `${siteUrl}/draw`,
     });
 
