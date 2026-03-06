@@ -40,6 +40,49 @@ export async function GET(req: NextRequest) {
 
   const supabase = createServiceClient();
 
+  // Idempotency: check if a draw already exists for this week
+  // A "week" = Monday 00:00 to Sunday 23:59 (Europe/London)
+  const now = new Date();
+  const dayOfWeek = now.getUTCDay(); // 0=Sun, 1=Mon, ...
+  const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+  const weekStart = new Date(now);
+  weekStart.setUTCDate(now.getUTCDate() + diffToMonday);
+  weekStart.setUTCHours(0, 0, 0, 0);
+  const weekEnd = new Date(weekStart);
+  weekEnd.setUTCDate(weekStart.getUTCDate() + 7);
+
+  const { data: existingDraw } = await supabase
+    .from("draws")
+    .select("*")
+    .eq("club_id", CLUB_ID)
+    .gte("drawn_at", weekStart.toISOString())
+    .lt("drawn_at", weekEnd.toISOString())
+    .order("draw_number", { ascending: true })
+    .limit(1)
+    .single();
+
+  if (existingDraw) {
+    return NextResponse.json({
+      success: true,
+      already_drawn: true,
+      draw_date: existingDraw.drawn_at?.split("T")[0],
+      draw_number: existingDraw.draw_number,
+      seed: existingDraw.seed,
+      winning_numbers: existingDraw.drawn_numbers,
+      total_entries: existingDraw.total_entries,
+      total_pot_pence: existingDraw.pot_amount,
+      prizes: {
+        first: Math.round(existingDraw.pot_amount * 0.25),
+        second: Math.round(existingDraw.pot_amount * 0.15),
+        third: Math.round(existingDraw.pot_amount * 0.10),
+        club: Math.round(existingDraw.pot_amount * 0.50),
+        platform: 0,
+        fees: 0,
+      },
+      message: "Draw already completed for this week. Returning existing results.",
+    });
+  }
+
   // Get all active selections for the club
   const { data: selections, error: selErr } = await supabase
     .from("number_selections")

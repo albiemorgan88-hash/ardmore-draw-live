@@ -10,6 +10,11 @@ function getResend(): Resend {
 
 const FROM = process.env.RESEND_FROM || "Ardmore Cricket Club <onboarding@resend.dev>";
 
+const ADMIN_EMAILS = [
+  "contact@bluecanvas.ai",
+  "Ardmorecc1879@hotmail.com",
+];
+
 const baseStyle = `
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   max-width: 600px; margin: 0 auto; padding: 0;
@@ -135,6 +140,44 @@ export async function sendDrawResults(
       await getResend().emails.send({ from: FROM, to: p.email, subject, html: layout(content) });
     } catch (err) {
       console.error(`Failed to send draw result to ${p.email}:`, err);
+    }
+  }
+}
+
+export async function sendAdminNewEntryNotification(
+  memberEmail: string,
+  memberName: string | undefined,
+  numbers: number[],
+  amountPence: number,
+  names?: Record<string, string>,
+  isSubscription?: boolean
+) {
+  const sorted = [...numbers].sort((a, b) => a - b);
+  const numberList = sorted.map(n => {
+    const name = names?.[String(n)];
+    return name ? `${n} (${name})` : `${n}`;
+  }).join(", ");
+
+  const html = layout(`
+    <h2 style="color:#1a365d;margin:0 0 16px;">🔔 New Draw Entry</h2>
+    <div style="background:#f5f5f0;border-radius:8px;padding:16px;margin:16px 0;">
+      <p style="margin:0;color:#333;"><strong>Member:</strong> ${memberName || "Unknown"} (${memberEmail})</p>
+      <p style="margin:8px 0 0;color:#333;"><strong>Numbers:</strong> ${numberList}</p>
+      <p style="margin:8px 0 0;color:#333;"><strong>Amount:</strong> £${(amountPence / 100).toFixed(2)}${isSubscription ? "/week (subscription)" : " (one-off)"}</p>
+      <p style="margin:8px 0 0;color:#333;"><strong>Time:</strong> ${new Date().toLocaleString("en-GB", { timeZone: "Europe/London" })}</p>
+    </div>
+  `);
+
+  for (const adminEmail of ADMIN_EMAILS) {
+    try {
+      await getResend().emails.send({
+        from: FROM,
+        to: adminEmail,
+        subject: `New Draw Entry — ${memberName || memberEmail} picked ${sorted.length} numbers`,
+        html,
+      });
+    } catch (err) {
+      console.error(`Failed to send admin notification to ${adminEmail}:`, err);
     }
   }
 }

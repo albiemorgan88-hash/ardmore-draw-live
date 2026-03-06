@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { stripe } from "@/lib/stripe";
 import { createServiceClient } from "@/lib/supabase";
-import { sendPurchaseConfirmation } from "@/lib/email";
+import { sendPurchaseConfirmation, sendAdminNewEntryNotification } from "@/lib/email";
 
 function getNextFriday(): string {
   const now = new Date();
@@ -133,6 +133,14 @@ async function handleOneOffPayment(supabase: any, session: Stripe.Checkout.Sessi
   if (customerEmail && process.env.RESEND_API_KEY) {
     try {
       await sendPurchaseConfirmation(customerEmail, numbers, session.amount_total || numbers.length * 100, names);
+      await sendAdminNewEntryNotification(
+        customerEmail,
+        session.customer_details?.name || undefined,
+        numbers,
+        session.amount_total || numbers.length * 100,
+        names,
+        false
+      );
     } catch (err) {
       console.error("Failed to send purchase confirmation:", err);
     }
@@ -193,11 +201,19 @@ async function handleSubscriptionCreated(supabase: any, session: Stripe.Checkout
   });
   if (payError) console.error("Error inserting subscription payment:", payError);
 
-  // Send purchase confirmation email
+  // Send purchase confirmation email + admin notification
   const customerEmail = session.customer_details?.email || session.customer_email;
   if (customerEmail && process.env.RESEND_API_KEY) {
     try {
       await sendPurchaseConfirmation(customerEmail, numbers, numbers.length * 100, names);
+      await sendAdminNewEntryNotification(
+        customerEmail,
+        session.customer_details?.name || undefined,
+        numbers,
+        numbers.length * 100,
+        names,
+        true
+      );
     } catch (err) {
       console.error("Failed to send subscription confirmation:", err);
     }

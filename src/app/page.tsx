@@ -1,4 +1,5 @@
 import Image from "next/image";
+import JackpotSection from "@/components/JackpotSection";
 
 export default function HomePage() {
   return (
@@ -42,7 +43,7 @@ export default function HomePage() {
           <div className="grid grid-cols-3 sm:grid-cols-3 gap-6 mt-10">
             <Stat value="1879" label="Founded" />
             <Stat value="6" label="Teams" />
-            <Stat value="2" label="Honours" />
+            <Stat value="55" label="Honours" />
           </div>
         </div>
       </section>
@@ -56,34 +57,7 @@ export default function HomePage() {
           className="object-cover"
         />
         <div className="absolute inset-0 bg-navy-dark/85" />
-        <div className="relative max-w-4xl mx-auto px-4 text-center text-white">
-          <p className="text-gold text-sm uppercase tracking-wider font-semibold mb-2">This Week&apos;s Jackpot</p>
-          <p className="font-heading text-5xl sm:text-6xl font-bold mb-4">£500</p>
-          <h2 className="font-heading text-2xl sm:text-3xl font-bold mb-3">Support Your Club</h2>
-          <p className="text-gray-400 mb-4 max-w-2xl mx-auto">
-            Pick your lucky numbers for just £1 each per week. Three prizes drawn every Friday at 7PM.
-          </p>
-          <div className="flex justify-center gap-6 mb-6 text-center">
-            <div>
-              <p className="font-heading text-2xl font-bold text-gold">£125</p>
-              <p className="text-xs text-gray-400">1st Prize</p>
-            </div>
-            <div>
-              <p className="font-heading text-2xl font-bold text-gold">£75</p>
-              <p className="text-xs text-gray-400">2nd Prize</p>
-            </div>
-            <div>
-              <p className="font-heading text-2xl font-bold text-gold">£50</p>
-              <p className="text-xs text-gray-400">3rd Prize</p>
-            </div>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <a href="/draw" className="bg-gold text-navy font-bold px-10 py-4 rounded-md text-lg hover:bg-gold-light transition-colors">
-              Pick Your Numbers
-            </a>
-            <span className="text-gray-400 text-sm">500 numbers · Draws every Friday 7PM</span>
-          </div>
-        </div>
+        <JackpotSection />
       </section>
 
       {/* Photo Gallery */}
