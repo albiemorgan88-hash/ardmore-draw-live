@@ -36,7 +36,7 @@ export default function AGM2026Page() {
       <section className="bg-navy py-16 sm:py-20">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <div className="mb-4">
-            <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-violet-100 text-violet-800">
+            <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
               Club News
             </span>
           </div>

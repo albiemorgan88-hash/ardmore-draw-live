@@ -19,7 +19,7 @@ const articles: Article[] = [
     title: "Ardmore Cricket Club AGM 2026",
     date: "March 2026",
     category: "Club News",
-    excerpt: "Ardmore held their AGM on 6th March with positive plans for the season ahead. New captains appointed and Kevin Brolly takes over as Club Secretary.",
+    excerpt: "Officers elected and positive plans discussed for the upcoming season at Thursday's Annual General Meeting.",
     body: "",
     link: "/news/agm-2026",
   },
@@ -75,7 +75,7 @@ const categoryColors: Record<string, string> = {
   "Season Review": "bg-amber-100 text-amber-800",
   "Cup Draw": "bg-emerald-100 text-emerald-800",
   "Preview": "bg-violet-100 text-violet-800",
-  "Club News": "bg-violet-100 text-violet-800",
+  "Club News": "bg-emerald-100 text-emerald-800",
 };
 
 export default function NewsPage() {

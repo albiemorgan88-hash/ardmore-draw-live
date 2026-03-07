@@ -78,17 +78,17 @@ export default function HomePage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <h2 className="font-heading text-3xl sm:text-4xl font-bold text-navy mb-8 text-center">Latest News</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+            <a href="/news/agm-2026" className="bg-cream rounded-lg p-6 border border-gray-100 hover:shadow-md transition-shadow block">
+              <span className="text-xs font-semibold text-emerald-800 bg-emerald-100 px-2 py-1 rounded-full">Club News</span>
+              <span className="text-xs text-navy/40 ml-2">March 2026</span>
+              <h3 className="font-heading text-lg font-bold text-navy mt-3 mb-2">Ardmore Cricket Club AGM 2026</h3>
+              <p className="text-sm text-navy/70 leading-relaxed">Officers elected and positive plans discussed for the upcoming season at Thursday&apos;s Annual General Meeting.</p>
+            </a>
             <div className="bg-cream rounded-lg p-6 border border-gray-100">
               <span className="text-xs font-semibold text-violet-700 bg-violet-100 px-2 py-1 rounded-full">Preview</span>
               <span className="text-xs text-navy/40 ml-2">March 2026</span>
               <h3 className="font-heading text-lg font-bold text-navy mt-3 mb-2">2026 Championship Season Ahead</h3>
               <p className="text-sm text-navy/70 leading-relaxed">Ardmore target an immediate bounce-back to the Premiership with two new overseas signings and the core squad intact.</p>
-            </div>
-            <div className="bg-cream rounded-lg p-6 border border-gray-100">
-              <span className="text-xs font-semibold text-sky-800 bg-sky-100 px-2 py-1 rounded-full">Transfer News</span>
-              <span className="text-xs text-navy/40 ml-2">February 2026</span>
-              <h3 className="font-heading text-lg font-bold text-navy mt-3 mb-2">Double Signing Boost for Ardmore</h3>
-              <p className="text-sm text-navy/70 leading-relaxed">Two overseas signings unveiled as Ardmore look to bounce back to the Premiership at the first attempt.</p>
             </div>
           </div>
           <div className="text-center">
