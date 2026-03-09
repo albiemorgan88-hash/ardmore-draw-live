@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback, Fragment } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import Image from "next/image";
 import { useAuth } from "@/components/AuthProvider";
 import { supabase } from "@/lib/supabase";
@@ -39,7 +39,6 @@ export default function DrawPage() {
 
   const [selectedNumbers, setSelectedNumbers] = useState<Map<number, string>>(new Map());
   const [takenNumbers, setTakenNumbers] = useState<Set<number>>(new Set());
-  const [subscribedNumbers, setSubscribedNumbers] = useState<Set<number>>(new Set());
   const [gridPage, setGridPage] = useState(0);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [paymentMode, setPaymentMode] = useState<"subscription" | "one-off">("subscription");
@@ -58,7 +57,7 @@ export default function DrawPage() {
   const totalPages = 5;
   const pageStart = gridPage * numbersPerPage + 1;
 
-  // Fetch taken numbers from number_selections + subscriptions
+  // Fetch taken numbers from number_selections + subscriptions (paid only)
   useEffect(() => {
     const fetchTaken = async () => {
       const [selectionsRes, subsRes] = await Promise.all([
@@ -75,7 +74,6 @@ export default function DrawPage() {
       ]);
 
       const taken = new Set<number>();
-      const subbed = new Set<number>();
 
       if (selectionsRes.data) {
         selectionsRes.data.forEach((row: { numbers: number[] }) => {
@@ -84,21 +82,14 @@ export default function DrawPage() {
       }
       if (subsRes.data) {
         subsRes.data.forEach((row: { numbers: number[] }) => {
-          if (row.numbers) row.numbers.forEach((n) => { taken.add(n); subbed.add(n); });
+          if (row.numbers) row.numbers.forEach((n) => taken.add(n));
         });
       }
 
-      // Merge optimistic purchases
-      const optimistic = localStorage.getItem("optimistic_purchased");
-      if (optimistic) {
-        try {
-          const nums: number[] = JSON.parse(optimistic);
-          nums.forEach((n) => taken.add(n));
-        } catch {}
-      }
+      // Clear any stale optimistic data
+      localStorage.removeItem("optimistic_purchased");
 
       setTakenNumbers(taken);
-      setSubscribedNumbers(subbed);
     };
     fetchTaken();
   }, []);
@@ -145,7 +136,6 @@ export default function DrawPage() {
     const names = Object.fromEntries(selectedNumbers.entries());
 
     localStorage.setItem("purchased_numbers", JSON.stringify(nums));
-    localStorage.setItem("optimistic_purchased", JSON.stringify(nums));
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
@@ -328,22 +318,19 @@ export default function DrawPage() {
             {Array.from({ length: numbersPerPage }, (_, i) => {
               const num = pageStart + i;
               const taken = takenNumbers.has(num);
-              const isSubscribed = subscribedNumbers.has(num);
               const selected = selectedNumbers.has(num);
               return (
                 <button
                   key={num}
                   onClick={() => toggleNumber(num)}
                   disabled={taken}
-                  title={isSubscribed ? "Subscribed (auto-renews)" : taken ? "Taken" : "Available"}
+                  title={taken ? "Taken" : "Available"}
                   className={`aspect-square rounded text-sm sm:text-sm font-medium transition-all min-h-[44px] ${
                     taken
-                      ? isSubscribed
-                        ? "bg-purple-100 text-purple-400 cursor-not-allowed"
-                        : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                      ? "bg-pink-100 text-pink-400 cursor-not-allowed"
                       : selected
                       ? "bg-gold text-navy ring-2 ring-gold-light scale-105"
-                      : "bg-sky/20 text-navy hover:bg-sky/40 cursor-pointer"
+                      : "bg-white text-navy border border-gray-200 hover:bg-gray-50 cursor-pointer"
                   }`}
                 >
                   {num}
@@ -354,10 +341,9 @@ export default function DrawPage() {
 
           {/* Legend */}
           <div className="flex flex-wrap gap-4 sm:gap-6 mt-4 text-sm text-navy/60 justify-center">
-            <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-sky/20" /> Available</div>
+            <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-white border border-gray-200" /> Available</div>
             <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-gold" /> Selected</div>
-            <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-gray-200" /> Taken</div>
-            <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-purple-100" /> Subscribed</div>
+            <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-pink-100" /> Taken</div>
           </div>
 
           {/* Selected summary with name inputs */}
