@@ -42,8 +42,17 @@ export default function DrawPage() {
   const [subscribedNumbers, setSubscribedNumbers] = useState<Set<number>>(new Set());
   const [gridPage, setGridPage] = useState(0);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
-  const [totalSold, setTotalSold] = useState(0);
   const [paymentMode, setPaymentMode] = useState<"subscription" | "one-off">("subscription");
+
+  // Pot data from /api/pot (source of truth, same as homepage)
+  const [potData, setPotData] = useState<{
+    totalPence: number;
+    totalPounds: string;
+    totalNumbers: number;
+    first: string;
+    second: string;
+    third: string;
+  } | null>(null);
 
   const numbersPerPage = 100;
   const totalPages = 5;
@@ -90,13 +99,21 @@ export default function DrawPage() {
 
       setTakenNumbers(taken);
       setSubscribedNumbers(subbed);
-      setTotalSold(taken.size);
     };
     fetchTaken();
   }, []);
 
-  const potPence = totalSold * 100;
-  const potPounds = (potPence / 100).toFixed(2);
+  // Fetch pot data from /api/pot (same source as homepage JackpotSection)
+  useEffect(() => {
+    fetch("/api/pot")
+      .then((r) => r.json())
+      .then((data) => setPotData(data))
+      .catch(() => {});
+  }, []);
+
+  const potPence = potData?.totalPence ?? 0;
+  const potPounds = potData?.totalPounds ?? "0.00";
+  const totalSold = potData?.totalNumbers ?? 0;
 
   const toggleNumber = (n: number) => {
     if (takenNumbers.has(n)) return;
@@ -131,13 +148,15 @@ export default function DrawPage() {
     localStorage.setItem("optimistic_purchased", JSON.stringify(nums));
 
     try {
+      const { data: { session } } = await supabase.auth.getSession();
       const res = await fetch("/api/checkout", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${session?.access_token}`,
+        },
         body: JSON.stringify({
           numbers: nums,
-          userId: user.id,
-          userEmail: user.email,
           names,
           paymentMode,
         }),
@@ -217,15 +236,15 @@ export default function DrawPage() {
           <div className="flex gap-8 text-center">
             <div>
               <p className="text-sm text-gray-400">1st Prize (25%)</p>
-              <p className="font-heading text-xl font-bold text-gold">£{(potPence * 0.25 / 100).toFixed(2)}</p>
+              <p className="font-heading text-xl font-bold text-gold">£{potData?.first ?? "0.00"}</p>
             </div>
             <div>
               <p className="text-sm text-gray-400">2nd Prize (15%)</p>
-              <p className="font-heading text-xl font-bold text-gold">£{(potPence * 0.15 / 100).toFixed(2)}</p>
+              <p className="font-heading text-xl font-bold text-gold">£{potData?.second ?? "0.00"}</p>
             </div>
             <div>
               <p className="text-sm text-gray-400">3rd Prize (10%)</p>
-              <p className="font-heading text-xl font-bold text-gold">£{(potPence * 0.10 / 100).toFixed(2)}</p>
+              <p className="font-heading text-xl font-bold text-gold">£{potData?.third ?? "0.00"}</p>
             </div>
           </div>
         </div>

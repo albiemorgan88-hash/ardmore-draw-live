@@ -32,9 +32,18 @@ function pickWinners(pool: number[], count: number, seed: string): number[] {
 }
 
 export async function GET(req: NextRequest) {
-  // Auth check
-  const secret = req.nextUrl.searchParams.get("secret");
-  if (secret !== process.env.DRAW_SECRET) {
+  // Auth: accept Vercel cron secret via Authorization header or query param
+  const authHeader = req.headers.get("authorization");
+  const bearerToken = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
+  const querySecret = req.nextUrl.searchParams.get("secret");
+  const cronSecret = process.env.CRON_SECRET;
+
+  if (!cronSecret) {
+    console.error("CRON_SECRET environment variable not set");
+    return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
+  }
+
+  if (bearerToken !== cronSecret && querySecret !== cronSecret) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

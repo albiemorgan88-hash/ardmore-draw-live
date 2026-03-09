@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/components/AuthProvider";
+import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 
 interface Subscription {
@@ -23,13 +24,17 @@ export default function ManageSubscriptionsPage() {
 
   useEffect(() => {
     if (!user) return;
-    fetch(`/api/subscriptions?userId=${user.id}`)
-      .then((r) => r.json())
-      .then((d) => {
-        setSubscriptions(d.subscriptions || []);
-        setLoading(false);
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      fetch("/api/subscriptions", {
+        headers: { "Authorization": `Bearer ${session?.access_token}` },
       })
-      .catch(() => setLoading(false));
+        .then((r) => r.json())
+        .then((d) => {
+          setSubscriptions(d.subscriptions || []);
+          setLoading(false);
+        })
+        .catch(() => setLoading(false));
+    });
   }, [user]);
 
   const handleCancel = async (stripeSubId: string) => {
@@ -38,10 +43,14 @@ export default function ManageSubscriptionsPage() {
 
     setCancelling(stripeSubId);
     try {
+      const { data: { session } } = await supabase.auth.getSession();
       const res = await fetch("/api/subscriptions", {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ subscriptionId: stripeSubId, userId: user.id }),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${session?.access_token}`,
+        },
+        body: JSON.stringify({ subscriptionId: stripeSubId }),
       });
       if (res.ok) {
         setSubscriptions((prev) =>

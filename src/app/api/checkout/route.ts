@@ -1,22 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { createServiceClient } from "@/lib/supabase";
+import { getAuthenticatedUser } from "@/lib/auth";
 
 const CLUB_ID = "31846fb2-b120-4815-bd48-e1120342d52e";
 
 export async function POST(req: NextRequest) {
   try {
+    const user = await getAuthenticatedUser(req);
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const body = await req.json();
-    const { numbers, userId, userEmail, names, paymentMode } = body as {
+    const { numbers, names, paymentMode } = body as {
       numbers: number[];
-      userId: string;
-      userEmail: string;
       names: Record<number, string>;
       paymentMode?: "one-off" | "subscription";
     };
 
-    if (!numbers?.length || !userId) {
-      return NextResponse.json({ error: "Missing numbers or user" }, { status: 400 });
+    // Use verified user identity, never trust client-supplied userId/email
+    const userId = user.id;
+    const userEmail = user.email!;
+
+    if (!numbers?.length) {
+      return NextResponse.json({ error: "Missing numbers" }, { status: 400 });
     }
 
     const isSubscription = paymentMode === "subscription";

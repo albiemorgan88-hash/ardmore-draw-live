@@ -1,18 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { createServiceClient } from "@/lib/supabase";
+import { getAuthenticatedUser } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
-  const userId = req.nextUrl.searchParams.get("userId");
-  if (!userId) {
-    return NextResponse.json({ error: "Missing userId" }, { status: 400 });
+  const user = await getAuthenticatedUser(req);
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const supabase = createServiceClient();
   const { data, error } = await supabase
     .from("draw_subscriptions")
     .select("*")
-    .eq("user_id", userId)
+    .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -23,19 +24,24 @@ export async function GET(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  const { subscriptionId, userId } = await req.json();
-  if (!subscriptionId || !userId) {
-    return NextResponse.json({ error: "Missing params" }, { status: 400 });
+  const user = await getAuthenticatedUser(req);
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { subscriptionId } = await req.json();
+  if (!subscriptionId) {
+    return NextResponse.json({ error: "Missing subscriptionId" }, { status: 400 });
   }
 
   const supabase = createServiceClient();
 
-  // Verify ownership
+  // Verify the authenticated user owns this subscription
   const { data: sub } = await supabase
     .from("draw_subscriptions")
     .select("*")
     .eq("stripe_subscription_id", subscriptionId)
-    .eq("user_id", userId)
+    .eq("user_id", user.id)
     .single();
 
   if (!sub) {

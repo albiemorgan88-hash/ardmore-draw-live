@@ -20,21 +20,21 @@ export async function POST(req: NextRequest) {
   let event: Stripe.Event;
 
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-  if (webhookSecret && webhookSecret !== "whsec_placeholder" && sig) {
-    try {
-      event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
-    } catch (err: any) {
-      console.error("Webhook signature verification failed:", err.message);
-      return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
-    }
-  } else {
-    // In production, reject unsigned webhooks
-    if (process.env.NODE_ENV === "production" && webhookSecret) {
-      console.error("Webhook received without valid signature");
-      return NextResponse.json({ error: "Missing signature" }, { status: 400 });
-    }
-    // Dev/testing fallback only
-    event = JSON.parse(body) as Stripe.Event;
+  if (!webhookSecret) {
+    console.error("STRIPE_WEBHOOK_SECRET environment variable not set");
+    return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
+  }
+
+  if (!sig) {
+    console.error("Webhook received without stripe-signature header");
+    return NextResponse.json({ error: "Missing signature" }, { status: 400 });
+  }
+
+  try {
+    event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
+  } catch (err: any) {
+    console.error("Webhook signature verification failed:", err.message);
+    return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
   const supabase = createServiceClient();
@@ -92,7 +92,7 @@ async function handleOneOffPayment(supabase: any, session: Stripe.Checkout.Sessi
   // Check if user already has selections — merge if so
   const { data: existing } = await supabase
     .from("number_selections")
-    .select("id, numbers")
+    .select("id, numbers, assigned_names")
     .eq("club_id", clubId)
     .eq("profile_id", userId)
     .eq("status", "active")
@@ -100,9 +100,15 @@ async function handleOneOffPayment(supabase: any, session: Stripe.Checkout.Sessi
 
   if (existing) {
     const merged = [...new Set([...existing.numbers, ...numbers])];
+    // Merge existing names with new names (new names take priority)
+    const mergedNames = { ...(existing.assigned_names || {}), ...names };
     const { error: selError } = await supabase
       .from("number_selections")
-      .update({ numbers: merged, updated_at: new Date().toISOString() })
+      .update({
+        numbers: merged,
+        assigned_names: mergedNames,
+        updated_at: new Date().toISOString(),
+      })
       .eq("id", existing.id);
     if (selError) console.error("Error updating selection:", selError);
   } else {
@@ -110,6 +116,7 @@ async function handleOneOffPayment(supabase: any, session: Stripe.Checkout.Sessi
       club_id: clubId,
       profile_id: userId,
       numbers: numbers,
+      assigned_names: names,
       status: "active",
       stripe_subscription_id: session.id,
     });
@@ -183,6 +190,7 @@ async function handleSubscriptionCreated(supabase: any, session: Stripe.Checkout
     club_id: clubId,
     profile_id: userId,
     numbers: numbers,
+    assigned_names: names,
     status: "active",
     stripe_subscription_id: subscriptionId,
   });
@@ -250,11 +258,12 @@ async function handleSubscriptionRenewal(supabase: any, invoice: any) {
     })
     .eq("stripe_subscription_id", subscriptionId);
 
-  // Enter numbers for the new week
+  // Enter numbers for the new week (carry forward assigned names from subscription)
   const { error: selError } = await supabase.from("number_selections").insert({
     club_id: sub.club_id,
     profile_id: sub.user_id,
     numbers: sub.numbers,
+    assigned_names: sub.assigned_names || {},
     status: "active",
     stripe_subscription_id: subscriptionId,
   });

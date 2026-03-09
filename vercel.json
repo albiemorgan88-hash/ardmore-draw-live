@@ -1,7 +1,7 @@
 {
   "crons": [
     {
-      "path": "/api/draw?secret=ardmore_draw_2026_secret",
+      "path": "/api/draw",
       "schedule": "0 19 * * 5"
     }
   ]
