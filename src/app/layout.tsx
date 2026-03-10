@@ -88,6 +88,7 @@ function Footer() {
               <a href="/about" className="hover:text-gold transition-colors">About the Club</a>
               <a href="/committee" className="hover:text-gold transition-colors">Committee</a>
               <a href="/news" className="hover:text-gold transition-colors">Club News</a>
+              <a href="/archive" className="hover:text-gold transition-colors">Archive</a>
               <a href="/draw" className="hover:text-gold transition-colors">Weekly Draw</a>
               <a href="/sponsors" className="hover:text-gold transition-colors">Sponsors</a>
               <a href="https://northwestcricket.com/clubs/ardmore-cricket-club/" target="_blank" rel="noopener noreferrer" className="hover:text-gold transition-colors">NWCU Profile</a>
