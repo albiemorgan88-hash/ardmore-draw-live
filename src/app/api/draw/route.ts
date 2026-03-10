@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { sendDrawResults } from "@/lib/email";
+import { sendDrawResults, sendWinnerClaimEmail } from "@/lib/email";
 import crypto from "crypto";
 
 const CLUB_ID = "31846fb2-b120-4815-bd48-e1120342d52e";
@@ -36,10 +36,10 @@ export async function GET(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
   const bearerToken = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
   const querySecret = req.nextUrl.searchParams.get("secret");
-  const cronSecret = process.env.CRON_SECRET;
+  const cronSecret = process.env.CRON_SECRET || process.env.DRAW_SECRET;
 
   if (!cronSecret) {
-    console.error("CRON_SECRET environment variable not set");
+    console.error("CRON_SECRET/DRAW_SECRET environment variable not set");
     return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
   }
 
@@ -50,9 +50,8 @@ export async function GET(req: NextRequest) {
   const supabase = createServiceClient();
 
   // Idempotency: check if a draw already exists for this week
-  // A "week" = Monday 00:00 to Sunday 23:59 (Europe/London)
   const now = new Date();
-  const dayOfWeek = now.getUTCDay(); // 0=Sun, 1=Mon, ...
+  const dayOfWeek = now.getUTCDay();
   const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
   const weekStart = new Date(now);
   weekStart.setUTCDate(now.getUTCDate() + diffToMonday);
@@ -74,21 +73,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       success: true,
       already_drawn: true,
-      draw_date: existingDraw.drawn_at?.split("T")[0],
       draw_number: existingDraw.draw_number,
-      seed: existingDraw.seed,
-      winning_numbers: existingDraw.drawn_numbers,
-      total_entries: existingDraw.total_entries,
-      total_pot_pence: existingDraw.pot_amount,
-      prizes: {
-        first: Math.round(existingDraw.pot_amount * 0.25),
-        second: Math.round(existingDraw.pot_amount * 0.15),
-        third: Math.round(existingDraw.pot_amount * 0.10),
-        club: Math.round(existingDraw.pot_amount * 0.50),
-        platform: 0,
-        fees: 0,
-      },
-      message: "Draw already completed for this week. Returning existing results.",
+      message: "Draw already completed for this week.",
     });
   }
 
@@ -109,7 +95,7 @@ export async function GET(req: NextRequest) {
 
   // Build number pool and ownership map
   const allNumbers: number[] = [];
-  const ownerMap = new Map<number, string[]>(); // number -> profile_ids
+  const ownerMap = new Map<number, string[]>();
 
   for (const sel of selections) {
     for (const n of sel.numbers) {
@@ -127,17 +113,15 @@ export async function GET(req: NextRequest) {
   const drawSeed = crypto.randomUUID();
   const winningNumbers = pickWinners(allNumbers, 3, drawSeed);
 
-  // Calculate prizes (in pence) — 50/50 split: 50% winners, 50% club
+  // Calculate prizes — NEW SPLIT: 50% winners, 40% club, 7.5% platform, 2.5% fees
   const prizes = {
     first: Math.round(totalPotPence * 0.25),
     second: Math.round(totalPotPence * 0.15),
     third: Math.round(totalPotPence * 0.10),
-    club: Math.round(totalPotPence * 0.50),
-    platform: 0,
-    fees: 0,
+    club: Math.round(totalPotPence * 0.40),
+    platform: Math.round(totalPotPence * 0.075),
+    fees: Math.round(totalPotPence * 0.025),
   };
-
-  const drawDate = new Date().toISOString().split("T")[0];
 
   // Get next draw number
   const { data: maxDraw } = await supabase
@@ -149,11 +133,11 @@ export async function GET(req: NextRequest) {
     .single();
   const drawNumber = (maxDraw?.draw_number || 0) + 1;
 
-  // Insert draw record
-  const { error: drawErr } = await supabase.from("draws").insert({
+  // Insert draw record with pending_payout status
+  const { data: drawRecord, error: drawErr } = await supabase.from("draws").insert({
     club_id: CLUB_ID,
     draw_number: drawNumber,
-    status: "drawn",
+    status: "pending_payout",
     scheduled_at: new Date().toISOString(),
     drawn_at: new Date().toISOString(),
     seed: drawSeed,
@@ -162,31 +146,36 @@ export async function GET(req: NextRequest) {
     total_entries: totalEntries,
     pot_amount: totalPotPence,
     prize_pool: prizes.first + prizes.second + prizes.third,
-    platform_fee: 0,
+    platform_fee: prizes.platform,
     club_share: prizes.club,
     rollover_amount: 0,
-  });
+  }).select("id").single();
 
-  if (drawErr) {
+  if (drawErr || !drawRecord) {
     console.error("Failed to insert draw:", drawErr);
-    // Continue anyway — emails are more important
+    return NextResponse.json({ error: "Failed to create draw record" }, { status: 500 });
   }
 
-  // Get participant emails
+  const drawId = drawRecord.id;
+
+  // Get participant info
   const profileIds = [...new Set(selections.map((s) => s.profile_id))];
   const { data: profiles } = await supabase
     .from("profiles")
-    .select("id, email, full_name")
+    .select("id, email, full_name, stripe_connect_id, stripe_connect_status")
     .in("id", profileIds);
 
-  // If profiles table doesn't have email, try auth.users
-  let emailMap = new Map<string, { email: string; name: string }>();
+  let emailMap = new Map<string, { email: string; name: string; connectId?: string; connectStatus?: string }>();
   if (profiles && profiles.length > 0 && profiles[0].email) {
     for (const p of profiles) {
-      emailMap.set(p.id, { email: p.email, name: p.full_name || "" });
+      emailMap.set(p.id, { 
+        email: p.email, 
+        name: p.full_name || "",
+        connectId: p.stripe_connect_id || undefined,
+        connectStatus: p.stripe_connect_status || undefined,
+      });
     }
   } else {
-    // Fallback: get emails from auth.users via admin API
     const { data: authData } = await supabase.auth.admin.listUsers();
     if (authData?.users) {
       for (const u of authData.users) {
@@ -197,15 +186,117 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  // Build participant list for emails
-  const participants: { email: string; numbers: number[]; name?: string }[] = [];
-  const profileNumbers = new Map<string, number[]>();
+  // Create payout records for each recipient
+  const payoutRecords = [];
 
+  // Winner payouts
+  const prizeAmounts = [prizes.first, prizes.second, prizes.third];
+  const prizeTypes: Array<"winner_1st" | "winner_2nd" | "winner_3rd"> = ["winner_1st", "winner_2nd", "winner_3rd"];
+
+  for (let i = 0; i < winningNumbers.length; i++) {
+    const ownerIds = ownerMap.get(winningNumbers[i]) || [];
+    // If multiple owners share a number, split that prize
+    const prizePerOwner = Math.floor(prizeAmounts[i] / Math.max(ownerIds.length, 1));
+
+    for (const ownerId of ownerIds) {
+      const info = emailMap.get(ownerId);
+      payoutRecords.push({
+        draw_id: drawId,
+        club_id: CLUB_ID,
+        recipient_type: prizeTypes[i],
+        recipient_profile_id: ownerId,
+        recipient_connect_id: info?.connectStatus === "active" ? info.connectId : null,
+        recipient_name: info?.name || null,
+        amount_pence: ownerIds.length > 1 ? prizePerOwner : prizeAmounts[i],
+        winning_number: winningNumbers[i],
+        status: info?.connectStatus === "active" ? "pending" : "unclaimed",
+      });
+    }
+  }
+
+  // Club payout
+  const { data: club } = await supabase
+    .from("clubs")
+    .select("stripe_connect_id")
+    .eq("id", CLUB_ID)
+    .single();
+
+  payoutRecords.push({
+    draw_id: drawId,
+    club_id: CLUB_ID,
+    recipient_type: "club",
+    recipient_profile_id: null,
+    recipient_connect_id: club?.stripe_connect_id || null,
+    amount_pence: prizes.club,
+    winning_number: null,
+    status: club?.stripe_connect_id ? "pending" : "unclaimed",
+  });
+
+  // Platform share (stays in our balance)
+  payoutRecords.push({
+    draw_id: drawId,
+    club_id: CLUB_ID,
+    recipient_type: "platform",
+    recipient_profile_id: null,
+    recipient_connect_id: null,
+    amount_pence: prizes.platform,
+    winning_number: null,
+    status: "pending",
+  });
+
+  // Insert all payout records
+  const { error: payoutErr } = await supabase.from("payouts").insert(payoutRecords);
+  if (payoutErr) {
+    console.error("Failed to insert payout records:", payoutErr);
+  }
+
+  // Create claim tokens for winners without Connect accounts
+  for (let i = 0; i < winningNumbers.length; i++) {
+    const ownerIds = ownerMap.get(winningNumbers[i]) || [];
+    for (const ownerId of ownerIds) {
+      const info = emailMap.get(ownerId);
+      if (!info?.connectId || info?.connectStatus !== "active") {
+        const claimToken = crypto.randomBytes(32).toString("hex");
+        const expiresAt = new Date();
+        expiresAt.setDate(expiresAt.getDate() + 14);
+
+        await supabase.from("claim_tokens").insert({
+          draw_id: drawId,
+          profile_id: ownerId,
+          token: claimToken,
+          winning_number: winningNumbers[i],
+          prize_place: ["1st", "2nd", "3rd"][i],
+          amount_pence: prizeAmounts[i],
+          expires_at: expiresAt.toISOString(),
+        });
+
+        // Send claim email
+        if (info?.email && process.env.RESEND_API_KEY) {
+          try {
+            await sendWinnerClaimEmail(
+              info.email,
+              info.name,
+              ["1st", "2nd", "3rd"][i],
+              prizeAmounts[i],
+              winningNumbers[i],
+              claimToken
+            );
+          } catch (err) {
+            console.error(`Failed to send claim email to ${info.email}:`, err);
+          }
+        }
+      }
+    }
+  }
+
+  // Build participant list for draw results emails
+  const profileNumbers = new Map<string, number[]>();
   for (const sel of selections) {
     const existing = profileNumbers.get(sel.profile_id) || [];
     profileNumbers.set(sel.profile_id, [...existing, ...sel.numbers]);
   }
 
+  const participants: { email: string; numbers: number[]; name?: string }[] = [];
   for (const [profileId, numbers] of profileNumbers) {
     const info = emailMap.get(profileId);
     if (info?.email) {
@@ -213,36 +304,37 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  // Send emails
+  // Send draw results emails
   if (participants.length > 0 && process.env.RESEND_API_KEY) {
     try {
-      await sendDrawResults(participants, winningNumbers, prizes, drawDate);
+      await sendDrawResults(participants, winningNumbers, prizes, new Date().toISOString().split("T")[0]);
     } catch (err) {
       console.error("Failed to send draw emails:", err);
     }
   }
 
-  // Find winners
+  // Build winners for response
   const winners = winningNumbers.map((n, i) => {
     const ownerIds = ownerMap.get(n) || [];
     const ownerNames = ownerIds.map((id) => emailMap.get(id)?.name || "Unknown");
     return {
       place: ["1st", "2nd", "3rd"][i],
       number: n,
-      prize: [prizes.first, prizes.second, prizes.third][i],
+      prize: prizeAmounts[i],
       owners: ownerNames,
     };
   });
 
   return NextResponse.json({
     success: true,
-    draw_date: drawDate,
-    seed: drawSeed,
+    draw_number: drawNumber,
+    draw_id: drawId,
     winning_numbers: winningNumbers,
     total_entries: totalEntries,
     total_pot_pence: totalPotPence,
     prizes,
     winners,
+    payouts_created: payoutRecords.length,
     participants_emailed: participants.length,
   });
 }

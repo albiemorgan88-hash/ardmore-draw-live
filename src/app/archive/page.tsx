@@ -30,6 +30,48 @@ const photos: ArchivePhoto[] = [
     caption: "Kevin Brolly, Paul Brolly, Joseph Brolly",
     year: "",
   },
+  {
+    src: "/images/archive/chambers-duddy.jpg",
+    alt: "Ardmore CC archive photo",
+    caption: "Mark Chambers, Conor Duddy",
+    year: "",
+  },
+  {
+    src: "/images/archive/team-celebration.jpg",
+    alt: "Ardmore CC archive photo",
+    caption: "Sabin Babu, Aneesh Anilkumar, Mark Chambers, Tim Harris, Conor Brolly, Conor King, Ryan Brolly, George Dalton, Dermot Ward, Edrees Kharotai, Caolan Young, Harry Zimmermann, Rachit Gaur, Bobby Brolly, Dhram Singh",
+    year: "",
+  },
+  {
+    src: "/images/archive/debut-cap-brolly.jpg",
+    alt: "Ardmore CC archive photo",
+    caption: "Harry Zimmermann presents Bobby Brolly with his debut cap, Emerging Warriors",
+    year: "",
+  },
+  {
+    src: "/images/archive/team-group.jpg",
+    alt: "Ardmore CC archive photo",
+    caption: "Edrees Kharotai, Derish Joseph, Phil Patterson, Conor Brolly, George Dalton, Dermot Ward, Aneesh Anilkumar, Akash Jayumkilar, Junaid Ali, Harry Zimmermann, Vimal Diwali, Bobby Brolly",
+    year: "",
+  },
+  {
+    src: "/images/archive/gormley-brolly-ward.jpg",
+    alt: "Ardmore CC archive photo",
+    caption: "Pat Gormley, Paul Brolly, Dermot Ward",
+    year: "",
+  },
+  {
+    src: "/images/archive/team-classic.jpg",
+    alt: "Ardmore CC archive photo",
+    caption: "DW Caldwell, Bobby Brolly, Dessie McCourt, Eddie O'Kane, Sanjeev Sharma, Paul Brolly, Dermot Ward, Edwin Gallagher, Gerard Brolly, Reggie McCarron, Alan Wallace, Gordon Cooke, David Cooke, Nigel Thompson, George Gillen, Paddy Semple",
+    year: "",
+  },
+  {
+    src: "/images/archive/founders-bench.jpg",
+    alt: "Ardmore CC archive photo",
+    caption: "Brendan Feeny, Joe Donnelly, Tommy Curley, Hugo McDermott, Connie Miller, Jim Chambers Sen.",
+    year: "",
+  },
 ];
 
 export default function ArchivePage() {

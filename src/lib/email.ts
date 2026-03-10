@@ -182,6 +182,66 @@ export async function sendAdminNewEntryNotification(
   }
 }
 
+export async function sendWinnerClaimEmail(
+  email: string,
+  name: string | undefined,
+  place: string,
+  amountPence: number,
+  winningNumber: number,
+  claimToken: string
+) {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ardmorecricket.com";
+  const claimUrl = `${siteUrl}/claim?token=${claimToken}`;
+
+  const html = layout(`
+    <h2 style="color:#c9a84c;margin:0 0 16px;text-align:center;">🎉 You've Won ${place} Prize!</h2>
+    <p style="color:#333;line-height:1.6;text-align:center;font-size:18px;">
+      ${name ? `Congratulations ${name}!` : "Congratulations!"} Your number <strong style="color:#1a365d;">${winningNumber}</strong> came up in the draw.
+    </p>
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:20px;margin:24px 0;text-align:center;">
+      <p style="margin:0;color:#166534;font-size:24px;font-weight:bold;">£${(amountPence / 100).toFixed(2)}</p>
+      <p style="margin:4px 0 0;color:#166534;font-size:14px;">${place} Prize</p>
+    </div>
+    <p style="color:#333;line-height:1.6;">To receive your winnings directly to your bank account, connect your details securely via Stripe:</p>
+    <div style="text-align:center;margin:24px 0;">
+      <a href="${claimUrl}" style="display:inline-block;background:#c9a84c;color:#1a365d;font-weight:bold;padding:16px 40px;border-radius:8px;text-decoration:none;font-size:16px;">Claim Your Prize →</a>
+    </div>
+    <p style="color:#666;font-size:13px;">This link expires in 14 days. Stripe handles your bank details securely — we never see them. Once connected, future winnings are paid automatically.</p>
+  `);
+
+  await getResend().emails.send({
+    from: FROM,
+    to: email,
+    subject: `🎉 You've won £${(amountPence / 100).toFixed(2)} in the Ardmore CC Draw!`,
+    html,
+  });
+}
+
+export async function sendPayoutConfirmationEmail(
+  email: string,
+  name: string | undefined,
+  amountPence: number,
+  place: string,
+  winningNumber: number
+) {
+  const html = layout(`
+    <h2 style="color:#1a365d;margin:0 0 16px;">💰 Prize Sent!</h2>
+    <p style="color:#333;line-height:1.6;">${name ? `Hi ${name}, your` : "Your"} ${place} prize winnings have been transferred to your bank account.</p>
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:16px;margin:16px 0;text-align:center;">
+      <p style="margin:0;color:#166534;font-weight:bold;font-size:20px;">£${(amountPence / 100).toFixed(2)}</p>
+      <p style="margin:4px 0 0;color:#166534;font-size:13px;">Number ${winningNumber} — ${place} Prize</p>
+    </div>
+    <p style="color:#666;font-size:14px;">Funds typically arrive within 1-2 business days. Keep playing — your numbers are still in the draw! 🏏</p>
+  `);
+
+  await getResend().emails.send({
+    from: FROM,
+    to: email,
+    subject: `💰 £${(amountPence / 100).toFixed(2)} prize sent to your account`,
+    html,
+  });
+}
+
 export async function sendWelcomeEmail(email: string, name: string) {
   const html = layout(`
     <h2 style="color:#1a365d;margin:0 0 16px;">Welcome to Ardmore CC${name ? `, ${name}` : ""}! 🏏</h2>

@@ -342,7 +342,6 @@ export default function DrawPage() {
           {/* Legend */}
           <div className="flex flex-wrap gap-4 sm:gap-6 mt-4 text-sm text-navy/60 justify-center">
             <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-white border border-gray-200" /> Available</div>
-            <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-gold" /> Selected</div>
             <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-pink-100" /> Taken</div>
           </div>
 

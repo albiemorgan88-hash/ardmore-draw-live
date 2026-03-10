@@ -13,7 +13,7 @@ export async function GET() {
     .from("draws")
     .select("*")
     .eq("club_id", CLUB_ID)
-    .eq("status", "drawn")
+    .in("status", ["drawn", "pending_payout", "paid"])
     .order("drawn_at", { ascending: false })
     .limit(5);
 
