@@ -1,0 +1,28 @@
+2026-03-10T21:59:10.513Z | STEP 0: Backing up current data...
+2026-03-10T21:59:10.836Z | Backed up 50 draw_subscriptions and 49 number_selections
+2026-03-10T21:59:10.836Z | 
+STEP 1: Inserting missing subscription sub_1T6z6qASm3u8i3nlE06BswzR...
+2026-03-10T21:59:11.427Z | Inserted draw_subscription: f1d88386-8f3a-4e57-a839-2f5c15fea55e
+2026-03-10T21:59:11.427Z | 
+STEP 2: Inserting number_selections for the missing sub...
+2026-03-10T21:59:11.506Z | ERROR inserting number_selection: {"code":"23505","details":"Key (club_id, profile_id)=(31846fb2-b120-4815-bd48-e1120342d52e, 7cd09880-6a33-49a8-8502-caca3365bb0a) already exists.","hint":null,"message":"duplicate key value violates unique constraint \"number_selections_club_id_profile_id_key\""}
+2026-03-10T21:59:11.506Z | 
+STEP 3: Verifying sync...
+2026-03-10T21:59:11.568Z | Active subscriptions: 51
+2026-03-10T21:59:11.568Z | Total numbers: 179 (expected: 179)
+2026-03-10T21:59:11.568Z | Total pot: £179.00 (expected: £179.00)
+2026-03-10T21:59:11.568Z | SYNC STATUS: ✅ MATCH
+2026-03-10T21:59:11.568Z | 
+STEP 4: Cancelling old Phil Patterson duplicate sub_1T6z6qASm3u8i3nlE06BswzR in Stripe...
+2026-03-10T21:59:12.125Z | Stripe cancel status: canceled
+2026-03-10T21:59:12.125Z | 
+STEP 5: Marking subscription as cancelled in DB...
+2026-03-10T21:59:12.189Z | Marked as cancelled in draw_subscriptions
+2026-03-10T21:59:12.189Z | 
+STEP 6: Final verification...
+2026-03-10T21:59:12.304Z | Final active subscriptions: 50
+2026-03-10T21:59:12.304Z | Final total numbers: 174
+2026-03-10T21:59:12.304Z | Final pot: £174.00
+2026-03-10T21:59:14.192Z | Stripe active subs: 50
+2026-03-10T21:59:14.192Z | Stripe active numbers: 174
+2026-03-10T21:59:14.192Z | FINAL STATUS: DB=174 Stripe=174 ✅ IN SYNC

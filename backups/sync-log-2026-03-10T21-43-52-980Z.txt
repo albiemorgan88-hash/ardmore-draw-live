@@ -1,0 +1,46 @@
+[2026-03-10T21:43:52.581Z] === ARDMORE DRAW TABLE SYNC ===
+[2026-03-10T21:43:52.582Z] Mode: DRY RUN
+[2026-03-10T21:43:52.582Z] 
+--- FETCHING DATA ---
+[2026-03-10T21:43:52.822Z] draw_subscriptions: 50 rows
+[2026-03-10T21:43:52.822Z] number_selections: 49 rows
+[2026-03-10T21:43:52.822Z] 
+--- BACKING UP ---
+[2026-03-10T21:43:52.824Z] BACKUP: 50 subscriptions → /Users/philsagent/Projects/ardmore-cricket/backups/draw_subscriptions_2026-03-10T21-43-52-822Z.json
+[2026-03-10T21:43:52.824Z] BACKUP: 49 selections → /Users/philsagent/Projects/ardmore-cricket/backups/number_selections_2026-03-10T21-43-52-822Z.json
+[2026-03-10T21:43:52.824Z] 
+--- ANALYSIS ---
+[2026-03-10T21:43:52.824Z] Active subscriptions: 50
+[2026-03-10T21:43:52.824Z] Active selections: 43
+[2026-03-10T21:43:52.824Z] 
+Unique users with subscriptions: 43
+[2026-03-10T21:43:52.824Z] Unique users with selections: 43
+[2026-03-10T21:43:52.824Z] Total unique users: 43
+[2026-03-10T21:43:52.824Z] 
+--- USERS OK: 43 ---
+[2026-03-10T21:43:52.824Z] 
+--- USERS NEEDING SELECTION (0) ---
+[2026-03-10T21:43:52.824Z] 
+--- ORPHANED USERS (0) ---
+[2026-03-10T21:43:52.824Z] 
+--- MISMATCHED USERS (0) ---
+[2026-03-10T21:43:52.824Z] 
+--- FIX: CREATE MISSING SELECTIONS ---
+[2026-03-10T21:43:52.824Z] 
+--- FIX: DEACTIVATE ORPHANED SELECTIONS ---
+[2026-03-10T21:43:52.824Z] 
+--- FIX: UPDATE MISMATCHED SELECTIONS ---
+[2026-03-10T21:43:52.824Z] 
+--- POST-SYNC VERIFICATION ---
+[2026-03-10T21:43:52.980Z] 
+=== SUMMARY ===
+[2026-03-10T21:43:52.980Z] Selections created: 0
+[2026-03-10T21:43:52.980Z] Selections deactivated: 0
+[2026-03-10T21:43:52.980Z] Mismatches fixed: 0
+[2026-03-10T21:43:52.980Z] Post-sync: 50 active subs (174 numbers)
+[2026-03-10T21:43:52.980Z] Post-sync: 43 active sels (174 numbers)
+[2026-03-10T21:43:52.980Z] Still missing: 0
+[2026-03-10T21:43:52.980Z] Still orphaned: 0
+[2026-03-10T21:43:52.980Z] Still mismatched: 0
+[2026-03-10T21:43:52.980Z] Pot: £174.00 from 174 numbers
+[2026-03-10T21:43:52.980Z] Numbers match: ✅ YES

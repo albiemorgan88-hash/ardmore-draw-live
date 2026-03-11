@@ -1,0 +1,95 @@
+[2026-03-10T21:41:29.174Z] === ARDMORE DRAW TABLE SYNC ===
+[2026-03-10T21:41:29.176Z] Mode: DRY RUN
+[2026-03-10T21:41:29.176Z] 
+--- FETCHING DATA ---
+[2026-03-10T21:41:29.826Z] draw_subscriptions: 50 rows
+[2026-03-10T21:41:29.826Z] number_selections: 49 rows
+[2026-03-10T21:41:29.826Z] 
+--- BACKING UP ---
+[2026-03-10T21:41:29.830Z] BACKUP: 50 subscriptions → /Users/philsagent/Projects/ardmore-cricket/backups/draw_subscriptions_2026-03-10T21-41-29-828Z.json
+[2026-03-10T21:41:29.830Z] BACKUP: 49 selections → /Users/philsagent/Projects/ardmore-cricket/backups/number_selections_2026-03-10T21-41-29-828Z.json
+[2026-03-10T21:41:29.830Z] 
+--- ANALYSIS ---
+[2026-03-10T21:41:29.830Z] Active subscriptions: 50
+[2026-03-10T21:41:29.830Z] Active selections: 49
+[2026-03-10T21:41:29.830Z] 
+--- SUBSCRIPTIONS WITH NO SELECTION ---
+[2026-03-10T21:41:29.830Z] Total subscriptions with no selection: 0
+[2026-03-10T21:41:29.830Z] 
+--- SELECTIONS WITH NO SUBSCRIPTION ---
+[2026-03-10T21:41:29.831Z]   ORPHANED: sel a2323c5b-49fc-4b21-bb2e-f0370a86e05d (profile a9cc6c4f-d799-4636-af3e-adaa92db32f5) - numbers: [30] - stripe: cs_live_a1i9sSt5NS0A6MqwxgEs0CiCk6p1K7IgdLowdUnEfR5Usfhe0pcPRe8Wot
+[2026-03-10T21:41:29.831Z]   ORPHANED: sel 4f9c2968-c438-4651-a3d7-403ca82adfd0 (profile f1af3c93-9acb-401d-b765-c8e9fd922d6b) - numbers: [58] - stripe: cs_live_a1ypZ3ZzOvFRXvUwyl4iXoqU4daafbMWoOZsjOvRlpWzJxUcklw5PECAPF
+[2026-03-10T21:41:29.831Z]   ORPHANED: sel 81734613-7643-4dbf-9d05-a3f9ddfd26bf (profile 528e665f-e35d-4ce4-b066-61990f80b7e3) - numbers: [34,49,59,74] - stripe: cs_live_b1spZAICGrUDNoG1d5gvCMVbnMA5U1LbQbToPSi9wf4tRBEZ0bUw3Snj1q
+[2026-03-10T21:41:29.831Z]   ORPHANED: sel 0a41b011-19fa-4423-b08b-b6ff6e995ca8 (profile 03f9912f-0cd5-4ba3-a1a7-2327cbc5b639) - numbers: [126,127] - stripe: cs_live_b1gFFlWkc1XdvjVcM2HI4x9adY1h7XuQJJB2Pc2kjNCxA1hQmFlwGFqck1
+[2026-03-10T21:41:29.831Z]   ORPHANED: sel 66292bba-4192-49b8-9c67-6c89e64b60c9 (profile 27ae5eb0-604f-4296-9592-f669acfebbcc) - numbers: [90,110] - stripe: cs_live_b1V1f084AZRvng4O4zr2sGzesPcIflx1Imrj9ndXTorCLjBCAbWvl9O9bE
+[2026-03-10T21:41:29.831Z]   ORPHANED: sel be44280e-4276-4d34-a955-e504a09984e0 (profile bcc8f373-59c2-4a50-bfb7-665488328eb3) - numbers: [53,70,72,73,75,78,79,84,97,124] - stripe: cs_live_b1DMJqggNgfvL25yvIYwyz4zcBqtEpiw5JauGngWR2vAtC94QFksE0meiy
+[2026-03-10T21:41:29.831Z] Total orphaned selections: 6
+[2026-03-10T21:41:29.831Z] 
+--- NUMBER MISMATCHES ---
+[2026-03-10T21:41:29.831Z]   MISMATCH: user d16ad273-52df-4887-b9b9-a2492a911f29
+[2026-03-10T21:41:29.831Z]     sub numbers: [33,43,61,71,86] (5)
+[2026-03-10T21:41:29.831Z]     sel numbers: [33,43,61,71,86,276] (6)
+[2026-03-10T21:41:29.831Z] Total mismatches: 1
+[2026-03-10T21:41:29.832Z] 
+--- CHECKING USER-LEVEL MISMATCHES ---
+[2026-03-10T21:41:29.832Z]   USER MISMATCH: user 68e56982-1ff3-420e-8a02-b0ee8c391cb6
+[2026-03-10T21:41:29.832Z]     sub numbers: [316] (1)
+[2026-03-10T21:41:29.832Z]     sel numbers: [10,14,44,85] (4)
+[2026-03-10T21:41:29.832Z]   USER MISMATCH: user 6fb80d50-401b-44a8-93ea-1e29ec8f15fa
+[2026-03-10T21:41:29.832Z]     sub numbers: [5,6,51,87,91,98,100] (7)
+[2026-03-10T21:41:29.832Z]     sel numbers: [7,50,99] (3)
+[2026-03-10T21:41:29.832Z]   USER MISMATCH: user 21b0e324-a4cc-4b81-9864-5eda5269a3f9
+[2026-03-10T21:41:29.832Z]     sub numbers: [204,321] (2)
+[2026-03-10T21:41:29.832Z]     sel numbers: [15] (1)
+[2026-03-10T21:41:29.832Z]   USER MISMATCH: user f0120358-50d4-4807-ad07-059868c39c39
+[2026-03-10T21:41:29.832Z]     sub numbers: [434] (1)
+[2026-03-10T21:41:29.832Z]     sel numbers: [66] (1)
+[2026-03-10T21:41:29.832Z]   USER MISMATCH: user f0120358-50d4-4807-ad07-059868c39c39
+[2026-03-10T21:41:29.832Z]     sub numbers: [400] (1)
+[2026-03-10T21:41:29.832Z]     sel numbers: [66] (1)
+[2026-03-10T21:41:29.832Z]   USER MISMATCH: user d16ad273-52df-4887-b9b9-a2492a911f29
+[2026-03-10T21:41:29.832Z]     sub numbers: [276] (1)
+[2026-03-10T21:41:29.832Z]     sel numbers: [33,43,61,71,86,276] (6)
+[2026-03-10T21:41:29.832Z]   USER MISMATCH: user 16422c60-05da-440b-ba08-42d772a46a45
+[2026-03-10T21:41:29.832Z]     sub numbers: [118,155,326,397,414] (5)
+[2026-03-10T21:41:29.832Z]     sel numbers: [62,105,108,119,129,195] (6)
+[2026-03-10T21:41:29.832Z] 
+--- FIXING: CREATE MISSING SELECTIONS ---
+[2026-03-10T21:41:29.832Z] 
+--- FIXING: MARK ORPHANED SELECTIONS INACTIVE ---
+[2026-03-10T21:41:29.832Z]   [DRY RUN] Would deactivate selection a2323c5b-49fc-4b21-bb2e-f0370a86e05d (profile a9cc6c4f-d799-4636-af3e-adaa92db32f5) numbers [30]
+[2026-03-10T21:41:29.832Z]   [DRY RUN] Would deactivate selection 4f9c2968-c438-4651-a3d7-403ca82adfd0 (profile f1af3c93-9acb-401d-b765-c8e9fd922d6b) numbers [58]
+[2026-03-10T21:41:29.832Z]   [DRY RUN] Would deactivate selection 81734613-7643-4dbf-9d05-a3f9ddfd26bf (profile 528e665f-e35d-4ce4-b066-61990f80b7e3) numbers [34,49,59,74]
+[2026-03-10T21:41:29.832Z]   [DRY RUN] Would deactivate selection 0a41b011-19fa-4423-b08b-b6ff6e995ca8 (profile 03f9912f-0cd5-4ba3-a1a7-2327cbc5b639) numbers [126,127]
+[2026-03-10T21:41:29.832Z]   [DRY RUN] Would deactivate selection 66292bba-4192-49b8-9c67-6c89e64b60c9 (profile 27ae5eb0-604f-4296-9592-f669acfebbcc) numbers [90,110]
+[2026-03-10T21:41:29.832Z]   [DRY RUN] Would deactivate selection be44280e-4276-4d34-a955-e504a09984e0 (profile bcc8f373-59c2-4a50-bfb7-665488328eb3) numbers [53,70,72,73,75,78,79,84,97,124]
+[2026-03-10T21:41:29.832Z] 
+--- FIXING: NUMBER MISMATCHES ---
+[2026-03-10T21:41:29.832Z]   [DRY RUN] Would update sel f645b555-eda9-47dc-bf55-75aee7030bce numbers from [33,43,61,71,86,276] → [33,43,61,71,86]
+[2026-03-10T21:41:29.832Z]   [DRY RUN] Would update sel 2acd2abd-3ee7-4eca-80c6-dc19797ac787 numbers from [10,14,44,85] → [316]
+[2026-03-10T21:41:29.832Z]   [DRY RUN] Would update sel a99fefb6-3b32-4f3f-a8f0-626968727957 numbers from [7,99,50] → [100,87,5,6,51,98,91]
+[2026-03-10T21:41:29.832Z]   [DRY RUN] Would update sel d25801fd-62d7-4bad-957b-77c6895c3bce numbers from [15] → [204,321]
+[2026-03-10T21:41:29.832Z]   [DRY RUN] Would update sel 145b6822-5341-4264-ae02-2e012ef958e6 numbers from [66] → [434]
+[2026-03-10T21:41:29.832Z]   [DRY RUN] Would update sel 145b6822-5341-4264-ae02-2e012ef958e6 numbers from [66] → [400]
+[2026-03-10T21:41:29.832Z]   [DRY RUN] Would update sel f645b555-eda9-47dc-bf55-75aee7030bce numbers from [33,43,61,71,86,276] → [276]
+[2026-03-10T21:41:29.832Z]   [DRY RUN] Would update sel 135c0f9f-435b-4abf-9c25-46797afcfbd1 numbers from [62,129,105,119,108,195] → [118,155,326,397,414]
+[2026-03-10T21:41:29.832Z] 
+--- VERIFICATION ---
+[2026-03-10T21:41:30.146Z] Active subscriptions: 50 (174 numbers)
+[2026-03-10T21:41:30.146Z] Active selections: 49 (177 numbers)
+[2026-03-10T21:41:30.146Z]   STILL ORPHANED: sel a2323c5b-49fc-4b21-bb2e-f0370a86e05d (profile a9cc6c4f-d799-4636-af3e-adaa92db32f5)
+[2026-03-10T21:41:30.146Z]   STILL ORPHANED: sel 4f9c2968-c438-4651-a3d7-403ca82adfd0 (profile f1af3c93-9acb-401d-b765-c8e9fd922d6b)
+[2026-03-10T21:41:30.146Z]   STILL ORPHANED: sel 81734613-7643-4dbf-9d05-a3f9ddfd26bf (profile 528e665f-e35d-4ce4-b066-61990f80b7e3)
+[2026-03-10T21:41:30.146Z]   STILL ORPHANED: sel 0a41b011-19fa-4423-b08b-b6ff6e995ca8 (profile 03f9912f-0cd5-4ba3-a1a7-2327cbc5b639)
+[2026-03-10T21:41:30.146Z]   STILL ORPHANED: sel 66292bba-4192-49b8-9c67-6c89e64b60c9 (profile 27ae5eb0-604f-4296-9592-f669acfebbcc)
+[2026-03-10T21:41:30.146Z]   STILL ORPHANED: sel be44280e-4276-4d34-a955-e504a09984e0 (profile bcc8f373-59c2-4a50-bfb7-665488328eb3)
+[2026-03-10T21:41:30.146Z] 
+--- SUMMARY ---
+[2026-03-10T21:41:30.146Z] Selections created: 0
+[2026-03-10T21:41:30.146Z] Selections deactivated: 0
+[2026-03-10T21:41:30.146Z] Mismatches fixed: 0
+[2026-03-10T21:41:30.146Z] Still missing after sync: 0
+[2026-03-10T21:41:30.146Z] Still orphaned after sync: 6
+[2026-03-10T21:41:30.146Z] Pot total: £174.00 from 174 numbers
+[2026-03-10T21:41:30.146Z] Grid should show: 177 active numbers
+[2026-03-10T21:41:30.146Z] Match: ❌ NO

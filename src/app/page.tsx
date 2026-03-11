@@ -77,7 +77,13 @@ export default function HomePage() {
       <section className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <h2 className="font-heading text-3xl sm:text-4xl font-bold text-navy mb-8 text-center">Latest News</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <a href="/news/all-time-ardmore-xi" className="bg-cream rounded-lg p-6 border border-gray-100 hover:shadow-md transition-shadow block">
+              <span className="text-xs font-semibold text-amber-800 bg-amber-100 px-2 py-1 rounded-full">History</span>
+              <span className="text-xs text-navy/40 ml-2">March 2025</span>
+              <h3 className="font-heading text-lg font-bold text-navy mt-3 mb-2">The All-Time Ardmore XI</h3>
+              <p className="text-sm text-navy/70 leading-relaxed">Connie McAllister selects his all-time greatest Ardmore XI from 147 years of cricket at The Bleach Green.</p>
+            </a>
             <a href="/news/agm-2026" className="bg-cream rounded-lg p-6 border border-gray-100 hover:shadow-md transition-shadow block">
               <span className="text-xs font-semibold text-emerald-800 bg-emerald-100 px-2 py-1 rounded-full">Club News</span>
               <span className="text-xs text-navy/40 ml-2">March 2026</span>

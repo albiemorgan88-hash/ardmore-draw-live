@@ -1,0 +1,95 @@
+[2026-03-10T21:42:56.786Z] === ARDMORE DRAW TABLE SYNC ===
+[2026-03-10T21:42:56.787Z] Mode: LIVE
+[2026-03-10T21:42:56.787Z] 
+--- FETCHING DATA ---
+[2026-03-10T21:42:57.021Z] draw_subscriptions: 50 rows
+[2026-03-10T21:42:57.021Z] number_selections: 49 rows
+[2026-03-10T21:42:57.021Z] 
+--- BACKING UP ---
+[2026-03-10T21:42:57.023Z] BACKUP: 50 subscriptions → /Users/philsagent/Projects/ardmore-cricket/backups/draw_subscriptions_2026-03-10T21-42-57-021Z.json
+[2026-03-10T21:42:57.023Z] BACKUP: 49 selections → /Users/philsagent/Projects/ardmore-cricket/backups/number_selections_2026-03-10T21-42-57-021Z.json
+[2026-03-10T21:42:57.023Z] 
+--- ANALYSIS ---
+[2026-03-10T21:42:57.023Z] Active subscriptions: 50
+[2026-03-10T21:42:57.023Z] Active selections: 49
+[2026-03-10T21:42:57.023Z] 
+Unique users with subscriptions: 43
+[2026-03-10T21:42:57.023Z] Unique users with selections: 49
+[2026-03-10T21:42:57.023Z] Total unique users: 49
+[2026-03-10T21:42:57.024Z] 
+--- USERS OK: 38 ---
+[2026-03-10T21:42:57.024Z] 
+--- USERS NEEDING SELECTION (0) ---
+[2026-03-10T21:42:57.024Z] 
+--- ORPHANED USERS (6) ---
+[2026-03-10T21:42:57.024Z]   User a9cc6c4f-d799-4636-af3e-adaa92db32f5: has selections [30] but NO active subscription
+[2026-03-10T21:42:57.024Z]     sel a2323c5b-49fc-4b21-bb2e-f0370a86e05d stripe_ref: cs_live_a1i9sSt5NS0A6MqwxgEs0CiCk6p1K7IgdLowdUnEfR5Usfhe0pcPRe8Wot
+[2026-03-10T21:42:57.024Z]   User f1af3c93-9acb-401d-b765-c8e9fd922d6b: has selections [58] but NO active subscription
+[2026-03-10T21:42:57.024Z]     sel 4f9c2968-c438-4651-a3d7-403ca82adfd0 stripe_ref: cs_live_a1ypZ3ZzOvFRXvUwyl4iXoqU4daafbMWoOZsjOvRlpWzJxUcklw5PECAPF
+[2026-03-10T21:42:57.024Z]   User 528e665f-e35d-4ce4-b066-61990f80b7e3: has selections [34,49,59,74] but NO active subscription
+[2026-03-10T21:42:57.024Z]     sel 81734613-7643-4dbf-9d05-a3f9ddfd26bf stripe_ref: cs_live_b1spZAICGrUDNoG1d5gvCMVbnMA5U1LbQbToPSi9wf4tRBEZ0bUw3Snj1q
+[2026-03-10T21:42:57.024Z]   User 03f9912f-0cd5-4ba3-a1a7-2327cbc5b639: has selections [126,127] but NO active subscription
+[2026-03-10T21:42:57.024Z]     sel 0a41b011-19fa-4423-b08b-b6ff6e995ca8 stripe_ref: cs_live_b1gFFlWkc1XdvjVcM2HI4x9adY1h7XuQJJB2Pc2kjNCxA1hQmFlwGFqck1
+[2026-03-10T21:42:57.024Z]   User 27ae5eb0-604f-4296-9592-f669acfebbcc: has selections [90,110] but NO active subscription
+[2026-03-10T21:42:57.024Z]     sel 66292bba-4192-49b8-9c67-6c89e64b60c9 stripe_ref: cs_live_b1V1f084AZRvng4O4zr2sGzesPcIflx1Imrj9ndXTorCLjBCAbWvl9O9bE
+[2026-03-10T21:42:57.024Z]   User bcc8f373-59c2-4a50-bfb7-665488328eb3: has selections [53,70,72,73,75,78,79,84,97,124] but NO active subscription
+[2026-03-10T21:42:57.024Z]     sel be44280e-4276-4d34-a955-e504a09984e0 stripe_ref: cs_live_b1DMJqggNgfvL25yvIYwyz4zcBqtEpiw5JauGngWR2vAtC94QFksE0meiy
+[2026-03-10T21:42:57.024Z] 
+--- MISMATCHED USERS (5) ---
+[2026-03-10T21:42:57.024Z]   User 6fb80d50-401b-44a8-93ea-1e29ec8f15fa:
+[2026-03-10T21:42:57.024Z]     Sub numbers (10): [5,6,7,50,51,87,91,98,99,100]
+[2026-03-10T21:42:57.024Z]     Sel numbers (3): [7,50,99]
+[2026-03-10T21:42:57.024Z]     In sub, missing from sel: [5,6,51,87,91,98,100]
+[2026-03-10T21:42:57.024Z]   User 68e56982-1ff3-420e-8a02-b0ee8c391cb6:
+[2026-03-10T21:42:57.024Z]     Sub numbers (5): [10,14,44,85,316]
+[2026-03-10T21:42:57.024Z]     Sel numbers (4): [10,14,44,85]
+[2026-03-10T21:42:57.024Z]     In sub, missing from sel: [316]
+[2026-03-10T21:42:57.024Z]   User 21b0e324-a4cc-4b81-9864-5eda5269a3f9:
+[2026-03-10T21:42:57.024Z]     Sub numbers (3): [15,204,321]
+[2026-03-10T21:42:57.024Z]     Sel numbers (1): [15]
+[2026-03-10T21:42:57.024Z]     In sub, missing from sel: [204,321]
+[2026-03-10T21:42:57.024Z]   User 16422c60-05da-440b-ba08-42d772a46a45:
+[2026-03-10T21:42:57.024Z]     Sub numbers (11): [62,105,108,118,119,129,155,195,326,397,414]
+[2026-03-10T21:42:57.024Z]     Sel numbers (6): [62,105,108,119,129,195]
+[2026-03-10T21:42:57.024Z]     In sub, missing from sel: [118,155,326,397,414]
+[2026-03-10T21:42:57.024Z]   User f0120358-50d4-4807-ad07-059868c39c39:
+[2026-03-10T21:42:57.024Z]     Sub numbers (3): [66,400,434]
+[2026-03-10T21:42:57.024Z]     Sel numbers (1): [66]
+[2026-03-10T21:42:57.024Z]     In sub, missing from sel: [400,434]
+[2026-03-10T21:42:57.024Z] 
+--- FIX: CREATE MISSING SELECTIONS ---
+[2026-03-10T21:42:57.024Z] 
+--- FIX: DEACTIVATE ORPHANED SELECTIONS ---
+[2026-03-10T21:42:57.132Z]   ERROR: invalid input value for enum entry_status: "inactive"
+[2026-03-10T21:42:57.230Z]   ERROR: invalid input value for enum entry_status: "inactive"
+[2026-03-10T21:42:57.311Z]   ERROR: invalid input value for enum entry_status: "inactive"
+[2026-03-10T21:42:57.393Z]   ERROR: invalid input value for enum entry_status: "inactive"
+[2026-03-10T21:42:57.465Z]   ERROR: invalid input value for enum entry_status: "inactive"
+[2026-03-10T21:42:57.537Z]   ERROR: invalid input value for enum entry_status: "inactive"
+[2026-03-10T21:42:57.537Z] 
+--- FIX: UPDATE MISMATCHED SELECTIONS ---
+[2026-03-10T21:42:57.633Z]   FIXED: sel a99fefb6-3b32-4f3f-a8f0-626968727957 (user 6fb80d50-401b-44a8-93ea-1e29ec8f15fa) → numbers [5,6,7,50,51,87,91,98,99,100]
+[2026-03-10T21:42:57.808Z]   FIXED: sel 2acd2abd-3ee7-4eca-80c6-dc19797ac787 (user 68e56982-1ff3-420e-8a02-b0ee8c391cb6) → numbers [10,14,44,85,316]
+[2026-03-10T21:42:57.870Z]   FIXED: sel d25801fd-62d7-4bad-957b-77c6895c3bce (user 21b0e324-a4cc-4b81-9864-5eda5269a3f9) → numbers [15,204,321]
+[2026-03-10T21:42:57.932Z]   FIXED: sel 135c0f9f-435b-4abf-9c25-46797afcfbd1 (user 16422c60-05da-440b-ba08-42d772a46a45) → numbers [62,105,108,118,119,129,155,195,326,397,414]
+[2026-03-10T21:42:57.996Z]   FIXED: sel 145b6822-5341-4264-ae02-2e012ef958e6 (user f0120358-50d4-4807-ad07-059868c39c39) → numbers [66,400,434]
+[2026-03-10T21:42:57.996Z] 
+--- POST-SYNC VERIFICATION ---
+[2026-03-10T21:42:58.127Z]   STILL ORPHANED: user a9cc6c4f-d799-4636-af3e-adaa92db32f5
+[2026-03-10T21:42:58.127Z]   STILL ORPHANED: user f1af3c93-9acb-401d-b765-c8e9fd922d6b
+[2026-03-10T21:42:58.127Z]   STILL ORPHANED: user 528e665f-e35d-4ce4-b066-61990f80b7e3
+[2026-03-10T21:42:58.127Z]   STILL ORPHANED: user 03f9912f-0cd5-4ba3-a1a7-2327cbc5b639
+[2026-03-10T21:42:58.127Z]   STILL ORPHANED: user 27ae5eb0-604f-4296-9592-f669acfebbcc
+[2026-03-10T21:42:58.127Z]   STILL ORPHANED: user bcc8f373-59c2-4a50-bfb7-665488328eb3
+[2026-03-10T21:42:58.127Z] 
+=== SUMMARY ===
+[2026-03-10T21:42:58.127Z] Selections created: 0
+[2026-03-10T21:42:58.127Z] Selections deactivated: 0
+[2026-03-10T21:42:58.127Z] Mismatches fixed: 5
+[2026-03-10T21:42:58.127Z] Post-sync: 50 active subs (174 numbers)
+[2026-03-10T21:42:58.127Z] Post-sync: 49 active sels (194 numbers)
+[2026-03-10T21:42:58.127Z] Still missing: 0
+[2026-03-10T21:42:58.127Z] Still orphaned: 6
+[2026-03-10T21:42:58.127Z] Still mismatched: 0
+[2026-03-10T21:42:58.127Z] Pot: £174.00 from 174 numbers
+[2026-03-10T21:42:58.127Z] Numbers match: ❌ NO (sub=174 sel=194)

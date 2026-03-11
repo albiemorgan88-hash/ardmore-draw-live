@@ -15,6 +15,16 @@ type Article = {
 
 const articles: Article[] = [
   {
+    id: 7,
+    title: "The All-Time Ardmore XI",
+    date: "March 2025",
+    category: "History",
+    excerpt: "Former player, international umpire and NW President Connie McAllister selects his all-time greatest Ardmore XI from 147 years of cricket at The Bleach Green.",
+    body: "",
+    link: "/news/all-time-ardmore-xi",
+    source: "CricketEurope",
+  },
+  {
     id: 6,
     title: "Ardmore Cricket Club AGM 2026",
     date: "March 2026",
@@ -76,6 +86,7 @@ const categoryColors: Record<string, string> = {
   "Cup Draw": "bg-emerald-100 text-emerald-800",
   "Preview": "bg-violet-100 text-violet-800",
   "Club News": "bg-emerald-100 text-emerald-800",
+  "History": "bg-amber-100 text-amber-800",
 };
 
 export default function NewsPage() {
@@ -123,7 +134,7 @@ export default function NewsPage() {
               <article
                 key={article.id}
                 className={`bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden transition-all ${
-                  article.id === 6 || article.id === 1 || article.id === 2 ? "md:col-span-2" : ""
+                  article.id === 7 || article.id === 6 || article.id === 1 || article.id === 2 ? "md:col-span-2" : ""
                 }`}
               >
                 <div className="p-6">

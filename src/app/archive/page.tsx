@@ -72,6 +72,60 @@ const photos: ArchivePhoto[] = [
     caption: "Brendan Feeny, Joe Donnelly, Tommy Curley, Hugo McDermott, Connie Miller, Jim Chambers Sen. — Old Guard in green Hut",
     year: "",
   },
+  {
+    src: "/images/archive/peter-harrigan-wicket.jpg",
+    alt: "Ardmore CC archive photo",
+    caption: "Peter Harrigan Sr prepares the wicket",
+    year: "",
+  },
+  {
+    src: "/images/archive/noel-ward-flag.jpg",
+    alt: "Ardmore CC archive photo",
+    caption: "Noel Ward, who sponsored the flag and pole, with President George Chambers",
+    year: "",
+  },
+  {
+    src: "/images/archive/dermot-ward-batting.jpg",
+    alt: "Ardmore CC archive photo",
+    caption: "Club Chairman, Dermot Ward, plays a straight bat",
+    year: "",
+  },
+  {
+    src: "/images/archive/glyn-shane-king.jpg",
+    alt: "Ardmore CC archive photo",
+    caption: "Glyn and Shane King",
+    year: "",
+  },
+  {
+    src: "/images/archive/brolly-patterson.jpg",
+    alt: "Ardmore CC archive photo",
+    caption: "Thomas Brolly, Phil Patterson",
+    year: "",
+  },
+  {
+    src: "/images/archive/george-brolly-snr-jnr.jpg",
+    alt: "Ardmore CC archive photo",
+    caption: "George Brolly Senior and Junior",
+    year: "",
+  },
+  {
+    src: "/images/archive/conor-king-tom-martin.jpg",
+    alt: "Ardmore CC archive photo",
+    caption: "Conor King, Tom Martin",
+    year: "",
+  },
+  {
+    src: "/images/archive/mayoral-reception-2023.jpg",
+    alt: "Ardmore CC archive photo",
+    caption: "Mayoral Reception for NWCU 2023 League Win",
+    year: "",
+  },
+  {
+    src: "/images/archive/george-michael-dalton.jpg",
+    alt: "Ardmore CC archive photo",
+    caption: "George and Michael Dalton",
+    year: "",
+  },
 ];
 
 export default function ArchivePage() {
