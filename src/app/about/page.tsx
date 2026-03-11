@@ -51,12 +51,11 @@ export default function AboutPage() {
       <section className="py-16 bg-cream">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <h2 className="font-heading text-3xl font-bold text-navy mb-8">Office Bearers</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {[
               { role: "Chairman", name: "Dermot Ward" },
               { role: "President", name: "George Chambers" },
-              { role: "Treasurer", name: "Kevin Brolly" },
-              { role: "Secretary", name: "George Brolly" },
+              { role: "Secretary & Treasurer", name: "Kevin Brolly" },
             ].map(bearer => (
               <div key={bearer.role} className="bg-white rounded-lg p-5 text-center shadow-sm border border-gray-100">
                 <div className="text-gold font-heading text-sm font-semibold uppercase tracking-wider mb-1">{bearer.role}</div>
@@ -73,10 +72,10 @@ export default function AboutPage() {
           <h2 className="font-heading text-3xl font-bold text-navy mb-8">Our Teams</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {[
-              { name: "1st XI", captain: "Harry Zimmerman" },
-              { name: "2nd XI", captain: "Vivek Sheroan" },
+              { name: "1st XI", captain: "Mark Chambers" },
+              { name: "2nd XI", captain: "Mathew Rowlands" },
               { name: "3rd XI", captain: "Steven Barrow" },
-              { name: "Midweek XI", captain: "Mark Chambers" },
+              { name: "Midweek XI", captain: null },
               { name: "U13", captain: null },
               { name: "U11", captain: null },
             ].map(team => (

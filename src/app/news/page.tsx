@@ -39,7 +39,7 @@ const articles: Article[] = [
     date: "March 2026",
     category: "Preview",
     excerpt: "Ardmore target an immediate bounce-back to the Premiership with two new overseas signings and the core squad intact.",
-    body: "Ardmore will compete in the NW Championship for 2026, targeting an immediate bounce-back to the Premiership. With two new overseas signings in Kasun Abeyrathne and Matt Cuffe, plus the core squad intact under captain Harry Zimmerman, the Bleach Green faithful have reason for optimism heading into the new campaign. Training resumes Tuesdays and Fridays from April.",
+    body: "Ardmore will compete in the NW Championship for 2026, targeting an immediate bounce-back to the Premiership. With two new overseas signings in Kasun Abeyrathne and Matt Cuffe, plus the core squad intact under captain Mark Chambers, the Bleach Green faithful have reason for optimism heading into the new campaign. Training resumes Tuesdays and Fridays from April.",
   },
   {
     id: 2,

@@ -9,15 +9,14 @@ export default function CommitteePage() {
   const officeBearers = [
     { role: "Chairman", name: "Dermot Ward" },
     { role: "President", name: "George Chambers" },
-    { role: "Treasurer", name: "Kevin Brolly" },
-    { role: "Secretary", name: "George Brolly" },
+    { role: "Secretary & Treasurer", name: "Kevin Brolly" },
   ];
 
   const teams = [
-    { name: "1st XI", captain: "Harry Zimmerman" },
-    { name: "2nd XI", captain: "Vivek Sheroan" },
+    { name: "1st XI", captain: "Mark Chambers" },
+    { name: "2nd XI", captain: "Mathew Rowlands" },
     { name: "3rd XI", captain: "Steven Barrow" },
-    { name: "Midweek XI", captain: "Mark Chambers" },
+    { name: "Midweek XI", captain: null },
     { name: "U13", captain: null },
     { name: "U11", captain: null },
   ];
@@ -41,7 +40,7 @@ export default function CommitteePage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <h2 className="font-heading text-3xl font-bold text-navy mb-2 text-center">Club Committee</h2>
           <p className="text-navy/60 text-center mb-10">Guiding Ardmore Cricket Club since 1879</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {officeBearers.map(bearer => (
               <div key={bearer.role} className="bg-cream rounded-xl p-6 text-center shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
                 <div className="w-16 h-16 bg-navy rounded-full mx-auto mb-4 flex items-center justify-center">
