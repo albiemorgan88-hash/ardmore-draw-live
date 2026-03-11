@@ -97,6 +97,7 @@ export async function POST(req: NextRequest) {
             names: JSON.stringify(names),
           },
         },
+        // Stripe automatically sends invoice emails for subscriptions
         success_url: `${siteUrl}/draw/success?session_id={CHECKOUT_SESSION_ID}&mode=subscription`,
         cancel_url: `${siteUrl}/draw`,
       });
@@ -109,6 +110,9 @@ export async function POST(req: NextRequest) {
       payment_method_types: ["card"],
       mode: "payment",
       customer_email: userEmail,
+      payment_intent_data: {
+        receipt_email: userEmail,
+      },
       line_items: numbers.map((n) => ({
         price_data: {
           currency: "gbp",
