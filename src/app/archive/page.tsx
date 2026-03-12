@@ -126,6 +126,30 @@ const photos: ArchivePhoto[] = [
     caption: "George and Michael Dalton",
     year: "",
   },
+  {
+    src: "/images/archive/archive-team-1.jpg",
+    alt: "Ardmore CC archive photo",
+    caption: "Ardmore CC through the years",
+    year: "",
+  },
+  {
+    src: "/images/archive/archive-team-2.jpg",
+    alt: "Ardmore CC archive photo",
+    caption: "Ardmore CC through the years",
+    year: "",
+  },
+  {
+    src: "/images/archive/archive-team-3.jpg",
+    alt: "Ardmore CC archive photo",
+    caption: "Ardmore CC through the years",
+    year: "",
+  },
+  {
+    src: "/images/archive/archive-team-4.jpg",
+    alt: "Ardmore CC archive photo",
+    caption: "Ardmore CC through the years",
+    year: "",
+  },
 ];
 
 export default function ArchivePage() {
