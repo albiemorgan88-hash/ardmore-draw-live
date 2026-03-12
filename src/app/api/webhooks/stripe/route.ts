@@ -89,39 +89,17 @@ async function handleOneOffPayment(supabase: any, session: Stripe.Checkout.Sessi
   const numbers: number[] = JSON.parse(meta.numbers);
   const names: Record<string, string> = JSON.parse(meta.names || "{}");
 
-  // Check if user already has selections — merge if so
-  const { data: existing } = await supabase
-    .from("number_selections")
-    .select("id, numbers, assigned_names")
-    .eq("club_id", clubId)
-    .eq("profile_id", userId)
-    .eq("status", "active")
-    .single();
-
-  if (existing) {
-    const merged = [...new Set([...existing.numbers, ...numbers])];
-    // Merge existing names with new names (new names take priority)
-    const mergedNames = { ...(existing.assigned_names || {}), ...names };
-    const { error: selError } = await supabase
-      .from("number_selections")
-      .update({
-        numbers: merged,
-        assigned_names: mergedNames,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", existing.id);
-    if (selError) console.error("Error updating selection:", selError);
-  } else {
-    const { error: selError } = await supabase.from("number_selections").insert({
-      club_id: clubId,
-      profile_id: userId,
-      numbers: numbers,
-      assigned_names: names,
-      status: "active",
-      stripe_subscription_id: session.id,
-    });
-    if (selError) console.error("Error inserting selection:", selError);
-  }
+  // Always create a separate entry for one-off purchases (don't merge with subscriptions)
+  // This ensures one-off entries can be expired independently after the draw
+  const { error: selError } = await supabase.from("number_selections").insert({
+    club_id: clubId,
+    profile_id: userId,
+    numbers: numbers,
+    assigned_names: names,
+    status: "active",
+    stripe_subscription_id: session.id,
+  });
+  if (selError) console.error("Error inserting one-off selection:", selError);
 
   const { error: payError } = await supabase.from("payments").insert({
     profile_id: userId,

@@ -313,6 +313,24 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  // Expire one-off entries after the draw (they're only valid for one week)
+  // One-off entries have a checkout session ID (cs_live_/cs_test_) as stripe_subscription_id,
+  // while subscriptions have a subscription ID (sub_)
+  const { data: oneOffEntries, error: expireErr } = await supabase
+    .from("number_selections")
+    .update({ status: "expired", updated_at: new Date().toISOString() })
+    .eq("club_id", CLUB_ID)
+    .eq("status", "active")
+    .like("stripe_subscription_id", "cs_%")
+    .select("id, numbers");
+
+  if (expireErr) {
+    console.error("Failed to expire one-off entries:", expireErr);
+  } else if (oneOffEntries && oneOffEntries.length > 0) {
+    const expiredNumbers = oneOffEntries.flatMap((e: any) => e.numbers);
+    console.log(`Expired ${oneOffEntries.length} one-off entries after draw (numbers: ${expiredNumbers.join(", ")})`);
+  }
+
   // Build winners for response
   const winners = winningNumbers.map((n, i) => {
     const ownerIds = ownerMap.get(n) || [];
