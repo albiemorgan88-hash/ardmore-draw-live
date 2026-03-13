@@ -143,7 +143,7 @@ export async function GET(req: NextRequest) {
   const { data: drawRecord, error: drawErr } = await supabase.from("draws").insert({
     club_id: CLUB_ID,
     draw_number: drawNumber,
-    status: "pending_payout",
+    status: "drawn",
     scheduled_at: new Date().toISOString(),
     drawn_at: new Date().toISOString(),
     seed: drawSeed,
