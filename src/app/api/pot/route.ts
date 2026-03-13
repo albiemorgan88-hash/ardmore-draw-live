@@ -8,31 +8,27 @@ const supabase = createClient(
 
 export async function GET() {
   try {
-    // Get all active subscriptions for this week's pot
-    const { data: subs, error } = await supabase
-      .from("draw_subscriptions")
-      .select("amount_pence, numbers")
+    // The public pot should reflect the actual active entries for the current draw.
+    // number_selections is the source of truth because both subscriptions and one-offs
+    // create active rows there, and one-offs are expired after each draw.
+    const { data: selections, error } = await supabase
+      .from("number_selections")
+      .select("profile_id, numbers")
       .eq("status", "active");
 
     if (error) throw error;
 
-    // Also count one-off entries for this week
-    const oneWeekAgo = new Date();
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    const rawTotalNumbers = (selections || []).reduce(
+      (sum, selection) => sum + (selection.numbers?.length || 0),
+      0
+    );
 
-    const { data: oneOffs, error: oneOffError } = await supabase
-      .from("number_selections")
-      .select("numbers")
-      .eq("status", "active")
-      .is("stripe_subscription_id", null)
-      .gte("created_at", oneWeekAgo.toISOString());
-
-    const subTotal = (subs || []).reduce((sum, s) => sum + (s.amount_pence || 0), 0);
-    const oneOffTotal = (oneOffs || []).length * 100; // £1 per number selection set
-    const totalPence = subTotal + oneOffTotal;
-
-    const totalNumbers = (subs || []).reduce((sum, s) => sum + (s.numbers?.length || 0), 0) +
-      (oneOffs || []).reduce((sum, s) => sum + (s.numbers?.length || 0), 0);
+    // Temporary manual adjustment approved by Phil:
+    // exclude the disputed George Chambers 10-number one-off from the public pot
+    // until the one-off state issue is reconciled properly.
+    const totalNumbers = Math.max(0, rawTotalNumbers - 10);
+    const totalPence = totalNumbers * 100;
+    const members = new Set((selections || []).map((selection) => selection.profile_id)).size;
 
     // Prize split: 50% to prizes (25% 1st, 15% 2nd, 10% 3rd), 50% to club
     const prizePot = totalPence / 2;
@@ -52,7 +48,7 @@ export async function GET() {
       second: (second / 100).toFixed(2),
       third: (third / 100).toFixed(2),
       totalNumbers,
-      members: (subs || []).length,
+      members,
       progress,
       targetPounds: "500.00",
     });

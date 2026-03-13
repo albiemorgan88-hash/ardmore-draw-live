@@ -84,38 +84,46 @@ export async function sendDrawResults(
   participants: { email: string; numbers: number[]; name?: string }[],
   winningNumbers: number[],
   prizes: { first: number; second: number; third: number },
-  drawDate: string
+  drawDate: string,
+  winnerNames?: string[]
 ) {
-  const winnerMap = new Map<number, { place: string; amount: number }>();
-  winnerMap.set(winningNumbers[0], { place: "1st", amount: prizes.first });
-  winnerMap.set(winningNumbers[1], { place: "2nd", amount: prizes.second });
-  winnerMap.set(winningNumbers[2], { place: "3rd", amount: prizes.third });
+  const winnerMap = new Map<number, { place: string; amount: number; winnerName: string }>();
+  winnerMap.set(winningNumbers[0], { place: "1st", amount: prizes.first, winnerName: winnerNames?.[0] || "Unknown" });
+  winnerMap.set(winningNumbers[1], { place: "2nd", amount: prizes.second, winnerName: winnerNames?.[1] || "Unknown" });
+  winnerMap.set(winningNumbers[2], { place: "3rd", amount: prizes.third, winnerName: winnerNames?.[2] || "Unknown" });
+
+  // Build the results table showing winners — same for EVERYONE
+  const resultsTable = `
+    <div style="background:#f5f5f0;border-radius:8px;padding:16px;margin:16px 0;">
+      <p style="margin:0;color:#333;font-weight:bold;">🏆 1st Prize: No. ${winningNumbers[0]} — ${winnerNames?.[0] || "Unknown"} — £${(prizes.first / 100).toFixed(2)}</p>
+      <p style="margin:8px 0;color:#333;font-weight:bold;">🥈 2nd Prize: No. ${winningNumbers[1]} — ${winnerNames?.[1] || "Unknown"} — £${(prizes.second / 100).toFixed(2)}</p>
+      <p style="margin:8px 0 0;color:#333;font-weight:bold;">🥉 3rd Prize: No. ${winningNumbers[2]} — ${winnerNames?.[2] || "Unknown"} — £${(prizes.third / 100).toFixed(2)}</p>
+    </div>
+  `;
 
   for (const p of participants) {
     const wonNumbers = p.numbers.filter((n) => winnerMap.has(n));
     const isWinner = wonNumbers.length > 0;
 
+    // Show winning numbers as balls — highlight if this person holds that number
     const balls = winningNumbers
       .map(
         (n) =>
-          `<span style="display:inline-block;background:${p.numbers.includes(n) ? "#c9a84c" : "#e2e8f0"};color:${p.numbers.includes(n) ? "#1a365d" : "#666"};font-weight:bold;width:48px;height:48px;line-height:48px;border-radius:50%;text-align:center;margin:4px;font-size:18px;">${n}</span>`
+          `<div style="display:inline-block;text-align:center;margin:6px;">
+            <span style="display:block;background:${p.numbers.includes(n) ? "#c9a84c" : "#e2e8f0"};color:${p.numbers.includes(n) ? "#1a365d" : "#666"};font-weight:bold;width:48px;height:48px;line-height:48px;border-radius:50%;font-size:18px;">${n}</span>
+            <span style="display:block;font-size:11px;color:#666;margin-top:4px;">${winnerMap.get(n)!.winnerName}</span>
+          </div>`
       )
       .join("");
 
     let content: string;
     if (isWinner) {
       const totalWon = wonNumbers.reduce((sum, n) => sum + winnerMap.get(n)!.amount, 0);
-      const winDetails = wonNumbers
-        .map((n) => `${winnerMap.get(n)!.place} Prize (No. ${n}): £${(winnerMap.get(n)!.amount / 100).toFixed(2)}`)
-        .join("<br>");
       content = `
         <h2 style="color:#c9a84c;margin:0 0 16px;text-align:center;">🎉 CONGRATULATIONS! 🎉</h2>
         <p style="color:#333;line-height:1.6;text-align:center;font-size:18px;">You've won <strong style="color:#1a365d;">£${(totalWon / 100).toFixed(2)}</strong>!</p>
         <div style="text-align:center;margin:24px 0;">${balls}</div>
-        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:16px;margin:16px 0;">
-          <p style="margin:0;color:#166534;font-weight:bold;">Your Winnings:</p>
-          <p style="margin:8px 0 0;color:#166534;">${winDetails}</p>
-        </div>
+        ${resultsTable}
         <p style="color:#666;font-size:14px;">We'll be in touch about collecting your prize. Well played! 🏏</p>
       `;
     } else {
@@ -123,18 +131,14 @@ export async function sendDrawResults(
         <h2 style="color:#1a365d;margin:0 0 16px;">Draw Results — ${drawDate}</h2>
         <p style="color:#333;line-height:1.6;">This week's winning numbers:</p>
         <div style="text-align:center;margin:24px 0;">${balls}</div>
-        <div style="background:#f5f5f0;border-radius:8px;padding:16px;margin:16px 0;">
-          <p style="margin:0;color:#333;">1st: No. ${winningNumbers[0]} — £${(prizes.first / 100).toFixed(2)}</p>
-          <p style="margin:4px 0;color:#333;">2nd: No. ${winningNumbers[1]} — £${(prizes.second / 100).toFixed(2)}</p>
-          <p style="margin:4px 0 0;color:#333;">3rd: No. ${winningNumbers[2]} — £${(prizes.third / 100).toFixed(2)}</p>
-        </div>
+        ${resultsTable}
         <p style="color:#666;font-size:14px;">Better luck next week! Your numbers are still in the game. 🏏</p>
       `;
     }
 
     const subject = isWinner
       ? `🎉 You've won in the Ardmore CC Draw!`
-      : `Draw Results — ${drawDate}`;
+      : `Ardmore CC Draw Results — ${drawDate}`;
 
     try {
       await getResend().emails.send({ from: FROM, to: p.email, subject, html: layout(content) });

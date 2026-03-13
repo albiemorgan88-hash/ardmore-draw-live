@@ -42,6 +42,7 @@ export default function DrawPage() {
   const [gridPage, setGridPage] = useState(0);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [paymentMode, setPaymentMode] = useState<"subscription" | "one-off">("subscription");
+  const [showOneOffOption, setShowOneOffOption] = useState(false);
 
   // Pot data from /api/pot (source of truth, same as homepage)
   const [potData, setPotData] = useState<{
@@ -377,50 +378,82 @@ export default function DrawPage() {
 
               {/* Payment Mode Toggle */}
               <div className="mt-5 pt-4 border-t border-navy/10">
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-4">
+                <div className="space-y-3 mb-4">
                   <button
                     onClick={() => setPaymentMode("subscription")}
-                    className={`flex-1 px-4 py-3 rounded-lg border-2 text-left transition-all ${
+                    className={`w-full rounded-2xl border-2 text-left transition-all ${
                       paymentMode === "subscription"
-                        ? "border-gold bg-gold/10"
-                        : "border-gray-200 hover:border-gray-300"
+                        ? "border-gold bg-gradient-to-br from-gold/20 via-white to-gold/10 shadow-lg shadow-gold/10"
+                        : "border-gold/40 bg-gold/5 hover:border-gold hover:bg-gold/10"
                     }`}
                   >
-                    <div className="flex items-center gap-2">
-                      <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                        paymentMode === "subscription" ? "border-gold" : "border-gray-300"
-                      }`}>
-                        {paymentMode === "subscription" && <div className="w-2 h-2 rounded-full bg-gold" />}
+                    <div className="p-5 sm:p-6">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-start gap-3">
+                          <div className={`mt-1 w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                            paymentMode === "subscription" ? "border-gold" : "border-gold/50"
+                          }`}>
+                            {paymentMode === "subscription" && <div className="w-2.5 h-2.5 rounded-full bg-gold" />}
+                          </div>
+                          <div>
+                            <div className="inline-flex items-center rounded-full bg-navy text-white text-[11px] font-bold px-2.5 py-1 mb-2 tracking-wide">BEST VALUE</div>
+                            <p className="font-bold text-navy text-lg sm:text-xl">Subscribe weekly</p>
+                            <p className="text-sm text-navy/70 mt-1">Keep your numbers live every Friday without having to come back and re-enter.</p>
+                          </div>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <p className="text-xl sm:text-2xl font-bold text-navy">£{selectedNumbers.size}.00<span className="text-sm font-medium text-navy/60">/week</span></p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="font-semibold text-navy text-sm">Subscribe weekly</p>
-                        <p className="text-xs text-navy/50">£{selectedNumbers.size}.00/week · Auto-renews every Friday</p>
+
+                      <div className="mt-4 grid gap-2 sm:grid-cols-2 text-sm text-navy/75">
+                        <div className="rounded-xl bg-white/80 border border-gold/20 px-3 py-2">✓ Auto-enters every weekly draw</div>
+                        <div className="rounded-xl bg-white/80 border border-gold/20 px-3 py-2">✓ Keep the same lucky numbers</div>
+                      </div>
+
+                      <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <p className="text-sm text-green-700 font-medium">Set it and forget it — cancel anytime.</p>
+                        <span className="inline-flex items-center justify-center rounded-full bg-navy text-white px-4 py-2 text-sm font-semibold">Recommended for regular supporters</span>
                       </div>
                     </div>
-                    {paymentMode === "subscription" && (
-                      <p className="text-xs text-green-600 mt-1 ml-6">✓ Set it and forget it — your numbers enter every week automatically</p>
+                  </button>
+
+                  <div className="rounded-xl border border-dashed border-navy/15 bg-white/60">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowOneOffOption((prev) => !prev);
+                        setPaymentMode("one-off");
+                      }}
+                      className="w-full flex items-center justify-between gap-3 px-4 py-3 text-left text-sm text-navy/65 hover:text-navy transition-colors"
+                    >
+                      <span>Or buy a one-off entry for this week only</span>
+                      <span className="text-xs font-semibold text-navy/40">{showOneOffOption || paymentMode === "one-off" ? "Hide" : "Show"}</span>
+                    </button>
+
+                    {(showOneOffOption || paymentMode === "one-off") && (
+                      <button
+                        onClick={() => setPaymentMode("one-off")}
+                        className={`m-3 mt-0 w-[calc(100%-1.5rem)] px-4 py-3 rounded-lg border text-left transition-all ${
+                          paymentMode === "one-off"
+                            ? "border-gold bg-gold/10"
+                            : "border-gray-200 bg-white/80 hover:border-gray-300"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                            paymentMode === "one-off" ? "border-gold" : "border-gray-300"
+                          }`}>
+                            {paymentMode === "one-off" && <div className="w-2 h-2 rounded-full bg-gold" />}
+                          </div>
+                          <div>
+                            <p className="font-semibold text-navy text-sm">Pay once</p>
+                            <p className="text-xs text-navy/50">£{selectedNumbers.size}.00 · This week only</p>
+                          </div>
+                        </div>
+                      </button>
                     )}
-                  </button>
-                  <button
-                    onClick={() => setPaymentMode("one-off")}
-                    className={`flex-1 px-4 py-3 rounded-lg border-2 text-left transition-all ${
-                      paymentMode === "one-off"
-                        ? "border-gold bg-gold/10"
-                        : "border-gray-200 hover:border-gray-300"
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                        paymentMode === "one-off" ? "border-gold" : "border-gray-300"
-                      }`}>
-                        {paymentMode === "one-off" && <div className="w-2 h-2 rounded-full bg-gold" />}
-                      </div>
-                      <div>
-                        <p className="font-semibold text-navy text-sm">Pay once</p>
-                        <p className="text-xs text-navy/50">£{selectedNumbers.size}.00 · This week only</p>
-                      </div>
-                    </div>
-                  </button>
+                  </div>
                 </div>
               </div>
 

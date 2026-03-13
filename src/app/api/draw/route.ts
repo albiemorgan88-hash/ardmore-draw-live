@@ -78,10 +78,10 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  // Get all active selections for the club
+  // Get all active selections for the club (including assigned names)
   const { data: selections, error: selErr } = await supabase
     .from("number_selections")
-    .select("id, profile_id, numbers")
+    .select("id, profile_id, numbers, assigned_names")
     .eq("club_id", CLUB_ID)
     .eq("status", "active");
 
@@ -93,16 +93,22 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "No entries this week" }, { status: 400 });
   }
 
-  // Build number pool and ownership map
+  // Build number pool, ownership map, and number-to-name map
   const allNumbers: number[] = [];
   const ownerMap = new Map<number, string[]>();
+  const numberNameMap = new Map<number, string>(); // number → display name (assigned name or profile name)
 
   for (const sel of selections) {
+    const names: Record<string, string> = sel.assigned_names || {};
     for (const n of sel.numbers) {
       allNumbers.push(n);
       const owners = ownerMap.get(n) || [];
       owners.push(sel.profile_id);
       ownerMap.set(n, owners);
+      // Use assigned name if available (e.g. "Niamh McLoughlin" when Harry buys for Niamh)
+      if (names[String(n)]) {
+        numberNameMap.set(n, names[String(n)]);
+      }
     }
   }
 
@@ -250,7 +256,8 @@ export async function GET(req: NextRequest) {
     console.error("Failed to insert payout records:", payoutErr);
   }
 
-  // Create claim tokens for winners without Connect accounts
+  // Create claim tokens for winners (for record keeping) but DO NOT send separate claim emails
+  // Winners are notified in the single draw results email — no duplicate emails
   for (let i = 0; i < winningNumbers.length; i++) {
     const ownerIds = ownerMap.get(winningNumbers[i]) || [];
     for (const ownerId of ownerIds) {
@@ -269,22 +276,7 @@ export async function GET(req: NextRequest) {
           amount_pence: prizeAmounts[i],
           expires_at: expiresAt.toISOString(),
         });
-
-        // Send claim email
-        if (info?.email && process.env.RESEND_API_KEY) {
-          try {
-            await sendWinnerClaimEmail(
-              info.email,
-              info.name,
-              ["1st", "2nd", "3rd"][i],
-              prizeAmounts[i],
-              winningNumbers[i],
-              claimToken
-            );
-          } catch (err) {
-            console.error(`Failed to send claim email to ${info.email}:`, err);
-          }
-        }
+        // No separate email — handled by sendDrawResults
       }
     }
   }
@@ -304,10 +296,23 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  // Send draw results emails
+  // Backfill numberNameMap with profile names where no assigned name exists
+  for (const [num, ownerIds] of ownerMap) {
+    if (!numberNameMap.has(num)) {
+      const names = ownerIds.map((id) => emailMap.get(id)?.name || "").filter(Boolean);
+      if (names.length > 0) numberNameMap.set(num, names.join(", "));
+    }
+  }
+
+  // Build winner display names for the email
+  const winnerNames = winningNumbers.map((n) => {
+    return numberNameMap.get(n) || "Unknown";
+  });
+
+  // Send ONE draw results email per person (no separate claim emails)
   if (participants.length > 0 && process.env.RESEND_API_KEY) {
     try {
-      await sendDrawResults(participants, winningNumbers, prizes, new Date().toISOString().split("T")[0]);
+      await sendDrawResults(participants, winningNumbers, prizes, new Date().toISOString().split("T")[0], winnerNames);
     } catch (err) {
       console.error("Failed to send draw emails:", err);
     }
@@ -331,15 +336,16 @@ export async function GET(req: NextRequest) {
     console.log(`Expired ${oneOffEntries.length} one-off entries after draw (numbers: ${expiredNumbers.join(", ")})`);
   }
 
-  // Build winners for response
+  // Build winners for response — use assigned name first, then profile name
   const winners = winningNumbers.map((n, i) => {
     const ownerIds = ownerMap.get(n) || [];
-    const ownerNames = ownerIds.map((id) => emailMap.get(id)?.name || "Unknown");
+    const displayName = numberNameMap.get(n) || ownerIds.map((id) => emailMap.get(id)?.name || "Unknown").join(", ");
     return {
       place: ["1st", "2nd", "3rd"][i],
       number: n,
       prize: prizeAmounts[i],
-      owners: ownerNames,
+      owners: [displayName],
+      displayName,
     };
   });
 
