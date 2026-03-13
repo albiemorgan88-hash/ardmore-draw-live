@@ -177,15 +177,28 @@ export default function DrawPage() {
   }, []);
 
   const previousResults = drawResults.length > 0
-    ? drawResults.map((d: any) => ({
-        date: new Date(d.drawn_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }),
-        first: d.drawn_numbers[0],
-        second: d.drawn_numbers[1],
-        third: d.drawn_numbers[2],
-        pot: "£" + (d.pot_amount / 100).toFixed(2),
-      }))
+    ? drawResults.map((d: any) => {
+        const w = d.winners || [];
+        const getWinner = (place: string) => w.find((x: any) => x.place === place);
+        const w1 = getWinner("1st");
+        const w2 = getWinner("2nd");
+        const w3 = getWinner("3rd");
+        return {
+          date: new Date(d.drawn_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }),
+          first: d.drawn_numbers?.[0] ?? "?",
+          second: d.drawn_numbers?.[1] ?? "?",
+          third: d.drawn_numbers?.[2] ?? "?",
+          firstName: w1?.name || "",
+          secondName: w2?.name || "",
+          thirdName: w3?.name || "",
+          firstPrize: w1 ? "£" + (w1.prize / 100).toFixed(2) : "",
+          secondPrize: w2 ? "£" + (w2.prize / 100).toFixed(2) : "",
+          thirdPrize: w3 ? "£" + (w3.prize / 100).toFixed(2) : "",
+          pot: "£" + (d.pot_amount / 100).toFixed(2),
+        };
+      })
     : [
-        { date: "Coming soon", first: "?", second: "?", third: "?", pot: "TBD" },
+        { date: "Coming soon", first: "?", second: "?", third: "?", firstName: "", secondName: "", thirdName: "", firstPrize: "", secondPrize: "", thirdPrize: "", pot: "TBD" },
       ];
 
   return (
@@ -489,18 +502,24 @@ export default function DrawPage() {
                   <p className="text-navy/60 text-sm">{r.date}</p>
                   <p className="text-navy/60 text-sm">Pot: {r.pot}</p>
                 </div>
-                <div className="flex gap-4">
+                <div className="flex gap-4 sm:gap-6">
                   <div className="text-center">
-                    <p className="text-xs text-navy/50 mb-1">1st</p>
+                    <p className="text-xs text-navy/50 mb-1">🏆 1st</p>
                     <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gold text-navy font-bold text-lg">{r.first}</span>
+                    {r.firstName && <p className="text-xs text-navy font-semibold mt-1 max-w-[80px] truncate">{r.firstName}</p>}
+                    {r.firstPrize && <p className="text-xs text-navy/60">{r.firstPrize}</p>}
                   </div>
                   <div className="text-center">
-                    <p className="text-xs text-navy/50 mb-1">2nd</p>
+                    <p className="text-xs text-navy/50 mb-1">🥈 2nd</p>
                     <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-sky text-navy font-bold text-lg">{r.second}</span>
+                    {r.secondName && <p className="text-xs text-navy font-semibold mt-1 max-w-[80px] truncate">{r.secondName}</p>}
+                    {r.secondPrize && <p className="text-xs text-navy/60">{r.secondPrize}</p>}
                   </div>
                   <div className="text-center">
-                    <p className="text-xs text-navy/50 mb-1">3rd</p>
+                    <p className="text-xs text-navy/50 mb-1">🥉 3rd</p>
                     <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-navy-light text-white font-bold text-lg">{r.third}</span>
+                    {r.thirdName && <p className="text-xs text-navy font-semibold mt-1 max-w-[80px] truncate">{r.thirdName}</p>}
+                    {r.thirdPrize && <p className="text-xs text-navy/60">{r.thirdPrize}</p>}
                   </div>
                 </div>
               </div>
