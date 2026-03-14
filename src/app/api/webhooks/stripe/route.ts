@@ -82,6 +82,67 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ received: true });
 }
 
+/**
+ * Upsert number_selections for a user — merges all their active draw_subscriptions
+ * into a single row (unique constraint on club_id + profile_id).
+ */
+async function upsertNumberSelections(supabase: any, clubId: string, userId: string, currentSubId: string) {
+  // Get ALL active draw_subscriptions for this user
+  const { data: allSubs } = await supabase
+    .from("draw_subscriptions")
+    .select("numbers, assigned_names")
+    .eq("club_id", clubId)
+    .eq("user_id", userId)
+    .eq("status", "active");
+
+  if (!allSubs || allSubs.length === 0) return;
+
+  // Merge all numbers and names across all their subs
+  const mergedNumbers = new Set<number>();
+  const mergedNames: Record<string, string> = {};
+  for (const sub of allSubs) {
+    for (const n of sub.numbers || []) mergedNumbers.add(n);
+    if (sub.assigned_names) Object.assign(mergedNames, sub.assigned_names);
+  }
+
+  const numbers = Array.from(mergedNumbers).sort((a, b) => a - b);
+
+  // Try update first, then insert if no row exists
+  const { data: existing } = await supabase
+    .from("number_selections")
+    .select("id")
+    .eq("club_id", clubId)
+    .eq("profile_id", userId)
+    .limit(1)
+    .single();
+
+  if (existing) {
+    const { error } = await supabase
+      .from("number_selections")
+      .update({
+        numbers,
+        assigned_names: mergedNames,
+        status: "active",
+        stripe_subscription_id: currentSubId,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", existing.id);
+    if (error) console.error("Error updating number_selections:", error);
+    else console.log(`Updated number_selections for ${userId}: ${numbers.length} numbers`);
+  } else {
+    const { error } = await supabase.from("number_selections").insert({
+      club_id: clubId,
+      profile_id: userId,
+      numbers,
+      assigned_names: mergedNames,
+      status: "active",
+      stripe_subscription_id: currentSubId,
+    });
+    if (error) console.error("Error inserting number_selections:", error);
+    else console.log(`Inserted number_selections for ${userId}: ${numbers.length} numbers`);
+  }
+}
+
 async function handleOneOffPayment(supabase: any, session: Stripe.Checkout.Session) {
   const meta = session.metadata!;
   const userId = meta.user_id;
@@ -163,16 +224,8 @@ async function handleSubscriptionCreated(supabase: any, session: Stripe.Checkout
   });
   if (subError) console.error("Error inserting subscription:", subError);
 
-  // Also enter numbers for current week
-  const { error: selError } = await supabase.from("number_selections").insert({
-    club_id: clubId,
-    profile_id: userId,
-    numbers: numbers,
-    assigned_names: names,
-    status: "active",
-    stripe_subscription_id: subscriptionId,
-  });
-  if (selError) console.error("Error inserting initial selection:", selError);
+  // Enter numbers for current week — upsert to handle users with multiple subs
+  await upsertNumberSelections(supabase, clubId, userId, subscriptionId);
 
   // Record initial payment
   const { error: payError } = await supabase.from("payments").insert({
@@ -236,16 +289,8 @@ async function handleSubscriptionRenewal(supabase: any, invoice: any) {
     })
     .eq("stripe_subscription_id", subscriptionId);
 
-  // Enter numbers for the new week (carry forward assigned names from subscription)
-  const { error: selError } = await supabase.from("number_selections").insert({
-    club_id: sub.club_id,
-    profile_id: sub.user_id,
-    numbers: sub.numbers,
-    assigned_names: sub.assigned_names || {},
-    status: "active",
-    stripe_subscription_id: subscriptionId,
-  });
-  if (selError) console.error("Error inserting renewal selection:", selError);
+  // Enter numbers for the new week — upsert to handle users with multiple subs
+  await upsertNumberSelections(supabase, sub.club_id, sub.user_id, subscriptionId);
 
   // Record renewal payment
   const { error: payError } = await supabase.from("payments").insert({
