@@ -246,6 +246,42 @@ export async function sendPayoutConfirmationEmail(
   });
 }
 
+export async function sendRenewalConfirmation(
+  email: string,
+  numbers: number[],
+  amountPence: number,
+  names?: Record<string, string>
+) {
+  const sorted = [...numbers].sort((a, b) => a - b);
+  const balls = sorted
+    .map((n) => {
+      const name = names?.[String(n)];
+      return `<div style="display:inline-block;text-align:center;margin:6px;">
+        <span style="display:block;background:#c9a84c;color:#1a365d;font-weight:bold;width:40px;height:40px;line-height:40px;border-radius:50%;margin:0 auto;font-size:16px;">${n}</span>
+        ${name ? `<span style="display:block;font-size:11px;color:#666;margin-top:4px;max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${name}</span>` : ""}
+      </div>`;
+    })
+    .join("");
+
+  const html = layout(`
+    <h2 style="color:#1a365d;margin:0 0 16px;">Your numbers are in this week's draw ✅</h2>
+    <p style="color:#333;line-height:1.6;">Your weekly subscription has renewed and your numbers are entered for this Friday's 7PM draw.</p>
+    <div style="text-align:center;margin:24px 0;">${balls}</div>
+    <div style="background:#f5f5f0;border-radius:8px;padding:16px;margin:16px 0;">
+      <p style="margin:0;color:#333;"><strong>Amount:</strong> £${(amountPence / 100).toFixed(2)}</p>
+      <p style="margin:8px 0 0;color:#333;"><strong>Numbers:</strong> ${sorted.join(", ")}</p>
+    </div>
+    <p style="color:#666;font-size:14px;">Good luck! Results will be emailed after the draw. 🏏</p>
+  `);
+
+  await getResend().emails.send({
+    from: FROM,
+    to: email,
+    subject: `Weekly Draw Renewed — Numbers ${sorted.join(", ")}`,
+    html,
+  });
+}
+
 export async function sendWelcomeEmail(email: string, name: string) {
   const html = layout(`
     <h2 style="color:#1a365d;margin:0 0 16px;">Welcome to Ardmore CC${name ? `, ${name}` : ""}! 🏏</h2>

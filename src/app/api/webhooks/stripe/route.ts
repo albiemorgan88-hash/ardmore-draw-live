@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { stripe } from "@/lib/stripe";
 import { createServiceClient } from "@/lib/supabase";
-import { sendPurchaseConfirmation, sendAdminNewEntryNotification } from "@/lib/email";
+import { sendPurchaseConfirmation, sendAdminNewEntryNotification, sendRenewalConfirmation } from "@/lib/email";
 
 function getNextFriday(): string {
   const now = new Date();
@@ -309,6 +309,18 @@ async function handleSubscriptionRenewal(supabase: any, invoice: any) {
     },
   });
   if (payError) console.error("Error inserting renewal payment:", payError);
+
+  // Send renewal confirmation email
+  const stripeCustomer = await stripe.customers.retrieve(sub.stripe_customer_id || stripeSubscription.customer as string);
+  const customerEmail = (stripeCustomer as any).email;
+  if (customerEmail && process.env.RESEND_API_KEY) {
+    try {
+      await sendRenewalConfirmation(customerEmail, sub.numbers, sub.amount_pence, sub.assigned_names);
+      console.log(`Renewal email sent to ${customerEmail}`);
+    } catch (err) {
+      console.error("Failed to send renewal email:", err);
+    }
+  }
 
   console.log(`Subscription ${subscriptionId} renewed — numbers ${sub.numbers.join(", ")} entered for week ${getNextFriday()}`);
 }
