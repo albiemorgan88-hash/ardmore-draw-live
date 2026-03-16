@@ -497,6 +497,13 @@ const photos: ArchivePhoto[] = [
     category: "teams",
   },
   {
+    src: "/images/archive/classic-team-early-years.jpg",
+    alt: "Ardmore CC archive photo",
+    caption: "Back L-R: Tommy Adams?, Monty McGowan, Willie Dunlop, Bobby Laird, unknown, Billy Gormley, Cyril Ward Snr, Ken McCormack, Sammy Dunn?, Master Armstrong, George Brolly Snr, Vincent Ward, Bobby Brolly. Middle: Jim Dunlop, Connie McA, Gerry McGahey, Patsy McDermott, Hugo McD. Front: Marcus Taylor, John Adams, Jim Craig?, Liam Gormley",
+    year: "",
+    category: "teams",
+  },
+  {
     src: "/images/archive/classic-team-dunlop-mcgahey-era.jpg",
     alt: "Ardmore CC archive photo",
     caption: "Back: Willie Dunlop, Billy Gormley, Bobby Laird, unknown, Ken McCormick, Marcus Taylor, Liam Girmley, Connie McAllister, Cyril Ward Snr. Front: Jim Dunlop, Patsy McDermott, Gerry McGahey (capt), John Adams, Hugo McDermott",
