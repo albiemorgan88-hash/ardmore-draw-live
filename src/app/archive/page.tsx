@@ -496,6 +496,13 @@ const photos: ArchivePhoto[] = [
     year: "",
     category: "teams",
   },
+  {
+    src: "/images/archive/classic-team-dunlop-mcgahey-era.jpg",
+    alt: "Ardmore CC archive photo",
+    caption: "Back: Willie Dunlop, Billy Gormley, Bobby Laird, unknown, Ken McCormick, Marcus Taylor, Liam Girmley, Connie McAllister, Cyril Ward Snr. Front: Jim Dunlop, Patsy McDermott, Gerry McGahey (capt), John Adams, Hugo McDermott",
+    year: "",
+    category: "teams",
+  },
 ];
 
 const tabs: { key: Category; label: string; count?: number }[] = [
