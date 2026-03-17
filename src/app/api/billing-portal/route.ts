@@ -12,21 +12,18 @@ export async function POST(req: NextRequest) {
   try {
     const supabase = createServiceClient();
     
-    // Get the user's Stripe customer ID from their subscription
+    // Get the user's Stripe customer ID from their subscription record
     const { data: subscription } = await supabase
       .from("draw_subscriptions")
-      .select("stripe_subscription_id")
+      .select("stripe_customer_id")
       .eq("user_id", user.id)
-      .eq("status", "active")
       .single();
 
     if (!subscription) {
-      return NextResponse.json({ error: "No active subscription found" }, { status: 404 });
+      return NextResponse.json({ error: "No subscription found" }, { status: 404 });
     }
 
-    // Get the Stripe subscription to find the customer ID
-    const stripeSubscription = await stripe.subscriptions.retrieve(subscription.stripe_subscription_id);
-    const customerId = stripeSubscription.customer as string;
+    const customerId = subscription.stripe_customer_id;
 
     // Create a billing portal session
     const portalSession = await stripe.billingPortal.sessions.create({
