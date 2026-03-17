@@ -21,6 +21,7 @@ export default function ManageSubscriptionsPage() {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState<string | null>(null);
+  const [managingPayment, setManagingPayment] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -67,6 +68,32 @@ export default function ManageSubscriptionsPage() {
     setCancelling(null);
   };
 
+  const handleManagePayment = async (subscriptionId: string) => {
+    if (!user) return;
+    
+    setManagingPayment(subscriptionId);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch("/api/billing-portal", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${session?.access_token}`,
+        },
+      });
+      
+      if (res.ok) {
+        const { url } = await res.json();
+        window.location.href = url;
+      } else {
+        alert("Failed to open payment management");
+      }
+    } catch {
+      alert("Something went wrong");
+    }
+    setManagingPayment(null);
+  };
+
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -100,9 +127,9 @@ export default function ManageSubscriptionsPage() {
         ) : (
           <div className="space-y-4">
             {subscriptions.map((sub) => (
-              <div key={sub.id} className="bg-white rounded-lg p-5 shadow-sm">
+              <div key={sub.id} className="bg-white rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow border border-gray-100 cursor-pointer">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div>
+                  <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
                       <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
                         sub.status === "active"
@@ -119,7 +146,7 @@ export default function ManageSubscriptionsPage() {
                     </div>
                     <div className="flex flex-wrap gap-2 mb-2">
                       {sub.numbers.map((n) => (
-                        <span key={n} className="inline-flex items-center justify-center w-10 h-8 rounded-full bg-gold/20 text-navy text-sm font-bold">
+                        <span key={n} className="inline-flex items-center justify-center w-10 h-8 rounded-full bg-gold/20 text-navy text-sm font-bold hover:bg-gold/30 transition-colors">
                           {n}
                         </span>
                       ))}
@@ -134,12 +161,39 @@ export default function ManageSubscriptionsPage() {
                     </p>
                   </div>
                   {sub.status === "active" && (
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleManagePayment(sub.stripe_subscription_id);
+                        }}
+                        disabled={managingPayment === sub.stripe_subscription_id}
+                        className="text-sm text-navy bg-gold/20 hover:bg-gold/30 font-medium rounded-md px-4 py-2 transition-colors disabled:opacity-50 border border-gold/30"
+                      >
+                        {managingPayment === sub.stripe_subscription_id ? "Opening..." : "Manage Payment"}
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleCancel(sub.stripe_subscription_id);
+                        }}
+                        disabled={cancelling === sub.stripe_subscription_id}
+                        className="text-sm text-red-500 hover:text-red-700 font-medium border border-red-200 rounded-md px-4 py-2 hover:bg-red-50 transition-colors disabled:opacity-50"
+                      >
+                        {cancelling === sub.stripe_subscription_id ? "Cancelling..." : "Cancel"}
+                      </button>
+                    </div>
+                  )}
+                  {sub.status === "past_due" && (
                     <button
-                      onClick={() => handleCancel(sub.stripe_subscription_id)}
-                      disabled={cancelling === sub.stripe_subscription_id}
-                      className="text-sm text-red-500 hover:text-red-700 font-medium border border-red-200 rounded-md px-4 py-2 hover:bg-red-50 transition-colors disabled:opacity-50"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleManagePayment(sub.stripe_subscription_id);
+                      }}
+                      disabled={managingPayment === sub.stripe_subscription_id}
+                      className="text-sm text-white bg-yellow-500 hover:bg-yellow-600 font-medium rounded-md px-4 py-2 transition-colors disabled:opacity-50"
                     >
-                      {cancelling === sub.stripe_subscription_id ? "Cancelling..." : "Cancel Subscription"}
+                      {managingPayment === sub.stripe_subscription_id ? "Opening..." : "Update Payment"}
                     </button>
                   )}
                 </div>
