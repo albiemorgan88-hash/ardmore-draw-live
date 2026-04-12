@@ -6,29 +6,25 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
+export const revalidate = 60; // Revalidate every 60 seconds
+
 export async function GET() {
   try {
-    // The public pot should reflect the actual active entries for the current draw.
-    // number_selections is the source of truth because both subscriptions and one-offs
-    // create active rows there, and one-offs are expired after each draw.
-    const { data: selections, error } = await supabase
-      .from("number_selections")
-      .select("profile_id, numbers")
+    // Source of truth: draw_subscriptions with status='active'
+    // These are paid, recurring subscriptions that should be in the draw
+    const { data: subscriptions, error } = await supabase
+      .from("draw_subscriptions")
+      .select("user_id, numbers")
       .eq("status", "active");
 
     if (error) throw error;
 
-    const rawTotalNumbers = (selections || []).reduce(
-      (sum, selection) => sum + (selection.numbers?.length || 0),
+    const totalNumbers = (subscriptions || []).reduce(
+      (sum, sub) => sum + (sub.numbers?.length || 0),
       0
     );
-
-    // Temporary manual adjustment approved by Phil:
-    // exclude the disputed George Chambers 10-number one-off from the public pot
-    // until the one-off state issue is reconciled properly.
-    const totalNumbers = Math.max(0, rawTotalNumbers - 10);
     const totalPence = totalNumbers * 100;
-    const members = new Set((selections || []).map((selection) => selection.profile_id)).size;
+    const members = new Set((subscriptions || []).map((sub) => sub.user_id)).size;
 
     // Prize split: 50% to prizes (25% 1st, 15% 2nd, 10% 3rd), 50% to club
     const prizePot = totalPence / 2;
