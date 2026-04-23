@@ -1,5 +1,6 @@
 import Image from "next/image";
 import JackpotSection from "@/components/JackpotSection";
+import NextMatch from "@/components/NextMatch";
 
 export default function HomePage() {
   return (
@@ -32,6 +33,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      <NextMatch />
 
       {/* About Snippet */}
       <section className="py-16 sm:py-20 bg-cream">

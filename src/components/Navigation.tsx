@@ -46,6 +46,7 @@ export default function Navigation() {
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
     { href: "/committee", label: "Committee" },
+    { href: "/fixtures", label: "Fixtures" },
     { href: "/news", label: "News" },
     { href: "/archive", label: "Archive" },
     { href: "/draw", label: "Weekly Draw", highlight: true },
