@@ -75,8 +75,12 @@ by two members. All six subscriptions are currently active. The latest 24 events
 their invoice records remain available and were independently matched.
 
 `scripts/recover-renewals.ts` requires the separately reviewed private invoice
-and event evidence files. It defaults to read-only verification. `--execute`
-records the 108 invoices with their actual paid dates and no historical member
+and event evidence files. It defaults to read-only verification. After release,
+use `--sample --execute` for one invoice with a retrievable event, independently
+verify the payment, selection and event records, then use `--execute` for the
+reviewed batch. Sample mode still validates the complete 108-invoice input;
+rerunning selects the same invoice. The full batch records invoices with their
+actual paid dates and no historical member
 name/number guesses. Only the 24 retrievable event records can be marked
 processed. Older error records remain as history. There is also an older
 4 August checkout failure whose event payload is no longer retrievable; it is
@@ -90,8 +94,9 @@ Do not send historical receipt catch-up messages as part of the recovery.
 - 48 synthetic Postgres assertions cover public/private access, legacy 97
   renewal and payment-failure recovery, new duplicate denial, stable identities,
   atomic rollback and event lease ownership.
-- Five policy tests cover exact paid amounts, rejected invoices, cancelled
-  subscription status, callback tampering/expiry and missing payment credentials.
+- Seven policy tests cover exact paid amounts, rejected invoices, cancelled
+  subscription status, callback tampering/expiry, missing payment credentials,
+  one-invoice recovery selection and full-batch validation in sample mode.
 - Full lint (zero errors; existing non-blocking warnings), TypeScript and
   production build pass. No real draw, payment or email is used in testing.
 - After approval: apply migrations, verify live privileges, release the reviewed

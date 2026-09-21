@@ -5,21 +5,23 @@ import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
 import { processSubscriptionRenewal, type RenewalInvoice } from "../src/lib/subscription-renewal";
 import { claimStripeEvent, finishStripeEvent } from "../src/lib/stripe-event-lease";
+import { selectRecoveryInvoices, type PlannedInvoice } from "./recovery-plan";
 
-type PlannedInvoice = { invoice_id: string; subscription_id: string; user_id: string; payment_key: string; amount_paid: number; currency: string; paid_at: number };
 type RecentEvent = { invoice_id: string; event_id: string; amount_paid: number; subscription_id: string };
 
 async function main() {
   const args=process.argv.slice(2);
+  if (args.some(arg => !arg.startsWith("--plan=") && !arg.startsWith("--events=") && arg!=="--execute" && arg!=="--sample")) {
+    throw new Error("Unknown recovery argument; use --sample for the one-invoice check");
+  }
   const planPath=args.find(x=>x.startsWith("--plan="))?.slice(7);
   const eventsPath=args.find(x=>x.startsWith("--events="))?.slice(9);
   if (!planPath || !eventsPath) throw new Error("A reviewed invoice plan and recent event evidence are required");
   const plan=JSON.parse(await readFile(planPath,"utf8")) as PlannedInvoice[];
   const eventEvidence=JSON.parse(await readFile(eventsPath,"utf8")) as { events: RecentEvent[] };
-  if (plan.length !== 108 || new Set(plan.map(i=>i.invoice_id)).size !== 108 || plan.reduce((sum,i)=>sum+i.amount_paid,0)!==27000) {
-    throw new Error("Plan differs from the reviewed 108-invoice, £270 recovery batch");
-  }
   const recent=new Map(eventEvidence.events.map(event=>[event.invoice_id,event]));
+  const sample=args.includes("--sample");
+  const selected=selectRecoveryInvoices(plan,new Set(recent.keys()),sample);
   const execute=args.includes("--execute");
   const stripe=new Stripe(process.env.STRIPE_SECRET_KEY!);
   if ((await stripe.accounts.retrieve()).id!=="acct_1T69pRASm3u8i3nl") throw new Error("Wrong Stripe account");
@@ -27,7 +29,7 @@ async function main() {
   if (new URL(url).hostname!=="smhzgkvatlwbaxlyhnbm.supabase.co") throw new Error("Wrong database");
   const db=createClient(url,process.env.SUPABASE_SERVICE_ROLE_KEY!,{auth:{persistSession:false,autoRefreshToken:false}});
   let verified=0, processed=0, paidPence=0, recentEventsCompleted=0;
-  for (const item of plan) {
+  for (const item of selected) {
     const invoice=await stripe.invoices.retrieve(item.invoice_id) as RenewalInvoice;
     const reference=invoice.parent?.subscription_details?.subscription || invoice.subscription;
     const subscriptionId=typeof reference==="string" ? reference : reference?.id;
@@ -61,6 +63,6 @@ async function main() {
     }
     if (processed % 12===0) console.log(JSON.stringify({processed,mode:"execute",emailsSent:0}));
   }
-  console.log(JSON.stringify({mode:execute?"execute":"dry-run",verified,processed,paidPence,recentEventsCompleted,emailsSent:0,stripeMutations:0}));
+  console.log(JSON.stringify({mode:execute?"execute":"dry-run",sample,selected:selected.length,verified,processed,paidPence,recentEventsCompleted,emailsSent:0,stripeMutations:0}));
 }
 main().catch(error=>{console.error(error instanceof Error ? error.message : "Recovery failed");process.exitCode=1;});
