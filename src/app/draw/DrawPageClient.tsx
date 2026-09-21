@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import Image from "next/image";
 import { useAuth } from "@/components/AuthProvider";
 import MatchBallSponsorshipSection from "@/components/MatchBallSponsorshipSection";
-import { supabase } from "@/lib/supabase";
+import { supabase, browserAuthConfigured } from "@/lib/supabase";
 
 const CLUB_ID = "31846fb2-b120-4815-bd48-e1120342d52e";
 
@@ -80,6 +80,7 @@ export default function DrawPageClient({ initialPotData }: { initialPotData: Pot
   // included as a fallback while the Stripe webhook rebuilds number selections.
   useEffect(() => {
     const fetchTaken = async () => {
+      if (!browserAuthConfigured) return;
       const { data: selections } = await supabase
         .from("number_selections")
         .select("numbers")

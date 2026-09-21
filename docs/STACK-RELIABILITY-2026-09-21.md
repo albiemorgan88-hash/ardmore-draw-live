@@ -21,6 +21,10 @@ private backups and participant exports were excluded.
   update compatible transitive dependencies. npm audit reports zero findings.
 - Initialise Stripe only when a payment operation is requested. Preview builds
   do not receive production payment credentials; missing keys fail closed.
+- Apply the same boundary to database access. Public previews build without
+  live credentials; account and prize-claim screens show an unavailable state
+  until their environment is configured. Node 24 CI runs all checks without
+  production secrets.
 - Restrict public access to draw/payment writes and claim tokens, and restrict
   unguarded legacy draw functions to the service role. Browser availability
   lookup retains only its required columns. Private payout reads retain the
