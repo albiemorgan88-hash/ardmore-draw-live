@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { createServiceClient } from "@/lib/supabase";
 import { getAuthenticatedUser } from "@/lib/auth";
+import { reconcileNumberSelections } from "@/lib/draw-entries";
 
 export async function GET(req: NextRequest) {
   const user = await getAuthenticatedUser(req);
@@ -56,6 +57,8 @@ export async function DELETE(req: NextRequest) {
     .from("draw_subscriptions")
     .update({ status: "cancelled", updated_at: new Date().toISOString() })
     .eq("stripe_subscription_id", subscriptionId);
+
+  await reconcileNumberSelections(supabase, sub.club_id, sub.user_id);
 
   return NextResponse.json({ success: true });
 }

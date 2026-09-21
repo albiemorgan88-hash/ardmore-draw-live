@@ -107,7 +107,25 @@ export default function NextMatch() {
     );
   }
 
-  if (!match) return null;
+  if (!match) {
+    return (
+      <section className="py-12 sm:py-16 bg-navy">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+          <p className="text-gold font-medium tracking-[0.2em] uppercase text-xs mb-1">Fixtures</p>
+          <h2 className="font-heading text-2xl sm:text-3xl font-bold text-white mb-3">Fixtures updating</h2>
+          <p className="text-gray-300 mb-6">
+            The next match feed is temporarily unavailable. The full fixtures page will be restored from the live feed.
+          </p>
+          <a
+            href="/fixtures"
+            className="inline-block bg-gold text-navy font-semibold px-6 py-3 rounded-md hover:bg-gold-light transition-colors"
+          >
+            View All Fixtures
+          </a>
+        </div>
+      </section>
+    );
+  }
 
   const isHome = isArdmoreHome(match);
   const ardmoreName = isHome ? match.team1Name : match.team2Name;

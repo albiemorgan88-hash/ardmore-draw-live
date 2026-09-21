@@ -14,6 +14,139 @@ interface ArchivePhoto {
 }
 
 const photos: ArchivePhoto[] = [
+  // ── Newspaper clippings ──
+  {
+    src: "/images/archive/ardmore-2nd-xi-1991-sentinel.jpg",
+    alt: "The Ardmore 2nd XI newspaper clipping from The Sentinel, 28 June 1991",
+    caption:
+      "The Ardmore 2nd XI who played the Glendermott 2nd XI in Division 5 of the North West Cricket League on Saturday.",
+    year: "1991",
+    category: "teams",
+  },
+  {
+    src: "/images/archive/ardmore-senior-xi-1934.jpg",
+    alt: "Ardmore Senior XI team photograph from 1934",
+    caption:
+      "Ardmore Senior XI, 1934. Front row: J. McGibbon, M. McNamee, P. McDermot, R. A. Baird, C. Ward, J. McNamee, G. Beatty. Back row: J. Fleming, W. Adams, W. Laird, H. Sharkey, S. Duddy, A. Glass, W. Baird.",
+    year: "1934",
+    category: "teams",
+  },
+  {
+    src: "/images/archive/north-west-xi-v-munster-strabane-1974.jpg",
+    alt: "North West XI versus Munster team photograph at Strabane, 18 May 1974",
+    caption:
+      "North West XI v Munster at Strabane, 18 May 1974. Pictured team members include R. Collins, C. Ward, O. Colhoun (captain), R. Moan, Roy Torrens, D. W. Todd, C. Nicholl, F. Murphy, T. Jack, I. Rankin, T. Harpur, A. Dunne (12th man), and J. McCrea (secretary, N.W.C.U.).",
+    year: "1974",
+    category: "teams",
+  },
+  {
+    src: "/images/archive/raman-lamba-holywood-schweppes.jpg",
+    alt: "Raman Lamba bowling for Ardmore against Holywood at the Bleach Green",
+    caption:
+      "Raman Lamba, of Ardmore, clean bowls Shannon, of Holywood, during the local’s Schweppes second round victory over Holywood at the Bleach Green. (28/5 D16)",
+    year: "",
+    category: "professional",
+  },
+  {
+    src: "/images/archive/raman-lamba-man-of-match-george-gillen-stumping.jpg",
+    alt: "Raman Lamba receiving a Schweppes Man of the Match award and George Gillen collecting an Ardmore return at the stumps",
+    caption:
+      "North-West umpire John Devine, the adjudicator for the Schweppes' Man of the Match, presents Ardmore's professional, Raman Lamba, with the award. Lamba scored 117. (28/5/D15) Head down for the Holywood batsman as George Gillen, the wicket-keeper, jumps to collect an Ardmore return at the stumps. (28/5/D17)",
+    year: "",
+    category: "professional",
+  },
+  {
+    src: "/images/archive/raman-lamba-welcomed-bleach-green.jpg",
+    alt: "Raman Lamba being welcomed to the Bleach Green by Ardmore officials",
+    caption:
+      "Former Indian test cricket star Raman Lamba is welcomed to the Bleach Green by Ardmore's Secretary Bobby Brolly. Also pictured are on right, Paddy Semple, Club captain and Dermot Ward, Chairman. (18/4/D50)",
+    year: "",
+    category: "professional",
+  },
+  {
+    src: "/images/archive/eddie-gallagher-holywood-boundary-catch.jpg",
+    alt: "Eddie Gallagher taking a catch on the boundary for Ardmore against Holywood",
+    caption:
+      "Eddie Gallagher, of Ardmore, shows a safe pair of hands as he clutches a massive Holywood hit right on the boundary. (28/5/D18)",
+    year: "",
+    category: "teams",
+  },
+  {
+    src: "/images/archive/bobby-brolly-charlie-mcgowan-1986-intermediate-cup.jpg",
+    alt: "Bobby Brolly and Charlie McGowan walking out to field for Ardmore Cricket Club in 1986",
+    caption:
+      "Bobby Brolly, on left, and Charlie McGowan, Ardmore Cricket Club, going out to field on Saturday in the final of the North-West Intermediate Cricket Cup against Glendermott II's at Burndennett. Bobby has been playing cricket for 45 years and Charlie for 35-years. Between them they have notched up 36 cup final appearances from junior to senior level.",
+    year: "1986",
+    category: "teams",
+  },
+  {
+    src: "/images/archive/ardmore-v-bready-division-one-1991.jpg",
+    alt: "Ardmore team photograph before playing Bready in Division One at Magheramason in 1991",
+    caption:
+      "The Ardmore team which played Bready in division one of the North West Cricket League at Magheramason on Saturday. 197LS2K",
+    year: "1991",
+    category: "teams",
+  },
+  {
+    src: "/images/archive/brigade-v-ardmore-paul-brolly-paddy-semple.jpg",
+    alt: "Brigade players celebrating wickets against Ardmore, including Paul Brolly and Paddy Semple",
+    caption:
+      "Doug Huey of Brigade celebrates the dismissal of Ardmore's Paul Brolly. (13/9/D27) A direct throw from Smyth of Brigade hits the wicket to run out Paddy Semple of Ardmore. (13/9/D28)",
+    year: "",
+    category: "teams",
+  },
+  {
+    src: "/images/archive/ardmore-intermediate-cup-victory-drummond.jpg",
+    alt: "Ardmore Intermediate side with cup after victory over Drummond",
+    caption: "Ardmore Intermediate side proudly show off the cup following their victory over Drummond on Saturday. Back row from left are S. Ward, E. Donnelly, N. Ward, B. O'Neill, D. Elliot, E. King, R. McGinley and B. Brolly, president. Front row from left, D. McAllister, M. Gormley, C. McAllister, D. Ward, captain, C. Ward and K. Semple. (9/7/D11)",
+    year: "",
+    category: "teams",
+  },
+  {
+    src: "/images/archive/cyril-ward-man-of-the-match-intermediate-b-cup-final.jpg",
+    alt: "Cyril Ward receiving Man of the Match award after the Intermediate B Cup final",
+    caption: "Cyril Ward of Ardmore being presented with the ‘Man of the Match’ award following the Intermediate B Cup final by North West umpires, Jim Kilgore and Jim Finlay. (9/7/D12)",
+    year: "",
+    category: "teams",
+  },
+  {
+    src: "/images/archive/ardmore-v-strabane-senior-league.jpg",
+    alt: "Ardmore team photograph before meeting Strabane in the North West Senior League",
+    caption: "The Ardmore team which met Strabane in the North West Senior League on Saturday. 15TLS26K",
+    year: "",
+    category: "teams",
+  },
+  {
+    src: "/images/archive/ardmore-presentation-dinner-award-winners.jpg",
+    alt: "Ardmore Cricket Club presentation dinner award winners at the White Horse",
+    caption:
+      "Award winners pictured at the Ardmore C.C. presentation dinner held at the White Horse. Front (left to right) Martin Gormley (newcomer), Bobby Brolly (secretary), Eddie Donnelly (newcomer), back (left to right) David Cooke (batting), Paddy Semple (clubman), Nigel Thompson (bowling). (22/9 E23P)",
+    year: "",
+    category: "teams",
+  },
+  {
+    src: "/images/archive/denis-ward-intermediate-division-v-trophy.jpg",
+    alt: "Ardmore captain Denis Ward receiving the Intermediate Division V trophy from Jim Lindsay",
+    caption:
+      "Ardmore captain, Denis Ward, receives the Intermediate Division V trophy from Jim Lindsay, secretary of the N.W.C.U. (10/9/D6)",
+    year: "",
+    category: "teams",
+  },
+  {
+    src: "/images/archive/ardmore-archive-team-photograph.jpg",
+    alt: "Ardmore Cricket Club archive team photograph",
+    caption: "Ardmore Cricket Club archive team photograph. No printed caption is visible on this copy.",
+    year: "",
+    category: "teams",
+  },
+  {
+    src: "/images/archive/ardmore-trophy-team-archive-photograph.jpg",
+    alt: "Ardmore Cricket Club trophy team archive photograph",
+    caption: "Ardmore Cricket Club trophy team archive photograph. No printed caption is visible on this copy.",
+    year: "",
+    category: "teams",
+  },
+
   // ── Teams & Players ──
   {
     src: "/images/archive/trophy-team.jpg",

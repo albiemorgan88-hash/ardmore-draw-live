@@ -1,0 +1,1066 @@
+{
+  "deployment": "dpl_4yokWUsAE3XJ9UC6K7tnYvTuBZXA",
+  "verifiedAt": "2026-09-21",
+  "files": [
+    {
+      "path": "public/apple-touch-icon.png",
+      "sha1": "d92f3d3aea3c0d27076f045d95a49fce298ea2f1",
+      "sha256": "c69bc9ad621643cf4e0e1b539acf22bc31897385114d80c3e582ee5e5fc15ad9"
+    },
+    {
+      "path": "public/ardmore-og-20260427.png",
+      "sha1": "53267cf1a73dea1e227c38598a3332c4fcf75908",
+      "sha256": "b1a89610074756f92875bbb65fafa1f079f7b9731b2390257b01b7499ae05ba9"
+    },
+    {
+      "path": "public/ardmore-og-20260428.png",
+      "sha1": "53267cf1a73dea1e227c38598a3332c4fcf75908",
+      "sha256": "b1a89610074756f92875bbb65fafa1f079f7b9731b2390257b01b7499ae05ba9"
+    },
+    {
+      "path": "public/ardmore-og-20260428-simple.png",
+      "sha1": "ecece338e03f008e92c1cdb195a44f13a16e7253",
+      "sha256": "15e78946d4d72599c4f145720e8b0f6fef1249722423eaa39ca311af138fdd31"
+    },
+    {
+      "path": "public/ardmore-og.png",
+      "sha1": "ecece338e03f008e92c1cdb195a44f13a16e7253",
+      "sha256": "15e78946d4d72599c4f145720e8b0f6fef1249722423eaa39ca311af138fdd31"
+    },
+    {
+      "path": "public/ardmore-og-20260525.png",
+      "sha1": "d56bae866c927d4aac10e3b87ff26cc1beda670e",
+      "sha256": "5480c13aa56d4763467212ffe5711ae2eebf7de56ecf59ef6bcee83adf36269a"
+    },
+    {
+      "path": "public/favicon-32.png",
+      "sha1": "f3d3cb2360044b3631e9b7d23cc436e413852528",
+      "sha256": "20cce942acfad057de301353b3d09995a47735712bc173a86be9cb05ff8e44ab"
+    },
+    {
+      "path": "public/file.svg",
+      "sha1": "fb380eeffe87d50b597383664c02982964d0d28c",
+      "sha256": "2b67812c325c199a02536cdbeea0c593a72f707d323b72ee3e08dbab06753bd4"
+    },
+    {
+      "path": "public/globe.svg",
+      "sha1": "2eba23b01a46733bb8423e6d38ebf5f7e95abec5",
+      "sha256": "b614b9bf183925957661ac851498fe1d8029fd43a62fbfed86f9e2624a57e7cf"
+    },
+    {
+      "path": "public/images/archive/adrian-murphy-wicketkeeping.jpg",
+      "sha1": "5c93cf9ff7f37b3831158fe3b3186278a5bf45a7",
+      "sha256": "8c3f9320acf2be231ddcb2a1bebf539797c649a5f45d3b48ba74f09803c19cd1"
+    },
+    {
+      "path": "public/images/archive/archive-team-1.jpg",
+      "sha1": "55356235969af584d15c6e24110ac3eedf542849",
+      "sha256": "c8a8777608d5969360c5271ecdfe103b6aedb693bd2e86c1d3e72ff0c298ef48"
+    },
+    {
+      "path": "public/images/archive/archive-team-2.jpg",
+      "sha1": "8df6cb800394b8b6cf7ddb7a9c24382270bf150a",
+      "sha256": "2cb158de8ff6fb14259cd0109e7b210bbdb70ae76468d08519f591c16c91e84d"
+    },
+    {
+      "path": "public/images/archive/archive-team-3.jpg",
+      "sha1": "68f60e4202ae3f329552bd54aa26ab991e96af9c",
+      "sha256": "dcac2ec2921b1e30952052e4d17ed9363b4e43b1d4cb2e9c6f021e09ba6c1efe"
+    },
+    {
+      "path": "public/images/archive/archive-team-4.jpg",
+      "sha1": "bf7476f67379d08378a9ebb0b21fb4a9c5f5c8f0",
+      "sha256": "4ea7cbee5c90cbfdb6119d361bba2696302b269ef0548cfc08b295d89c2f8f0a"
+    },
+    {
+      "path": "public/images/archive/ardmore-2nd-xi-1991-sentinel.jpg",
+      "sha1": "412508c91a0b62b8a7306739d214d0e4ab1deba9",
+      "sha256": "06f5720a50a1a97260191f58739cd5a402df13f407aace030493c22ae3fedd8f"
+    },
+    {
+      "path": "public/images/archive/ardmore-archive-team-photograph.jpg",
+      "sha1": "fe4ac1ce741ac2e5576bf84242f452e4c67e200f",
+      "sha256": "3cb6539558bdc8fec38c10492dc54d8c6e19efdf94b106dbbfeddb986676b662"
+    },
+    {
+      "path": "public/images/archive/ardmore-intermediate-cup-victory-drummond.jpg",
+      "sha1": "1d1570fad0de95a1a69a95ca24b5617b53d03f84",
+      "sha256": "8471370a5fbfefa37ee80d6b2ba65e1362553d08069988aeda65792cf50316bf"
+    },
+    {
+      "path": "public/images/archive/ardmore-presentation-dinner-award-winners.jpg",
+      "sha1": "f9e699c3d2a524501863cd0243897f2b56f04cec",
+      "sha256": "f98f809d3a2fca96ce77c1e600aa19fc7fbc78f341f86bf9db27a3a3da9e650e"
+    },
+    {
+      "path": "public/images/archive/ardmore-senior-xi-1934.jpg",
+      "sha1": "ff98767feb1553695ade8e8bd4031597e26c79fe",
+      "sha256": "6a8ca2340f25dbabf75ead0ca717d99a1e58b99a553d253c7d2dbc05e321a216"
+    },
+    {
+      "path": "public/images/archive/ardmore-trophy-team-archive-photograph.jpg",
+      "sha1": "b4775b603fe215cb59214054b96b5bcc22581be1",
+      "sha256": "0b2719618611e543fc4ee57ecccf843a9b2e7dc80b2ee9b38878ab3847b43afe"
+    },
+    {
+      "path": "public/images/archive/ardmore-v-bready-division-one-1991.jpg",
+      "sha1": "f47a2c6d244de2d1536dde8f025b36e74e7293f6",
+      "sha256": "c0c9c1163618a1d99f6bdcd5a4df738afd563072545408ade5843d30e544052b"
+    },
+    {
+      "path": "public/images/archive/ardmore-v-strabane-senior-league.jpg",
+      "sha1": "3bb1264365ab27ed8c41cc3c5d7f2a0a2fd76cd8",
+      "sha256": "41f37015d66c37aecfd29d83eacf1c974c19e3661166254e28e7543e33543fd7"
+    },
+    {
+      "path": "public/images/archive/austin-richards-1.jpg",
+      "sha1": "8c16f6010875d23026a9b57c4816030add44200a",
+      "sha256": "50cabed509e7d81d844183683840c77741b49be553f818f7e3559160d541cdb3"
+    },
+    {
+      "path": "public/images/archive/austin-richards-2.jpg",
+      "sha1": "ae0b68759834346f1dd7c1a8240ee78c4047ef94",
+      "sha256": "e2d1045225baef25566e621b21c5493b6d55cb8011eac84833ee82a368a470e8"
+    },
+    {
+      "path": "public/images/archive/aviwe-mjigima-1.jpg",
+      "sha1": "a11368a18d6265c8b2ccff85bed935c1895b2faa",
+      "sha256": "3b38a301d856e97bc5e2eee38634e90bc3b23cadc4a96020e3b70a8747a2e28e"
+    },
+    {
+      "path": "public/images/archive/aviwe-mjigima-2.jpg",
+      "sha1": "bade0a4059dd9fc43ed879b17107c85ce1deb6e5",
+      "sha256": "8e13ad8d7c599c87d830c7ae016c0725d09efe71248fdd8116bbbbb16f9c7c13"
+    },
+    {
+      "path": "public/images/archive/azeem-ghunmann-1.jpg",
+      "sha1": "9743ac3185c2305f26a20b07fe07dd092604b717",
+      "sha256": "950df5971b40e5ecae4a1f406354af1e3fd22add13ecb262897dc1047a091dcd"
+    },
+    {
+      "path": "public/images/archive/azeem-ghunmann-2.jpg",
+      "sha1": "916ebe26f73f09f8effc917975be2721ffb03d83",
+      "sha256": "bb6748eb0fad0848f80aba23c468348dbc14c40b70e4c6bf3736039dd59b8ac0"
+    },
+    {
+      "path": "public/images/archive/bobby-brolly-charlie-mcgowan-1986-intermediate-cup.jpg",
+      "sha1": "354d3dcde0aee3635190b0275ca1038367fbe135",
+      "sha256": "f14b4e9a3bd4f0a93f2e191923e68c0b73d6ab81a1f91824cb34f6e90ce0397f"
+    },
+    {
+      "path": "public/images/archive/brigade-v-ardmore-paul-brolly-paddy-semple.jpg",
+      "sha1": "537c7b9bc4501b904b8f95434965c8de3580a2a7",
+      "sha256": "19de236ddfb64838cc651538f52a51cb7b3bc5701009a0d501e3ef4144ece198"
+    },
+    {
+      "path": "public/images/archive/brolly-family.jpg",
+      "sha1": "c70bac839bfad1bb1f5e04d065cb7f249d613d4a",
+      "sha256": "e98db4e05e00eeaa9c4b222b16115105d91969335cd265e9221209639100b797"
+    },
+    {
+      "path": "public/images/archive/brolly-patterson.jpg",
+      "sha1": "0124e2dda7ea39bda1d319d8994b7eec64462ac6",
+      "sha256": "5995d8cc4a2bcd7138398171421874c24f9148edb1c63b2c1059ba7455a0cd81"
+    },
+    {
+      "path": "public/images/archive/carlitos-lopez-1.jpg",
+      "sha1": "7316d7775195ef9ef8b6f98822696dfb7d241f66",
+      "sha256": "ab5cd1c1e1ed9c54cb3b7ca7df8e4d08560ce8d321361973c0852c34ca23384f"
+    },
+    {
+      "path": "public/images/archive/celebrating-2023-dressing-room.jpg",
+      "sha1": "a9fab0e4854d27f538d0fa91e9250a6a788dd471",
+      "sha256": "633d67235e06d12317b67eecbdb7e436035a540eab16674bfccbb716ff84a231"
+    },
+    {
+      "path": "public/images/archive/celebrating-2023-pitch.jpg",
+      "sha1": "4593f7e65a9f360d4a9fe2194ac5864c5f54df59",
+      "sha256": "3879e36b7358d1a71909ccfb7584ebbea1a3c9b9dadb5eda3639cc24cbcac230"
+    },
+    {
+      "path": "public/images/archive/celebrating-2023-team-and-supporters.jpg",
+      "sha1": "5c87c7ddc78a9fed1fc4ebe9d2de7a59a717c8b9",
+      "sha256": "4c005c0843c7ff2806353afa176c5cfc741a56c98fc25712d5ef8b39c6947d64"
+    },
+    {
+      "path": "public/images/archive/celebrating-nwcu-premiership.jpg",
+      "sha1": "d074b9170271842e8b63400d7cf2753826c34ddf",
+      "sha256": "254653a5b958ae787bf3500b85bbbfca69168ee41a10ed90474dd80f57834c42"
+    },
+    {
+      "path": "public/images/archive/chambers-duddy.jpg",
+      "sha1": "4c719fa46260fcfa72dac591970cef8d63e5c697",
+      "sha256": "9405cb0e706899750c278c45c79f0c9de6fc6b061c651aaa737148d412076a86"
+    },
+    {
+      "path": "public/images/archive/classic-team-dunlop-mcgahey-era.jpg",
+      "sha1": "ca69564e149b53f30f8b8c17a33b9126f9834477",
+      "sha256": "5a345c735d28debca13908e9792d4267b4ad1aafddb748031e7048ae5ae4c53f"
+    },
+    {
+      "path": "public/images/archive/classic-team-early-years.jpg",
+      "sha1": "f900be4b62336873c79398c56faa05a6f48a73fa",
+      "sha256": "88b2e99cf52c3f632789b09ce1eeb299593ea7c139823c0d3eeb7ff33b01759f"
+    },
+    {
+      "path": "public/images/archive/clubhouse-gathering.jpg",
+      "sha1": "0115698a1f8bc3ab231a92a04945bc267e0eae16",
+      "sha256": "e8a0b6f032b17741f5b0bcfd4cf854e3243a245692773186fe3df896ba4e6077"
+    },
+    {
+      "path": "public/images/archive/connie-and-george.jpg",
+      "sha1": "165b06d6fd09f804cc325fa310774c1dad56c6e3",
+      "sha256": "833d28e870b16cb3bb0a54eaa803722b298312566fce6e241628b4e9d1a9b92e"
+    },
+    {
+      "path": "public/images/archive/conor-king-tom-martin.jpg",
+      "sha1": "ddbff28b63cb5fc6dd37ea8a5c2e64f9fc1d69b9",
+      "sha256": "641fa9e18d22c9f2d87dfc2c8c2cb09d9bbe6b6993ba01ec61294f12aaf81eae"
+    },
+    {
+      "path": "public/images/archive/cyril-ward-man-of-the-match-intermediate-b-cup-final.jpg",
+      "sha1": "1c8e74a0784b6d58a3920258d65d885eeb1e34ec",
+      "sha256": "2b5a98a967069ae980ca1ff99000bef125623ec7eff2ebc4687505b90155fa08"
+    },
+    {
+      "path": "public/images/archive/debut-cap-brolly.jpg",
+      "sha1": "52ba6b73582532b920ac7db31d7ed4d795c985cf",
+      "sha256": "b3d118dc60cbd5a924be349080ca0543062ca874f2409b7af4bc60d0c8013b4d"
+    },
+    {
+      "path": "public/images/archive/debut-cap-presentation.jpg",
+      "sha1": "c89548523bacd21fbc772b11271db9b19b83bf4c",
+      "sha256": "69c078092a49559c008d92ce198586050e233633b1346389bc799502222b2d22"
+    },
+    {
+      "path": "public/images/archive/denis-ward-intermediate-division-v-trophy.jpg",
+      "sha1": "bceadd08dc259ebfc26e2a05c94dc6c601545bb9",
+      "sha256": "56ecac3c840939fbfb73470bfd1631b91375c33fc43fb3caea2e4382b0210809"
+    },
+    {
+      "path": "public/images/archive/dermot-ward-batting.jpg",
+      "sha1": "105af167344ac41b7c4f02721c4a6533cfcaaa6d",
+      "sha256": "056a956c89dd6948e5e3430e8596f7fa18aedc34a79f77ba496654dcc1768fd9"
+    },
+    {
+      "path": "public/images/archive/dessie-brolly-conor-coyle.jpg",
+      "sha1": "453e4b753005efc53a1e3f2c1f5a057b2b9aad19",
+      "sha256": "e6d8eece818aace271e9ca525902991e1e5f646803c8cd31921cfb39f8c2836e"
+    },
+    {
+      "path": "public/images/archive/dressing-room-celebration.jpg",
+      "sha1": "6df6dfbb825e75843ee6f5a11f183dd01c540fde",
+      "sha256": "d18b85f17c5ddf277257c2a30c92c587b3ebb8ff819e5d600dd5f6e1e2e867a7"
+    },
+    {
+      "path": "public/images/archive/eddie-gallagher-holywood-boundary-catch.jpg",
+      "sha1": "4c697606f649aada6e8a2a653b00a392a3cfb104",
+      "sha256": "19511a98a21bfeb3ec368ae2d470231673cb7132171d0a1416467ecc639b156e"
+    },
+    {
+      "path": "public/images/archive/foster-mttiziwara-1.jpg",
+      "sha1": "183823aa88f4757393d1b3e230701e8fd3f8450f",
+      "sha256": "fb9765488943a48a3f5a9e1279fc25e87d04b8fdd5cad7555c7672d1353e5a8e"
+    },
+    {
+      "path": "public/images/archive/foster-mttiziwara-2.jpg",
+      "sha1": "0176dd6030a877cb608ae80264d764a54e3bdb56",
+      "sha256": "f71eac43eefa4e35c0597a96d2953ad0d36f939b18854f1af625e9b6ce99ced2"
+    },
+    {
+      "path": "public/images/archive/founders-bench.jpg",
+      "sha1": "63130e62347fcb1fddaf962292a8176435a04d19",
+      "sha256": "cdfff0d41daf8e15cb5d51dfeafc710c2bc6396339b40c48111fc76a4b5e0ce4"
+    },
+    {
+      "path": "public/images/archive/george-and-barry-chambers.jpg",
+      "sha1": "cbbf110b48287d2f0355f8b2c13f4ed08da547bf",
+      "sha256": "fc31ad5a4c7ba15259f0a574315bd56ed5313700b72ef31ab048ebcd30b055bf"
+    },
+    {
+      "path": "public/images/archive/george-brolly-and-connie-mcallister.jpg",
+      "sha1": "8fb3d5f4aefc936c3cfa0cc8a7cb4385d7005078",
+      "sha256": "b5b0620e0f59eb47ec503a1746b3e89795ce31621f1327aacd94274e3debac1f"
+    },
+    {
+      "path": "public/images/archive/george-brolly-senior-and-junior.jpg",
+      "sha1": "fe92e0831c335264d4be0333caf3c06a2a1463a2",
+      "sha256": "3439046436882f9b429f1144bc4a3864aebd537f14cc4f123e019d115c353b0b"
+    },
+    {
+      "path": "public/images/archive/george-brolly-snr-jnr.jpg",
+      "sha1": "1377a9073ecf1ff4e971904cef416a6f71fbb0ca",
+      "sha256": "25a0045b9946b409845793d5ebbbd507ba4a68147f86f3ccecd165628fc2e3fa"
+    },
+    {
+      "path": "public/images/archive/george-michael-dalton.jpg",
+      "sha1": "5c546b91a33136b67f603ed7ed2db9fb138bcd01",
+      "sha256": "041dbe7ae7f5e66467d4b5d1adcb5ca9a3320147d7ff10682f58b331bfb47449"
+    },
+    {
+      "path": "public/images/archive/george-noel-and-connie.jpg",
+      "sha1": "7dd3acf4bf7348a2e47a22feb831bdd387d37415",
+      "sha256": "b7ac2490cc009ceb0d1c5420d953d1bcd9a2035074a60ae419730c6ad23f36a9"
+    },
+    {
+      "path": "public/images/archive/glyn-shane-king.jpg",
+      "sha1": "8d0d5850b62ebdac75446c6b42280aac2ce7a23e",
+      "sha256": "d88609b9a5d5e14afe1fd8af700c8c259e36888a652b3872eec34155f7436fe2"
+    },
+    {
+      "path": "public/images/archive/gormley-brolly-ward.jpg",
+      "sha1": "3f475d927b4fcfe574395713598540e42797dbb8",
+      "sha256": "b401f599abae4cb56ea07d5baea8513efd23048ae470c73bce83748f4a1bcad4"
+    },
+    {
+      "path": "public/images/archive/grant-moekena-1.jpg",
+      "sha1": "57c85aad4e8ad317ba32f35a90fde8575009418b",
+      "sha256": "0495eb8cfadae1c19dd175163d17d958c901676b828941f23eaeb8232f46e28f"
+    },
+    {
+      "path": "public/images/archive/grant-moekena-2.jpg",
+      "sha1": "f03ce4152806c38261626b313b4e84097644c002",
+      "sha256": "ab36870381a033a8f5a4905e2725bcc21a25b943c89039ea93b995f57a0593a9"
+    },
+    {
+      "path": "public/images/archive/iftikhar-hussain-1.jpg",
+      "sha1": "ff96fed12bd836b80f499b915cc4d2fea84ecf28",
+      "sha256": "3b081cf0fb9e58ff4aef1c5d730ff2b704a3106510fe5fe3b762155fad1cc307"
+    },
+    {
+      "path": "public/images/archive/iftikhar-hussain-2.jpg",
+      "sha1": "7bd58ad0391e4569d8759c1fa06094e9fdd2bab9",
+      "sha256": "4bcd3f7a3d9458dd83031fbe00c21e356fbe2efa838adab24e630ea3bae99c15"
+    },
+    {
+      "path": "public/images/archive/junaid-ali-1.jpg",
+      "sha1": "79c5c4891e86b620c712efb1465b2c3c14f57d68",
+      "sha256": "e8a89f6472471ac57e49b1d70b71c6f3dacd43a6a5acbeb665fe5841c05697d5"
+    },
+    {
+      "path": "public/images/archive/junaid-ali-2.jpg",
+      "sha1": "d59595a3a2d71052243e87034aebdc2622d5dcac",
+      "sha256": "157f86eab82e849ef013fdae8d3feeeab01e16ef4ab229df7102d6b4899657b8"
+    },
+    {
+      "path": "public/images/archive/marlo-jardine-1.jpg",
+      "sha1": "8fe7a03fa743dbabfd9b2d99fb0fb0ebcb68bd33",
+      "sha256": "c4db21d90a7d134bc84b5b37be053fe9677c9f40805af4b9aa723f73d4d280b2"
+    },
+    {
+      "path": "public/images/archive/marlo-jardine-2.jpg",
+      "sha1": "4087fef8aade396a371ea85ff6a9627d9a169ee1",
+      "sha256": "d7e23ae4f88b38e07a38e8f7d55881b90d3bc18f72caa628e52233e38add6c60"
+    },
+    {
+      "path": "public/images/archive/mayoral-reception-2023.jpg",
+      "sha1": "9384e8c0fc048379bdea022353706bdb7ac8bc6c",
+      "sha256": "06a95f79a51142b7dab7bad93d8df3349a3c9628f8a42b9dc16c68ecd1cb263e"
+    },
+    {
+      "path": "public/images/archive/minutes-silence-bleach-green.jpg",
+      "sha1": "1b4c557869d3653f94ee4ec9df483751de10d0f2",
+      "sha256": "893ed7e2dcc7dd5671394bd8761158747fe8979f9fcd6579f37060e6e08ab5e3"
+    },
+    {
+      "path": "public/images/archive/noel-ward-flag.jpg",
+      "sha1": "8ca9f699c42177b1da99adb9dc46dde5ed18de5a",
+      "sha256": "a4163886ba3569323ef87438a76aacc60236560abdc29ed92fc970e0c4fda517"
+    },
+    {
+      "path": "public/images/archive/north-west-xi-v-munster-strabane-1974.jpg",
+      "sha1": "80226081cb26fcd36f3359884be8632e4be005bf",
+      "sha256": "e8b2fe966da90c11472b289f3a07fd327a4221acf4de806e34f4bbee12483e99"
+    },
+    {
+      "path": "public/images/archive/peet-pienaar-1.jpg",
+      "sha1": "e2b937b56d64eed6f73d064e35197905e30a7208",
+      "sha256": "5bf428904202dc72e3de17492ed5ed1b50b93213e0b3edef92e2100a771add19"
+    },
+    {
+      "path": "public/images/archive/peet-pienaar-2.jpg",
+      "sha1": "715d775e54d056549ea058707e24a24aec8a20da",
+      "sha256": "c25100678c7e14016d8b1c6104867607ab0cd352bf83c7ab231dc0b87eaaf54b"
+    },
+    {
+      "path": "public/images/archive/peter-harrigan-wicket.jpg",
+      "sha1": "83959d37318749dec29d6e9bd166c08b95e4d783",
+      "sha256": "c710039ede9f0b11793991111780930861cb324275d56db7eb976d47927c6adf"
+    },
+    {
+      "path": "public/images/archive/phil-simmons.jpg",
+      "sha1": "af408335d9785cf0eb04a42ecf85f7cec3fbcdf8",
+      "sha256": "4b2ba0d2acaee30afbb1b20819d464e956b37ef1b5b427679dd7b534db7482ff"
+    },
+    {
+      "path": "public/images/archive/raman-lamba-1.jpg",
+      "sha1": "62a7e54a8aa7ffb4134ec533d3640a32880a2b05",
+      "sha256": "529af119a6b37ca27eafd2c144e821401ee723b8c88620971211e61389733720"
+    },
+    {
+      "path": "public/images/archive/raman-lamba-2.jpg",
+      "sha1": "50485f46e652aa8f315f5800a3bcf59697a3c133",
+      "sha256": "7bc88b80ce6c7dbe7866665afc4ef3e42a2eb5ff1656bb4067468d062b8914eb"
+    },
+    {
+      "path": "public/images/archive/raman-lamba-holywood-schweppes.jpg",
+      "sha1": "27b79d3d454f92dd863141c624e6c7941498062f",
+      "sha256": "46c1aeb5f4f13c0d8b855b897923ad2e2ccf83634d11ae13a64619c3fd59a76b"
+    },
+    {
+      "path": "public/images/archive/raman-lamba-man-of-match-george-gillen-stumping.jpg",
+      "sha1": "ce283e681bbce1b1cb9e74abe682c03dc3e07e1c",
+      "sha256": "58be75131264018caafd7bddb0e5abd3c5ef685d923d8fd6a322b19513ef9672"
+    },
+    {
+      "path": "public/images/archive/raman-lamba-welcomed-bleach-green.jpg",
+      "sha1": "31dc73366a3d91601a32cc13a2babd634756aab3",
+      "sha256": "a23bdc6e80274b4dd7aa097fe9dda5fd4e67201c9b4812e316a0bb96f5000496"
+    },
+    {
+      "path": "public/images/archive/rameez-alam-1.jpg",
+      "sha1": "897ecd4fb7781727f5141e50f78a72b968ef7c90",
+      "sha256": "3c613ab10f9266335305a541bd95782c0b7652ef847edc5fb3b76111344d8b13"
+    },
+    {
+      "path": "public/images/archive/rameez-alam-2.jpg",
+      "sha1": "00d4c4deb96e6126202a7d32eaef3763fdbe8015",
+      "sha256": "cc49ff96843acc3fb7e5be17de107ac1902f267148b4f5306b920eea4aded829"
+    },
+    {
+      "path": "public/images/archive/rizwan-aslam-1.jpg",
+      "sha1": "f850e86c206c8f61e015e9808c24df7a6fdadb9a",
+      "sha256": "6e32ba41ca2011df327cd88485be580184e2399b21ddd79622f6bdff79a0edb7"
+    },
+    {
+      "path": "public/images/archive/rizwan-aslam-2.jpg",
+      "sha1": "6bbc9ed46ce87fbe61d1d0d06e1352a6810c0902",
+      "sha256": "bbaa87ca1511b506cee038f521208f87cdbc0f1287298ddcb25cda876f482052"
+    },
+    {
+      "path": "public/images/archive/sanjeev-sharma-1.jpg",
+      "sha1": "aa1e1752e639c6d06d84f547e97b97d05b36cddd",
+      "sha256": "10a0134f8d80adf3d04ebbb3d402b0b4a91f2d45b87483800197efcbee0c2721"
+    },
+    {
+      "path": "public/images/archive/sanjeev-sharma-2.jpg",
+      "sha1": "1287d5f11bef0b907857d26963897063405bc82b",
+      "sha256": "b24a7b5fa984c2a529e1ada8ee7952510c32ba1edc483c22964668da7be739e0"
+    },
+    {
+      "path": "public/images/archive/team-celebration.jpg",
+      "sha1": "e896f74749cf158190eccd9972adbd2bbb56fa5c",
+      "sha256": "862048be9c7af5820ff302d038e2c8ddd2fd5983a0344fbbcdc7448c40323073"
+    },
+    {
+      "path": "public/images/archive/team-classic.jpg",
+      "sha1": "57bc89e6280d535b7f6978de234cc94b42e3fec5",
+      "sha256": "da05bd800276f69122e386456b78e388c3113d626051f57d01ced86a853ac567"
+    },
+    {
+      "path": "public/images/archive/team-group.jpg",
+      "sha1": "f75f98bdf83fea928f8a1c898296128f0b7ae143",
+      "sha256": "366ca02480df859aa9ac9cd554e2ea4698a1b2d3a872b4d6da59cab5e9522c6a"
+    },
+    {
+      "path": "public/images/archive/team-photo-2000s.jpg",
+      "sha1": "09e2e6b4d4085bc34fb174e909c813f5edceb3b8",
+      "sha256": "42a2f78add302ce1bce8c224f0643d0ad46136f9821fa0657848c400e03ee99d"
+    },
+    {
+      "path": "public/images/archive/team-trophy-bleach-green.jpg",
+      "sha1": "1e8863785168073b5db0f6f5a731d71747358c37",
+      "sha256": "4ffa51c2785a316f13e194a0323cd957d0d5d98af564d8b77c7f3456cbaa145c"
+    },
+    {
+      "path": "public/images/archive/teams-through-the-years-01.jpg",
+      "sha1": "49dca4a1d07fcae9d33c305f35ab0cce0c4c0528",
+      "sha256": "7c95cfae9fec31c41842780ae69262961da659dbc2752e8bcc4b9cc7970f6dca"
+    },
+    {
+      "path": "public/images/archive/teams-through-the-years-02.jpg",
+      "sha1": "136fd48d9309e596557f1eee9af212b103863e7d",
+      "sha256": "6be93d9125a5a062ad783d3acdd6261c49a70bd2d361a2ff9680921f004e816a"
+    },
+    {
+      "path": "public/images/archive/teams-through-the-years-03.jpg",
+      "sha1": "f547b28754234e72fd15e1b2c61ee6e95c1883ad",
+      "sha256": "0f977a651e7b0b69303a6c49d7dccb1edda59e989414308afcee2515583d9b9d"
+    },
+    {
+      "path": "public/images/archive/teams-through-the-years-04.jpg",
+      "sha1": "9d9a23a05aac99c5f2d368e45917729ae2b1e2d0",
+      "sha256": "88b47b00f44dcaf203e51769fb2efc87c590136f14af4a448212b4567bfcf684"
+    },
+    {
+      "path": "public/images/archive/teams-through-the-years-05.jpg",
+      "sha1": "2facbe8a1b96de3fedee8347584dab203ad09d21",
+      "sha256": "65a00601643abc1fe3b2b48416d637edc4d55b30fdf133c22b3b3507260c497f"
+    },
+    {
+      "path": "public/images/archive/teams-through-the-years-06.jpg",
+      "sha1": "a1785390faf2c4e161770afac734a7c83bd836aa",
+      "sha256": "5c018698d136f2c675f85b0516bad820eb9656df0228b3f15f33b53b8785ab26"
+    },
+    {
+      "path": "public/images/archive/teams-through-the-years-07.jpg",
+      "sha1": "ea670cb0171aff4cfbcdb7105d45ce00cd95efb1",
+      "sha256": "2418eae66fed41236ff77e60e7c657304c11aed859aebeffcacd7c9b6b5508ed"
+    },
+    {
+      "path": "public/images/archive/teams-through-the-years-08.jpg",
+      "sha1": "eb1c94273248b428543b581c69ea1b0a61f40d6d",
+      "sha256": "04fa9907e0a19e1a6a07daa49d081036301685e3156319e907df827bc733ea4c"
+    },
+    {
+      "path": "public/images/archive/teams-through-the-years-09.jpg",
+      "sha1": "a31729357e50844b99ec59656ec8fcf94560beca",
+      "sha256": "f2a0ae12b4f1f0cc4805565455f1b7a4f8c236cbced4152d68a6d7d17b2d2ed0"
+    },
+    {
+      "path": "public/images/archive/three-lads-on-pitch.jpg",
+      "sha1": "57c964eb56151e2807166ec8cbddb04cb828190f",
+      "sha256": "85cb9e6d67fbc9864932fb748018007ea356a5554f64e12dbe9950a87ac780aa"
+    },
+    {
+      "path": "public/images/archive/trophy-celebration.jpg",
+      "sha1": "ba4983f04e91d6418fd615f846f53d43e2cc82b9",
+      "sha256": "b86391d1c107010367ba982ccfec42eaa4e656ee621600592ea85793ac65c829"
+    },
+    {
+      "path": "public/images/archive/trophy-presentation-harry-henderson.jpg",
+      "sha1": "440e113925b14e9c52224508d211676e95762990",
+      "sha256": "dbc7849ab41e307e66ae43a997c603df7c1617614f0811d785284cfea8c38ca4"
+    },
+    {
+      "path": "public/images/archive/trophy-team.jpg",
+      "sha1": "4f0c40ee5f8bca44bf5a2a518c9e64df92e42d87",
+      "sha256": "8f66a52037d034aad98b59c7b4bdfa946d7d70aec33be5086b3b1b403b2700f1"
+    },
+    {
+      "path": "public/images/archive/youth-coaching-session.jpg",
+      "sha1": "8b2b4d2f5d7ddfb51488aeb696197989ac33e6c8",
+      "sha256": "84565ec4a422b3a4f5b54e6768ef8895afc53e47616140d59bf22b255ba78870"
+    },
+    {
+      "path": "public/images/ardmore-crest-sharp-clean.png",
+      "sha1": "157857fab4128d8ae93507d067f8fb9e30ab9df6",
+      "sha256": "cefdd5528ba9730477deea0c8a8b0a013318cbf75cf077a00c3b89dadcda59b7"
+    },
+    {
+      "path": "public/images/ardmore-crest-sharp-cutout.png",
+      "sha1": "3d59dad8e96947341d9c82310f786748c5f79d32",
+      "sha256": "56fbf9ab04b141feb41c84e7c4587ac0ceb6e8de8b40fa61f5aa49f214b298ff"
+    },
+    {
+      "path": "public/images/ardmore-crest-sharp.jpg",
+      "sha1": "9fb840d7ea210369c20305392ff79c97355b6b32",
+      "sha256": "0ef6cd7e861e96b07bf97fe8768dacd377c8bbe1a23917869bc3939492fc32e8"
+    },
+    {
+      "path": "public/images/ardmore-crest.jpg",
+      "sha1": "809008651e94292d2bf3a44c1562442805a56e15",
+      "sha256": "0879119b52111073fd8a306b02d75cdc8082e5e7fcf245e0b4cc2f1412862b68"
+    },
+    {
+      "path": "public/images/ardmore-crest.png",
+      "sha1": "9f59df424135030b270f9cdd8688be99960ab54a",
+      "sha256": "bb1582854b7127f7a46667924f408ef7bf855c62f4200a00eb828a9064638da6"
+    },
+    {
+      "path": "public/images/derry-strabane-council.jpg",
+      "sha1": "10c721beb0f5a576a4e9f4d18ac5b629a3954635",
+      "sha256": "0b45ffa8ad4c51d76296d19a78a37dbf04edc1a94e3cea30349c7caf81affa3a"
+    },
+    {
+      "path": "public/images/ground-2.jpg",
+      "sha1": "59ccc92c5d5dbe2392ab10b5e99f5ca061a9b63e",
+      "sha256": "fff5a78d30247dfcbaa425a95862ed3c93621e502fc026f3df519ebdf2bc1251"
+    },
+    {
+      "path": "public/images/ground-3.jpg",
+      "sha1": "a1b6825ae4545b8787876bb0501668822ccfbc7d",
+      "sha256": "fda13c48bce2bd02e162070f060bef00679d1de925f82d6357346f6143797bb7"
+    },
+    {
+      "path": "public/images/news/ardmore-cricket-coaching-friday-nights.jpg",
+      "sha1": "6f1805ef93efc0787e0330ed907eb8f3cdeaf7a8",
+      "sha256": "f4ed212990d6ed1e0170ccca7751c7ecb976e3e3cf55b0aa93fb1e08b40e0625"
+    },
+    {
+      "path": "public/images/team-1.jpg",
+      "sha1": "d9a4db218c13d49b03991120b64be7fee19f3a3d",
+      "sha256": "4aec5e30677c70b87e8e932759f3ef5c4cd61f42ae20e84b560741b96696641b"
+    },
+    {
+      "path": "public/images/team-2.jpg",
+      "sha1": "d645a7ac75d5d5a148c1e71dfc5ce50a0ec879bb",
+      "sha256": "ccc50eb96b53810aaab4aefd0fc16b84eb724d122e089cb91fb7ee348535b82f"
+    },
+    {
+      "path": "public/images/trophy-1.jpg",
+      "sha1": "35950c0a903937593e1f9546747fb047a72d0822",
+      "sha256": "edfe2ba0257aa1e1671174b1dfdb017c42785630807f27f275d571514147e40f"
+    },
+    {
+      "path": "public/next.svg",
+      "sha1": "3f3e95622612b989c5bd6a03299a308c6f3c7e6b",
+      "sha256": "55995dfad6ecb4945a1e856ddca03c5e16aa5bf13fd21b4df6a74ae79357bcfc"
+    },
+    {
+      "path": "public/sponsors/gr-scaffolding-ltd.jpg",
+      "sha1": "6b600ab86f9ba3acfc519f0e1d8f225b983f8675",
+      "sha256": "34647ffd59f15fc66505daea75967d05fa0053bbd6920132aa858bd61efedc7b"
+    },
+    {
+      "path": "public/sponsors/sheq-management-services.png",
+      "sha1": "f8a25c8670083076e76118ea1fc1f5a5bbc3c95a",
+      "sha256": "718e16d1faf7a18ce5a29fbac6ddabd8c4898eaaadba277a62e83255aeace17a"
+    },
+    {
+      "path": "public/vercel.svg",
+      "sha1": "cebb8852d58c8886be3e9051a26957f42bb82f1a",
+      "sha256": "f081337b2fee635b455b63275406a3e7f39d6a014e25ad90dab5a67e62a12ac4"
+    },
+    {
+      "path": "public/window.svg",
+      "sha1": "54c48e0daa6caa317fe1b4c419007fd93e948db9",
+      "sha256": "644768c4aaeb4767bce293344eeb0c125fb804a94d801440424072202d85e3a1"
+    },
+    {
+      "path": "eslint.config.mjs",
+      "sha1": "44d5bed565a8dd284af3e17f3b16a1c752008d0e",
+      "sha256": "870f1adccecf3051cbcd9fd307cef51d7633cf510979c181a81f4b1797273493"
+    },
+    {
+      "path": "next.config.ts",
+      "sha1": "89327ac52fc9a00fb8b885afd6654f18e58b3156",
+      "sha256": "614bce25b089c3f19b1e17a6346c74b858034040154c6621e7d35303004767cc"
+    },
+    {
+      "path": "package-lock.json",
+      "sha1": "f05e1a84744f22620767da631b7a65b8e0878e68",
+      "sha256": "9c6d00151337bddb45f6f2bb3c101f5046a936ac728039627099d1e2922846d9"
+    },
+    {
+      "path": "package.json",
+      "sha1": "65b070bbc0d5aadcff910c838a24528a17e621f2",
+      "sha256": "972408f23caca1f86130e7f3df9e363048c748d33b44d4b93b299c077e6a39e7"
+    },
+    {
+      "path": "postcss.config.mjs",
+      "sha1": "8f8be689e9af58f80351df6e6b551146822f42a4",
+      "sha256": "dfac7ac2d86d326a0e5adb024e7943c181393ed17a5fcb8f0315b24c7da6ddde"
+    },
+    {
+      "path": "scripts/smoke-production.mjs",
+      "sha1": "811eca3e6690118a0071b81fccedbc460d08fdf8",
+      "sha256": "ac8912bb6e8ff5c1549dbf3033d550a1560cf9d2ede99c029b0a36ba93bddb7b"
+    },
+    {
+      "path": "supabase/migrations/20260301200001_draw_subscriptions.sql",
+      "sha1": "8e85f7c44c4920ec74958fd779d7326a397b7322",
+      "sha256": "c0361994cb95e55a1303785a54e3dfe9e8fec09e49d03fa1a3d4ee6f4b97cffd"
+    },
+    {
+      "path": "supabase/migrations/20260309140000_add_assigned_names_to_number_selections.sql",
+      "sha1": "f4e0302c5627a88b93b7d9f777c7c40015cb7f4f",
+      "sha256": "a553b066a2234ad00865d68872ea50240cb5aeaee0a4e1a9606e0793c7483b79"
+    },
+    {
+      "path": "supabase/migrations/20260310100000_stripe_connect_payouts.sql",
+      "sha1": "c8e43567a168b900acfeb89407775441beabdd54",
+      "sha256": "39fb3e1418d119ee460a38b34dd0982c978478bd5a6a31245e3738a9ce3184fc"
+    },
+    {
+      "path": "supabase/migrations/20260310120000_admin_payout_tracking.sql",
+      "sha1": "3d7a6df1e3bfe70f4e662a5278075c02f4aa1b38",
+      "sha256": "b32c1bc68dcd974ae4aee9fc51995a7c0d18bef894ea167e5c53995160f227b7"
+    },
+    {
+      "path": "supabase/migrations/20260518090000_idempotent_draw_payouts_and_webhooks.sql",
+      "sha1": "2e08f980e158e988794707e08ec671a3c46528a6",
+      "sha256": "d198d47df3c9c9608d97812d61ec327c6fc11e4e40f544cf98abc018596e1e19"
+    },
+    {
+      "path": "supabase/migrations/20260518100500_enforce_unique_draw_numbers.sql",
+      "sha1": "65520720b96ddc05d6253ca95b7bf0b923552e6a",
+      "sha256": "5356d80412e4e5907a3e21ed78772e579c97e7abf0c107a4b831df8fde0162dc"
+    },
+    {
+      "path": "supabase/migrations/20260525190000_allow_multiple_number_selection_sources.sql",
+      "sha1": "b5c06a84ced4d18537704dc63113b533ec13639d",
+      "sha256": "7253fc903a6e93f4b0735cd07249ceaa91948c78b8a422c0979872b604077275"
+    },
+    {
+      "path": "src/app/about/page.tsx",
+      "sha1": "dd6e641b31ad2e265730def07b21e2520b8e399c",
+      "sha256": "8d6a26bff99470bfb311cfa479ad9907bdfc1632ef606d10fd45f5b6fcbee36e"
+    },
+    {
+      "path": "src/app/admin/draw-entries/page.tsx",
+      "sha1": "b708ebf8afc179608d8672a1878dc7dc76406793",
+      "sha256": "ee18b2c20c5e0dbeb7a176abc713c0c635e3fe81e88414acd2ec4c99ed9220fa"
+    },
+    {
+      "path": "src/app/admin/memberships/page.tsx",
+      "sha1": "4d36707c5538f7311f17cf8f375dafeb21a7bb19",
+      "sha256": "0d62b0035554fc105c7f50656a821e33cbc35370c90aeb4a5456c896ed06c1ab"
+    },
+    {
+      "path": "src/app/admin/page.tsx",
+      "sha1": "f091573bd2744407d3e48161e592bdcfa9ad7146",
+      "sha256": "c72457f6f7a04e42f8c107d39dd8fa97ffe464fe347182f1dc2ecb0e89f1fc3c"
+    },
+    {
+      "path": "src/app/admin/payouts/page.tsx",
+      "sha1": "cae75f7437aec5aaa682c2a6d668b780bb270ff0",
+      "sha256": "23046e1e3619e90af1a25b3cf2e4303b6197c0ec44636a0207283261434e8b23"
+    },
+    {
+      "path": "src/app/api/admin/draw-entries/export/route.ts",
+      "sha1": "b6c09e4f0496a651f17ffcde9da9e68abdd48904",
+      "sha256": "f6c2107463ba5b9f3a0fa8dbca8a9f604ae1254fe4caebf25ee4b882308fb339"
+    },
+    {
+      "path": "src/app/api/admin/draw-entries/route.ts",
+      "sha1": "f8da2823c1b9063700ccdf9dff909d426ff478ef",
+      "sha256": "89e2d569f9a0db97dabfb42db6aea6ead86dd00fc09ca906e30d654818101fb9"
+    },
+    {
+      "path": "src/app/api/admin/memberships/export/route.ts",
+      "sha1": "35157edef71a79fd14e1d566f9108fa2ba92ca3b",
+      "sha256": "c5b53fdb1ee71e0b503ce6f5cb360c23eafba7008bb5c7eec4d9f86d41083e0f"
+    },
+    {
+      "path": "src/app/api/admin/memberships/route.ts",
+      "sha1": "6fc99051af6119939066938683c75a85114e0d53",
+      "sha256": "62058a175da1946c515d7ff8529846ecdae079b67489d0eee86d4fcf0b4431c7"
+    },
+    {
+      "path": "src/app/api/admin/payouts/export/route.ts",
+      "sha1": "6c930810dfb8c2a2068d3e7970a79618e1a1595a",
+      "sha256": "812fc4d67c4874db45955ee185ba2c8a53eb15ba8f34146488a55b82f84e1331"
+    },
+    {
+      "path": "src/app/api/admin/payouts/mark-paid/route.ts",
+      "sha1": "da339ccdbab334744192ba8938fb5332491d22d9",
+      "sha256": "b7c9f9501cb3b4df3b73265ed9497b6b422033f0e27dc1fbb7752078cea92dc0"
+    },
+    {
+      "path": "src/app/api/admin/payouts/monthly/route.ts",
+      "sha1": "ca86c82cbd428f28ac96135e43da46e40d5911f6",
+      "sha256": "352d10243a4592f885dbdd6cd37abc0a974cce9076701918cd784a79a59de62b"
+    },
+    {
+      "path": "src/app/api/auth/webhook/route.ts",
+      "sha1": "7d5e33d69f54875da0ed42a69c44a2e7bb1839a8",
+      "sha256": "40f8f9029552738c8b0a27b74c4f1f66080aef311cb37feae808647635fb1ac2"
+    },
+    {
+      "path": "src/app/api/billing-portal/route.ts",
+      "sha1": "9793e1bf5097c317457689bff3766762dfdc48c4",
+      "sha256": "b0a2ab774dd9fbe19b748d2598ee59b350ca3ceb81ab247ae5ab1867d39f2f66"
+    },
+    {
+      "path": "src/app/api/checkout/route.ts",
+      "sha1": "846c0e0bafbfda39a85ddc5f47d4a78296e93dd1",
+      "sha256": "2eb7ff91aa1808662cdfb747e5a4515f1795f0a10fa2d0644ee93aa9b02854c8"
+    },
+    {
+      "path": "src/app/api/connect/callback/route.ts",
+      "sha1": "41fb5e37560c964fc7745b0f3a8884e7ace36a34",
+      "sha256": "49c6a671b7918fa65ca3109046fae4549d848008e2aef59d4ed3ce3e8c03c331"
+    },
+    {
+      "path": "src/app/api/connect/claim-info/route.ts",
+      "sha1": "d40d246cc502252f3d1449b3453225c9e33c73e6",
+      "sha256": "c2ac974d707f3946725f52719a0d9915d70ac9c13ecbede5b7adfaea9e93c1e2"
+    },
+    {
+      "path": "src/app/api/connect/onboard/route.ts",
+      "sha1": "9603b88f6b38fca783ccaced4a7096307926d39d",
+      "sha256": "8dc4a36f22825a1cb1067cac328722472856774e24458d7e5946c4713d19a292"
+    },
+    {
+      "path": "src/app/api/draw/payout/route.ts",
+      "sha1": "2d3f8cc3370c2dfa9bf6c075b7bbd5af644d591b",
+      "sha256": "f412ef920ec17b71c1a9c61a4fa825aa9ea5922b9681a6f865ffa06f3134fb84"
+    },
+    {
+      "path": "src/app/api/draw/reconcile/route.ts",
+      "sha1": "2c04bbfac878082d2e05e3052cbb14dd3ed84d66",
+      "sha256": "b7453d42ac689854336d34f6363ae95e2079b7989141cb495832930a4accec73"
+    },
+    {
+      "path": "src/app/api/draw/results/route.ts",
+      "sha1": "cf1fd001e5d63928bf92ea81251dfd525e580865",
+      "sha256": "8c59c39875c161ad7aacb6e0a65447f594d4898d5c441be0e3704d90a1c5967a"
+    },
+    {
+      "path": "src/app/api/draw/route.ts",
+      "sha1": "c36fa956a2e77b2c2e675ae0137caa671c725b23",
+      "sha256": "185bfabd205e73dbf2c63dbb6fc42c8aa1519f4ae3f7496e5a7f84b7dfca880f"
+    },
+    {
+      "path": "src/app/api/fixtures/route.ts",
+      "sha1": "71ff3cf82070b64fd5ddfb27a4455afddfe7aa3f",
+      "sha256": "72825951d24efde581851a0b3816c1a377a14bf4a3625bd62cb8c1a06a917519"
+    },
+    {
+      "path": "src/app/api/match-ball-sponsorship/route.ts",
+      "sha1": "a945d1bcb3a566feaf804da34e172e22d5dcc393",
+      "sha256": "4cdca4efc2e3ce6eea41bfd115b9eae37958ecfe53014dbfe263f09d96c8e57b"
+    },
+    {
+      "path": "src/app/api/membership/route.ts",
+      "sha1": "3a1de3332d1aad1d781482877ff360a0ae060e6e",
+      "sha256": "b7895a53ad9b4246e8e9e8362434af3d4d0e8f35be18d617d1d9bf3133db343f"
+    },
+    {
+      "path": "src/app/api/pot/route.ts",
+      "sha1": "7b35db9c8f9bd5315926146115a43dfb2eb234fe",
+      "sha256": "3ff29beebd53a605ff3889bb4146e62609ec9acd3a278b73728729412955fc2b"
+    },
+    {
+      "path": "src/app/api/subscriptions/route.ts",
+      "sha1": "fc25e8e78225bac85b076e1044860a1cbd122fcf",
+      "sha256": "23f5ec413b8717f19d41cd044edfc0bb3ede08d376e2c8bd8d34b1777e5e4aab"
+    },
+    {
+      "path": "src/app/api/webhooks/stripe/route.ts",
+      "sha1": "1324a187bef1d6f6d6e22e44e793c005e600ec02",
+      "sha256": "52d71697d780af110d47dfdafa44ee726bf7a9ff15a76c03a142115a8b68dc8d"
+    },
+    {
+      "path": "src/app/archive/page.tsx",
+      "sha1": "ef8b751793fb9d10a5f4c54730f81b3ea06fb1ea",
+      "sha256": "a3b7974de629adf494ae5c861d632dfd29b68262aa5e0064a27698d82104d033"
+    },
+    {
+      "path": "src/app/claim/page.tsx",
+      "sha1": "a56491de6724af53764c42bb0c3197140ad03e19",
+      "sha256": "e5350eba3ff0c5907d7ffac5149de19a6aff55abfb7f149d4292466b7812480f"
+    },
+    {
+      "path": "src/app/claim/success/page.tsx",
+      "sha1": "2ce4217014537cd0094227c74e71ffe80d1bf5b0",
+      "sha256": "d65c8012a8efab501bf6c10bc9be3041d564ace1b492ba8be482dbcd06164841"
+    },
+    {
+      "path": "src/app/committee/page.tsx",
+      "sha1": "f7d05bfbeeff1ef9aa714ab72b59863e3001c82a",
+      "sha256": "4aebfbe781538ff01c120fa073a6271f5b218cedd446c81b9c57da7d906564f4"
+    },
+    {
+      "path": "src/app/draw/DrawPageClient.tsx",
+      "sha1": "f01ce3db775fa860cc55b6058a841838b5973a7b",
+      "sha256": "3529bc368e14f4fd273e98cfde054d014c6d25531fd97b88fc9166b5e03aeecf"
+    },
+    {
+      "path": "src/app/draw/live/LiveDrawClient.tsx",
+      "sha1": "fae47eec37527fa057f0094dae4a4d0f71a027b8",
+      "sha256": "1e03b928e37fc6d607ec2835fe0987bf2e3f351ae125a5214badbbadddaa761c"
+    },
+    {
+      "path": "src/app/draw/live/page.tsx",
+      "sha1": "8d17b800c7b241ea35ca1b08095a033496832c04",
+      "sha256": "ec4ffa2cc978ee502675ac4763963eef08434d7773d1124a1d8cf1b515bcf79a"
+    },
+    {
+      "path": "src/app/draw/manage/page.tsx",
+      "sha1": "8e04caa76fa26fb5f5329cbaa8d93e5a5d87fc2d",
+      "sha256": "97f1b4d8c6a7542e5fbd5ef4fc278ff82c964d08cd83c8e141c9fd8c95ffff6a"
+    },
+    {
+      "path": "src/app/draw/page.tsx",
+      "sha1": "302c0b5550e99f6aa2fc8409c42e15a7699c95f0",
+      "sha256": "bc5ef2803a1b37509524f9585f9416c2824e929825fd0ea8e491e74db87deb8f"
+    },
+    {
+      "path": "src/app/draw/success/page.tsx",
+      "sha1": "fc245d201a7dcfb1b7f15509bc879ebba23394ca",
+      "sha256": "ee3c3eeb4e1db6f623028849704d1384270cab3f206d123c7707ea7b5ccb03ee"
+    },
+    {
+      "path": "src/app/favicon.ico",
+      "sha1": "9ecfcc8f0ead0bf3d2d7c39e084b88f41cc89a2e",
+      "sha256": "2b8ad2d33455a8f736fc3a8ebf8f0bdea8848ad4c0db48a2833bd0f9cd775932"
+    },
+    {
+      "path": "src/app/fixtures/page.tsx",
+      "sha1": "b32f5dcfa18281a9a45a2fc32e23c774f9200d34",
+      "sha256": "3b086facae4059d52f20e1153df272159cda01f26d8139baa526ec3387eff10e"
+    },
+    {
+      "path": "src/app/forgot-password/page.tsx",
+      "sha1": "f0c14459fe605b87af23be111519d50c436026ae",
+      "sha256": "86bc3fcdb78637abe1a9a100f32229200f4969a8b8ab00c814adacc29b937274"
+    },
+    {
+      "path": "src/app/globals.css",
+      "sha1": "638c98e9cafc5e284ebec0e51b9172ed147f6563",
+      "sha256": "ddb10932e5522cefb7dcf2b9307a53f5778c5b9197ee5f9966573fdc04fea5b0"
+    },
+    {
+      "path": "src/app/layout.tsx",
+      "sha1": "11b62e32976f90bc9cbdd736a581b91b21f8dd5a",
+      "sha256": "db83397abea6c1abc7b17d22872e190a4578eab4dacbad15483d3d71c385e242"
+    },
+    {
+      "path": "src/app/login/page.tsx",
+      "sha1": "84a5be2d7c785075139a4d0b1071ef7f195b6352",
+      "sha256": "c3dd70446abd5982a0a7a16202dd14f44572b1be66205f4ea71475d60505bfb0"
+    },
+    {
+      "path": "src/app/membership/page.tsx",
+      "sha1": "97426d3e19a0257702cb55fe05de489d4aad69cf",
+      "sha256": "1dab736526e6f693ad4018b6fbc756ae3213b1c1ce4a7c8cb51704658529ef02"
+    },
+    {
+      "path": "src/app/membership/success/page.tsx",
+      "sha1": "77ab5f21f0af7ad7c8a9c38ac2a611491b3eb6e3",
+      "sha256": "8b75b0bfac622730d74a83396aeb02abd10678cb48e146fea0670580f60187c7"
+    },
+    {
+      "path": "src/app/news/NewsPageClient.tsx",
+      "sha1": "db0789fcbb6dd3bf4f88cb19bcfb439c146b1123",
+      "sha256": "f58ff91894c42ad1acef47e14e6f454e14c1ee1399f018a0df2bf15e095a9501"
+    },
+    {
+      "path": "src/app/news/agm-2026/page.tsx",
+      "sha1": "6445e028c63d9fc0309f31114de1e299d43592e1",
+      "sha256": "6b8af56fd8526495a3818a9c5de73d1d9b73112ca218d8a2c867e4a687e27ba7"
+    },
+    {
+      "path": "src/app/news/all-time-ardmore-xi/page.tsx",
+      "sha1": "9022ad747b8b35841f42bd16cf6cdbaef55166bd",
+      "sha256": "5774077c672ba672cb9aa81aafded3bea1d7054b407ce0272a1c283eac52e085"
+    },
+    {
+      "path": "src/app/news/ardmore-archive-clippings/page.tsx",
+      "sha1": "1974a81204826cf1e3cc9accd3bfd241de6d32d2",
+      "sha256": "f8f4f9b031d8ce800c0f9c08b29541e08f5734119354a0e6694602ddd89f6848"
+    },
+    {
+      "path": "src/app/news/page.tsx",
+      "sha1": "8b79de9b7785910f62858491f4318a9924fb6ab2",
+      "sha256": "c69375c96fcbcbaa09c8731184e595d0fab33eb39a97807415f46a65e39fd84b"
+    },
+    {
+      "path": "src/app/page.tsx",
+      "sha1": "7b7fae79899506aba530df8af7cd675f3e641cab",
+      "sha256": "f426e7775bd4dd042c6b3d3be53b019125d1e19e4e16f382966e4425bbb4c9fb"
+    },
+    {
+      "path": "src/app/privacy/page.tsx",
+      "sha1": "958ba4c88cd560b7b12cb623104e85e72e4c7b2c",
+      "sha256": "f9b6eb02efc04e359f09a7d48ae2547570e9a9a458357832bedb994b884e51fb"
+    },
+    {
+      "path": "src/app/reset-password/page.tsx",
+      "sha1": "c4869763b2a73e459e743411b7fabab9d6140592",
+      "sha256": "24db6b6251cad081ff78202e23c176359e420e1ec7f843570b1210192a3a3014"
+    },
+    {
+      "path": "src/app/shop/page.tsx",
+      "sha1": "7b1d8f0b77df974558fcb4345c18e0a33be16f9d",
+      "sha256": "b0686b9c460eb85d5eb24ef90102902ed8dd468bd2f986baf1c17a248588cceb"
+    },
+    {
+      "path": "src/app/signup/page.tsx",
+      "sha1": "085fdcb74a7fd22598ca3f5e49965b49d509e8e4",
+      "sha256": "887bf07101ccb43a5a34a22b3160483e67671f3fd32d376dd21629b86da274de"
+    },
+    {
+      "path": "src/app/sponsors/page.tsx",
+      "sha1": "f5e8bebead1dccf666d52f06a4136cd12e390fe0",
+      "sha256": "4261486e21fad9718562ade6972a0d0c6f6098a93b3bf03b1e5e35c728dc45c9"
+    },
+    {
+      "path": "src/app/terms/page.tsx",
+      "sha1": "b24b785d72e79c5d3130957261dfadc502aaf9c3",
+      "sha256": "f811de3ff03d99e6ee819f81efaa709fc665c0d24e62ee664528f3ef853c54c0"
+    },
+    {
+      "path": "src/components/AuthProvider.tsx",
+      "sha1": "142a0add054ca3067a8a0d84273e9c04ab668c9d",
+      "sha256": "526ee1969dbe1fe2e33cd1b6feb05045eec60c17564fbdd5863b11e0de8ae0dc"
+    },
+    {
+      "path": "src/components/JackpotSection.tsx",
+      "sha1": "c6d7a84dae8483572585c77d336e471dfa44fd33",
+      "sha256": "23e38e3853dbc6fb58d563e282f1377632a7fc3ece92b2e460db22a6c380e34d"
+    },
+    {
+      "path": "src/components/MatchBallSponsorshipSection.tsx",
+      "sha1": "831f989d6a087919cc2d92e0cf2696e932d341ee",
+      "sha256": "30ccc4a9f2b972d4534bb5646d6b9edd8b0b6990f2bdc2b465c9873fdfc7f913"
+    },
+    {
+      "path": "src/components/Navigation.tsx",
+      "sha1": "9f5f799642a5d832686a94473439f22b110c796f",
+      "sha256": "305cddaaa6cc1f8048c847b23d9bb0c134c3c71be822ea99e1ef83736f69cd61"
+    },
+    {
+      "path": "src/components/NextMatch.tsx",
+      "sha1": "2da71285d17f02a17c4a1a9a3a30a8b17c4877f0",
+      "sha256": "96897a7ee20a39eee2eed7a784bf159054f7133dbea6be9a6f4436da08867f63"
+    },
+    {
+      "path": "src/lib/admin-draw-entries.ts",
+      "sha1": "91d2cd95796fc0a7143fe76e9ba292b7126a4a6f",
+      "sha256": "32453089d03bea8af047ca545b26b159b7676c261fc4df49154e7be601ee3b0f"
+    },
+    {
+      "path": "src/lib/admin-memberships.ts",
+      "sha1": "ebc7bffd8c3584b77130200613bd4097743989e9",
+      "sha256": "63c34197dfb95077df90ae7abc7039cb5099ac8f7d0da03023af72fb45a6676d"
+    },
+    {
+      "path": "src/lib/admin.ts",
+      "sha1": "6df72160c8311a4b10207112cb12d4683d5da69a",
+      "sha256": "1b77a3f955352d29af41a4b7076b58d0742c97b4667e2831a9ccc736e3f23aeb"
+    },
+    {
+      "path": "src/lib/auth.ts",
+      "sha1": "fbc00de2368478820e40396e4843602dbdeae039",
+      "sha256": "135d92d497936c7eb564596af661e8d861fda67763bf126827a54a176130e319"
+    },
+    {
+      "path": "src/lib/cricketeurope-news.ts",
+      "sha1": "2911a9d7e9c711a71357906816cf019f39f1ec92",
+      "sha256": "43ab5762d6fa5395b0bf627146009fb81b5ffbdd2d033d0c1f7de9e2bc7415bc"
+    },
+    {
+      "path": "src/lib/draw-entries.ts",
+      "sha1": "e0a939efbd47ebfd4d23971527295be4af4815d5",
+      "sha256": "798ad79320032810b4dd1e655509825998198700bc74200e9f914022ec9b766d"
+    },
+    {
+      "path": "src/lib/email.ts",
+      "sha1": "d0dccc64cc15186a4e310d96eabf20a7ee930fe5",
+      "sha256": "f62dff3f55504a4174d09552e381b82d9a26722fd868b76899f65d2ebf9a3e8b"
+    },
+    {
+      "path": "src/lib/stripe.ts",
+      "sha1": "b2c0b8adeaa51dd539825fa1e080b1a9b2cbe7f1",
+      "sha256": "9d8580f7100739f15a4a0d9b9d274a1ca4931cddf7361accbfd19aad69b3fb26"
+    },
+    {
+      "path": "src/lib/supabase.ts",
+      "sha1": "38c9b3630c39b31c3e2c3327f933b8c15403ae95",
+      "sha256": "0ec79260e38dd1010571acb9d31b3720296c83766c762d0b150cbbbe3e6b8ff0"
+    },
+    {
+      "path": "tsconfig.json",
+      "sha1": "27dded29dc880f958ee67c9ed276fb2b1412f515",
+      "sha256": "5c51df4c59f4510d8c7dadf07a5c32132228826a3b331da5e286207b4df7ef9c"
+    },
+    {
+      "path": "vercel.json",
+      "sha1": "0d2cc5988dc428515f6f603604a2ba7b41c7661d",
+      "sha256": "2b387bef709179d26010e190505626213c3f9ee75d34f0684d4e9311023c7a94"
+    }
+  ]
+}

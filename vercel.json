@@ -1,8 +1,12 @@
 {
   "crons": [
     {
+      "path": "/api/draw/reconcile",
+      "schedule": "15 8 * * *"
+    },
+    {
       "path": "/api/draw",
-      "schedule": "0 19 * * 5"
+      "schedule": "0 18,19 * * 5"
     }
   ]
 }

@@ -41,11 +41,12 @@ function isArdmoreHome(match: Match): boolean {
   );
 }
 
-function getTeamXI(match: Match): string {
+function getTeamXI(match: Match): TabFilter | 'Other' {
   const ardmoreName = isArdmoreHome(match) ? match.team1Name : match.team2Name;
-  if (ardmoreName.includes('2nd') || ardmoreName.includes('2 ')) return '2nd XI';
-  if (ardmoreName.includes('3rd') || ardmoreName.includes('3 ')) return '3rd XI';
-  return '1st XI';
+  if (/\b1st XI\b/i.test(ardmoreName)) return '1st XI';
+  if (/\b2nd XI\b/i.test(ardmoreName)) return '2nd XI';
+  if (/\b3rd XI\b/i.test(ardmoreName)) return '3rd XI';
+  return 'Other';
 }
 
 function getOpponent(match: Match): { name: string; logo: string } {
@@ -81,6 +82,17 @@ function formatMatchTime(dateStr: string): string {
 function getMonthYear(dateStr: string): string {
   const date = new Date(dateStr);
   return date.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+}
+
+function isCompletedMatch(match: Match): boolean {
+  return match.status === 'results' || Boolean(match.hasScores || match.result?.trim());
+}
+
+function isTodayOrFuture(dateStr: string): boolean {
+  const matchDate = new Date(dateStr);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return matchDate >= today;
 }
 
 function groupByMonth(matches: Match[]): Record<string, Match[]> {
@@ -225,9 +237,11 @@ export default function FixturesPage() {
     ? matches
     : matches.filter(m => getTeamXI(m) === activeTab);
 
-  // Split into fixtures and results
-  const upcomingMatches = filteredByTeam.filter(m => !m.hasScores && !m.result);
-  const completedMatches = filteredByTeam.filter(m => m.hasScores || m.result).reverse();
+  // Split into fixtures and results. StumpStats can leave abandoned/postponed
+  // matches as `fixtures` with no scores for a while, so do not show stale
+  // previous-day fixtures as upcoming.
+  const upcomingMatches = filteredByTeam.filter(m => !isCompletedMatch(m) && isTodayOrFuture(m.startDateTime));
+  const completedMatches = filteredByTeam.filter(isCompletedMatch).reverse();
 
   const displayMatches = viewMode === 'fixtures' ? upcomingMatches : completedMatches;
   const grouped = groupByMonth(displayMatches);

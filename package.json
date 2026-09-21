@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "smoke:prod": "node scripts/smoke-production.mjs",
+    "verify:prod": "npm run build && npm run smoke:prod"
   },
   "dependencies": {
     "@stripe/stripe-js": "^8.8.0",

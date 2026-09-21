@@ -5,6 +5,8 @@ import { useState, useEffect, useRef } from "react";
 import { useAuth } from "./AuthProvider";
 import { supabase } from "@/lib/supabase";
 
+const KIT_SHOP_URL = "https://www.oneills.com/shop-by-team/cricket/ardmore-cricket-club.html";
+
 export default function Navigation() {
   const { user, loading } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -45,15 +47,17 @@ export default function Navigation() {
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
-    { href: "/committee", label: "Committee" },
     { href: "/fixtures", label: "Fixtures" },
     { href: "/news", label: "News" },
     { href: "/archive", label: "Archive" },
+    { href: "/membership", label: "Membership" },
+    { href: KIT_SHOP_URL, label: "Kit Shop", external: true },
     { href: "/draw", label: "Weekly Draw", highlight: true },
     { href: "/sponsors", label: "Sponsors" },
   ];
 
   const isActive = (href: string) => {
+    if (href.startsWith("http")) return false;
     if (href === "/") return activePath === "/";
     return activePath.startsWith(href);
   };
@@ -63,7 +67,14 @@ export default function Navigation() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <a href="/" className="flex items-center gap-3" onClick={() => setMobileOpen(false)}>
-            <Image src="/images/ardmore-crest.png" alt="Ardmore CC Crest" width={40} height={40} className="rounded-full" />
+            <Image
+              src="/images/ardmore-crest-sharp-clean.png"
+              alt="Ardmore CC Crest"
+              width={36}
+              height={50}
+              className="h-12 w-auto shrink-0 object-contain"
+              priority
+            />
             <span className="font-heading text-xl font-bold tracking-wide">Ardmore CC</span>
             <span className="hidden sm:inline text-gold text-sm font-body">Est. 1879</span>
           </a>
@@ -87,6 +98,8 @@ export default function Navigation() {
                 <a
                   key={link.href}
                   href={link.href}
+                  target={link.external ? "_blank" : undefined}
+                  rel={link.external ? "noopener noreferrer" : undefined}
                   className={`transition-colors ${
                     isActive(link.href) ? "text-gold" : "hover:text-gold"
                   }`}
@@ -150,6 +163,8 @@ export default function Navigation() {
                   <a
                     key={link.href}
                     href={link.href}
+                    target={link.external ? "_blank" : undefined}
+                    rel={link.external ? "noopener noreferrer" : undefined}
                     onClick={() => setMobileOpen(false)}
                     className={`block px-5 py-3 text-sm font-medium transition-colors ${
                       link.highlight

@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase";
 import { getAuthenticatedUser } from "@/lib/auth";
+import { isAdminEmail } from "@/lib/admin";
 
-const ADMIN_EMAILS = ["contact@bluecanvas.ai", "ardmorecc1879@hotmail.com"];
 const CLUB_ID = "31846fb2-b120-4815-bd48-e1120342d52e";
 
 export async function GET(req: NextRequest) {
   const user = await getAuthenticatedUser(req);
-  if (!user || !ADMIN_EMAILS.includes(user.email?.toLowerCase() || "")) {
+  if (!user || !isAdminEmail(user.email)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }
 

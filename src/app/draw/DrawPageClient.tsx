@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import Image from "next/image";
 import { useAuth } from "@/components/AuthProvider";
+import MatchBallSponsorshipSection from "@/components/MatchBallSponsorshipSection";
 import { supabase } from "@/lib/supabase";
 
 const CLUB_ID = "31846fb2-b120-4815-bd48-e1120342d52e";
@@ -17,6 +18,19 @@ interface PotData {
   members: number;
   progress: number;
 }
+
+type DrawHistoryWinner = {
+  place: string;
+  name?: string;
+  prize: number;
+};
+
+type DrawHistoryResult = {
+  drawn_at: string;
+  drawn_numbers?: number[];
+  pot_amount: number;
+  winners?: DrawHistoryWinner[];
+};
 
 function getNextFriday7PM(): Date {
   const now = new Date();
@@ -62,16 +76,28 @@ export default function DrawPageClient({ initialPotData }: { initialPotData: Pot
   const totalPages = 5;
   const pageStart = gridPage * numbersPerPage + 1;
 
-  // Fetch taken numbers from draw_subscriptions (paid only)
+  // Fetch taken numbers from active paid draw entries. Active subscriptions are
+  // included as a fallback while the Stripe webhook rebuilds number selections.
   useEffect(() => {
     const fetchTaken = async () => {
+      const { data: selections } = await supabase
+        .from("number_selections")
+        .select("numbers")
+        .eq("club_id", CLUB_ID)
+        .eq("status", "active");
+
       const { data: subs } = await supabase
         .from("draw_subscriptions")
         .select("numbers")
         .eq("club_id", CLUB_ID)
-        .in("status", ["active", "past_due"]);
+        .eq("status", "active");
 
       const taken = new Set<number>();
+      if (selections) {
+        selections.forEach((row: { numbers: number[] }) => {
+          if (row.numbers) row.numbers.forEach((n) => taken.add(n));
+        });
+      }
       if (subs) {
         subs.forEach((row: { numbers: number[] }) => {
           if (row.numbers) row.numbers.forEach((n) => taken.add(n));
@@ -154,21 +180,21 @@ export default function DrawPageClient({ initialPotData }: { initialPotData: Pot
     }
   }, [user, selectedNumbers, paymentMode]);
 
-  const [drawResults, setDrawResults] = useState<any[]>([]);
+  const [drawResults, setDrawResults] = useState<DrawHistoryResult[]>([]);
 
   useEffect(() => {
     fetch("/api/draw/results")
       .then((r) => r.json())
-      .then((data) => {
+      .then((data: { results?: DrawHistoryResult[] }) => {
         if (data.results) setDrawResults(data.results);
       })
       .catch(() => {});
   }, []);
 
   const previousResults = drawResults.length > 0
-    ? drawResults.map((d: any) => {
+    ? drawResults.map((d) => {
         const w = d.winners || [];
-        const getWinner = (place: string) => w.find((x: any) => x.place === place);
+        const getWinner = (place: string) => w.find((x) => x.place === place);
         const w1 = getWinner("1st");
         const w2 = getWinner("2nd");
         const w3 = getWinner("3rd");
@@ -277,6 +303,8 @@ export default function DrawPageClient({ initialPotData }: { initialPotData: Pot
           </div>
         </div>
       </section>
+
+      <MatchBallSponsorshipSection />
 
       {/* Number Grid */}
       <section className="py-12 bg-white">
