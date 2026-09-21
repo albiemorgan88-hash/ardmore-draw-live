@@ -84,7 +84,7 @@ export default function ManageSubscriptionsPage() {
       
       if (res.ok) {
         const { url } = await res.json();
-        window.location.href = url;
+        window.location.assign(url);
       } else {
         alert("Failed to open payment management");
       }

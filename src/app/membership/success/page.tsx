@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Image from "next/image";
 
 export default function MembershipSuccessPage() {
@@ -20,7 +21,7 @@ export default function MembershipSuccessPage() {
             <div className="text-green-600 text-6xl mb-4">✅</div>
             <h2 className="font-heading text-3xl font-bold text-navy mb-4">Payment Successful!</h2>
             <p className="text-navy/70 text-lg">
-              Thank you for joining Ardmore Cricket Club. Your membership has been activated 
+              Thank you for joining Ardmore Cricket Club. Your membership has been activated
               and you should receive a confirmation email shortly.
             </p>
           </div>
@@ -35,7 +36,7 @@ export default function MembershipSuccessPage() {
                 <li>• You can start using club facilities immediately</li>
               </ul>
             </div>
-            
+
             <div className="bg-cream rounded-lg p-6">
               <h3 className="font-heading text-xl font-bold text-navy mb-3">Get Started</h3>
               <ul className="text-left text-navy/80 space-y-2">
@@ -58,12 +59,12 @@ export default function MembershipSuccessPage() {
           </div>
 
           <div className="mt-12">
-            <a 
-              href="/" 
+            <Link
+              href="/"
               className="bg-navy text-white px-8 py-3 rounded-lg font-semibold hover:bg-navy-light transition-colors inline-block"
             >
               Return to Homepage
-            </a>
+            </Link>
           </div>
         </div>
       </section>

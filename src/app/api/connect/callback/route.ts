@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { createServiceClient } from "@/lib/supabase";
+import { verifyConnectState } from "@/lib/connect-state";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://ardmorecricket.com";
 
@@ -18,11 +19,22 @@ export async function GET(req: NextRequest) {
   if (!accountId || !profileId) {
     return NextResponse.redirect(`${SITE_URL}/claim?error=missing_params`);
   }
+  if (!verifyConnectState(req.nextUrl.searchParams.get("state"), profileId, accountId, claimToken)) {
+    return NextResponse.redirect(`${SITE_URL}/claim?error=invalid_callback`);
+  }
 
   const supabase = createServiceClient();
 
   try {
+    const { data: profile, error: profileError } = await supabase.from("profiles")
+      .select("stripe_connect_id").eq("id", profileId).single();
+    if (profileError || profile?.stripe_connect_id !== accountId) {
+      return NextResponse.redirect(`${SITE_URL}/claim?error=account_mismatch`);
+    }
     const account = await stripe.accounts.retrieve(accountId);
+    if (account.metadata?.profile_id !== profileId) {
+      return NextResponse.redirect(`${SITE_URL}/claim?error=account_mismatch`);
+    }
 
     if (account.details_submitted) {
       // Onboarding complete
@@ -33,7 +45,7 @@ export async function GET(req: NextRequest) {
 
       // If there's a claim token, mark it claimed
       if (claimToken) {
-        await supabase.from("claim_tokens").update({ status: "claimed" }).eq("token", claimToken);
+        await supabase.from("claim_tokens").update({ status: "claimed" }).eq("token", claimToken).eq("profile_id", profileId).eq("status", "pending");
       }
 
       // Check if there are any pending payouts for this user — now they can be paid
@@ -61,7 +73,7 @@ export async function GET(req: NextRequest) {
       // Onboarding not complete — they left early
       return NextResponse.redirect(`${SITE_URL}/claim?error=incomplete&token=${claimToken || ""}`);
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Connect callback error:", error);
     return NextResponse.redirect(`${SITE_URL}/claim?error=stripe_error`);
   }

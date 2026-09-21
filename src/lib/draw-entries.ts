@@ -25,27 +25,12 @@ export type DrawPotSummary = {
   subscriptionNumbers: number;
 };
 
-type NumberSelectionRow = {
-  id: string;
-  stripe_subscription_id: string | null;
-};
-
-type ActiveSubscriptionRow = {
-  stripe_subscription_id: string | null;
-  numbers: number[] | null;
-  assigned_names: Record<string, string> | null;
-};
-
 type DrawSubscriptionUserRow = {
   user_id: string | null;
 };
 
 function isOneOffSelection(selection: Pick<DrawSelection, "stripe_subscription_id">) {
   return Boolean(selection.stripe_subscription_id?.startsWith("cs_"));
-}
-
-function uniqueNumbers(numbers: number[] | null | undefined) {
-  return [...new Set(numbers || [])].sort((a, b) => a - b);
 }
 
 export async function fetchActiveDrawSelections(
@@ -107,78 +92,16 @@ export async function reconcileNumberSelectionsForSubscription(supabase: Supabas
   }
 }
 
-export async function reconcileNumberSelections(supabase: SupabaseClient, clubId: string, userId: string, currentSubId?: string) {
-  const { data: allSubs, error: subError } = await supabase
-    .from("draw_subscriptions")
-    .select("stripe_subscription_id, numbers, assigned_names")
-    .eq("club_id", clubId)
-    .eq("user_id", userId)
-    .eq("status", "active");
-
-  if (subError) throw new Error(`Failed to fetch active subscriptions for ${userId}: ${subError.message}`);
-
-  const { data: existingRows, error: existingError } = await supabase
-    .from("number_selections")
-    .select("id, stripe_subscription_id")
-    .eq("club_id", clubId)
-    .eq("profile_id", userId);
-
-  if (existingError) throw new Error(`Failed to fetch number selections for ${userId}: ${existingError.message}`);
-
-  const subscriptionRows = ((existingRows || []) as NumberSelectionRow[]).filter(
-    (row) => !String(row.stripe_subscription_id || "").startsWith("cs_")
-  );
-
-  if (!allSubs || allSubs.length === 0) {
-    for (const row of subscriptionRows) {
-      const { error } = await supabase
-        .from("number_selections")
-        .update({ status: "expired", updated_at: new Date().toISOString() })
-        .eq("id", row.id);
-      if (error) throw new Error(`Failed to expire subscription selection ${row.id}: ${error.message}`);
-    }
-    return { numbers: [], action: subscriptionRows.length > 0 ? "expired" : "unchanged" };
+export async function reconcileNumberSelections(supabase: SupabaseClient, clubId: string, userId: string) {
+  const { data, error } = await supabase.rpc("reconcile_ardmore_number_selections", {
+    p_club_id: clubId,
+    p_user_id: userId,
+  });
+  if (error) throw new Error(`Failed to reconcile draw entries: ${error.message}`);
+  if (!data || !Array.isArray(data.numbers) || typeof data.action !== "string") {
+    throw new Error("Draw reconciliation returned an invalid result");
   }
-
-  const mergedNumbers = new Set<number>();
-  const mergedNames: Record<string, string> = {};
-  let representativeSubId = currentSubId;
-
-  for (const sub of (allSubs || []) as ActiveSubscriptionRow[]) {
-    representativeSubId ||= sub.stripe_subscription_id || undefined;
-    for (const n of uniqueNumbers(sub.numbers)) mergedNumbers.add(n);
-    if (sub.assigned_names) Object.assign(mergedNames, sub.assigned_names);
-  }
-
-  const numbers = Array.from(mergedNumbers).sort((a, b) => a - b);
-  const payload = {
-    club_id: clubId,
-    profile_id: userId,
-    numbers,
-    assigned_names: mergedNames,
-    status: "active",
-    stripe_subscription_id: representativeSubId,
-    updated_at: new Date().toISOString(),
-  };
-
-  const [primary, ...staleRows] = subscriptionRows;
-  for (const row of staleRows) {
-    const { error } = await supabase
-      .from("number_selections")
-      .update({ status: "expired", updated_at: new Date().toISOString() })
-      .eq("id", row.id);
-    if (error) throw new Error(`Failed to expire stale subscription selection ${row.id}: ${error.message}`);
-  }
-
-  if (primary?.id) {
-    const { error } = await supabase.from("number_selections").update(payload).eq("id", primary.id);
-    if (error) throw new Error(`Failed to update number selections for ${userId}: ${error.message}`);
-    return { numbers, action: "updated" };
-  }
-
-  const { error } = await supabase.from("number_selections").insert(payload);
-  if (error) throw new Error(`Failed to insert number selections for ${userId}: ${error.message}`);
-  return { numbers, action: "inserted" };
+  return data as { numbers: number[]; action: string };
 }
 
 export async function reconcileAllDrawSelections(supabase: SupabaseClient, clubId = ARDMORE_CLUB_ID) {
@@ -197,13 +120,20 @@ export async function reconcileAllDrawSelections(supabase: SupabaseClient, clubI
     ),
   ];
   const results = [];
+  let failedUsers = 0;
   for (const userId of userIds) {
-    results.push({ userId, ...(await reconcileNumberSelections(supabase, clubId, userId)) });
+    try {
+      results.push({ userId, ...(await reconcileNumberSelections(supabase, clubId, userId)) });
+    } catch (error) {
+      failedUsers++;
+      console.error("Draw member reconciliation failed:", error instanceof Error ? error.message : "unknown error");
+    }
   }
 
   const selections = await fetchActiveDrawSelections(supabase, clubId);
   return {
     reconciledUsers: results.length,
+    failedUsers,
     results,
     pot: summarizeDrawSelections(selections),
   };

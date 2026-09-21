@@ -3,6 +3,7 @@ import { createServiceClient } from "@/lib/supabase";
 import { reconcileAllDrawSelections } from "@/lib/draw-entries";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 60;
 
 function errorMessage(error: unknown) {
   return error instanceof Error ? error.message : "Draw reconciliation failed";
@@ -25,8 +26,20 @@ export async function GET(req: NextRequest) {
 
   try {
     const supabase = createServiceClient();
+    if (req.nextUrl.searchParams.get("dryRun") === "true") {
+      const since = new Date(Date.now() - 7 * 86_400_000).toISOString();
+      const cutoff = new Date(Date.now() - 5 * 60_000).toISOString();
+      const [failures, stalled] = await Promise.all([
+        supabase.from("stripe_events").select("id", { head: true, count: "exact" }).eq("status", "failed").gte("created_at", since),
+        supabase.from("stripe_events").select("id", { head: true, count: "exact" }).eq("status", "processing").lt("updated_at", cutoff),
+      ]);
+      if (failures.error || stalled.error) throw new Error("Webhook health evidence is unavailable");
+      return NextResponse.json({ dryRun: true, recentFailedEvents: failures.count, stalledEvents: stalled.count },
+        { status: failures.count || stalled.count ? 503 : 200 });
+    }
     const result = await reconcileAllDrawSelections(supabase);
-    return NextResponse.json({ success: true, ...result });
+    console.log(JSON.stringify({ event: "draw_reconciliation", reconciledUsers: result.reconciledUsers, failedUsers: result.failedUsers }));
+    return NextResponse.json({ success: result.failedUsers === 0, ...result }, { status: result.failedUsers ? 500 : 200 });
   } catch (err: unknown) {
     console.error("Draw reconciliation failed:", err);
     return NextResponse.json({ error: errorMessage(err) }, { status: 500 });

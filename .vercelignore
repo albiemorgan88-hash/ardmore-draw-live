@@ -1,0 +1,8 @@
+.env*
+!.env.example
+backups/
+reports/
+*.tsbuildinfo
+.clawpatch/
+tmp/
+supabase/.temp/

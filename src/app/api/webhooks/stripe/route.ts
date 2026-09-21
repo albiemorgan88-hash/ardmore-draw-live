@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { stripe } from "@/lib/stripe";
+import { claimStripeEvent, finishStripeEvent } from "@/lib/stripe-event-lease";
+import { processSubscriptionRenewal, mapStripeSubscriptionStatus } from "@/lib/subscription-renewal";
+
+export const maxDuration = 60;
 import { createServiceClient } from "@/lib/supabase";
 import {
   sendAdminMatchBallSponsorNotification,
@@ -9,7 +13,6 @@ import {
   sendMatchBallSponsorConfirmation,
   sendMembershipNotification,
   sendPurchaseConfirmation,
-  sendRenewalConfirmation,
 } from "@/lib/email";
 import {
   reconcileNumberSelections,
@@ -79,78 +82,6 @@ function constructStripeEvent(body: string, sig: string) {
   throw new Error(errors.join(" | ") || "No Stripe webhook signing secrets configured");
 }
 
-function getNextFriday(): string {
-  const now = new Date();
-  const day = now.getDay();
-  const daysUntilFriday = (5 - day + 7) % 7 || 7;
-  const next = new Date(now);
-  next.setDate(now.getDate() + (day === 5 && now.getHours() < 19 ? 0 : daysUntilFriday));
-  return next.toISOString().split("T")[0];
-}
-
-async function claimStripeEvent(supabase: SupabaseClient, event: Stripe.Event) {
-  const { error: insertError } = await supabase.from("stripe_events").insert({
-    id: event.id,
-    type: event.type,
-    status: "processing",
-  });
-
-  if (!insertError) return { claimed: true, duplicate: false };
-
-  if (insertError.code !== "23505") {
-    throw new Error(`Failed to claim Stripe event ${event.id}: ${insertError.message}`);
-  }
-
-  const { data: existing, error: fetchError } = await supabase
-    .from("stripe_events")
-    .select("status")
-    .eq("id", event.id)
-    .maybeSingle();
-
-  if (fetchError) throw new Error(`Failed to inspect Stripe event ${event.id}: ${fetchError.message}`);
-
-  if (existing?.status === "failed") {
-    const { data: retry, error: retryError } = await supabase
-      .from("stripe_events")
-      .update({ status: "processing", error_message: null, updated_at: new Date().toISOString() })
-      .eq("id", event.id)
-      .eq("status", "failed")
-      .select("id")
-      .maybeSingle();
-
-    if (retryError) throw new Error(`Failed to retry Stripe event ${event.id}: ${retryError.message}`);
-    return { claimed: Boolean(retry), duplicate: !retry };
-  }
-
-  return { claimed: false, duplicate: true };
-}
-
-async function markStripeEventProcessed(supabase: SupabaseClient, event: Stripe.Event) {
-  const { error } = await supabase
-    .from("stripe_events")
-    .update({
-      status: "processed",
-      processed_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", event.id);
-
-  if (error) throw new Error(`Failed to mark Stripe event ${event.id} processed: ${error.message}`);
-}
-
-async function markStripeEventFailed(supabase: SupabaseClient, event: Stripe.Event, err: unknown) {
-  const { error } = await supabase
-    .from("stripe_events")
-    .update({
-      status: "failed",
-      error_message: errorMessage(err),
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", event.id);
-
-  if (error) console.error(`Failed to mark Stripe event ${event.id} failed:`, error);
-}
-
 async function requireDb<T>(label: string, result: DbResult<T>) {
   if (result.error) throw new Error(`${label}: ${result.error.message}`);
   return result.data;
@@ -216,7 +147,9 @@ export async function POST(req: NextRequest) {
   }
 
   if (!claim.claimed) {
-    return NextResponse.json({ received: true, duplicate: claim.duplicate });
+    return claim.processed
+      ? NextResponse.json({ received: true, duplicate: true })
+      : NextResponse.json({ error: "Event processing is already in progress" }, { status: 503, headers: { "Retry-After": "30" } });
   }
 
   try {
@@ -236,6 +169,12 @@ export async function POST(req: NextRequest) {
             session.id
           );
           console.log(`Membership notification sent for ${session.metadata.membershipName} to ${customerEmail}`);
+        } else if (session.metadata?.club_id !== "31846fb2-b120-4815-bd48-e1120342d52e") {
+          // The account also receives other checkout types. A completed session
+          // without Ardmore draw metadata must not be interpreted as an entry.
+          console.log(JSON.stringify({ event: "checkout_outside_draw_scope", sessionId: session.id }));
+        } else if (session.payment_status !== "paid") {
+          throw new Error("Ardmore draw checkout has not been paid");
         } else if (session.mode === "subscription") {
           await handleSubscriptionCreated(supabase, session);
         } else {
@@ -247,7 +186,11 @@ export async function POST(req: NextRequest) {
         const invoice = event.data.object as StripeInvoiceWithSubscription;
         // Skip the first invoice (handled by checkout.session.completed)
         if (invoice.billing_reason === "subscription_cycle") {
-          await handleSubscriptionRenewal(supabase, invoice);
+          await processSubscriptionRenewal(supabase, stripe, invoice, {
+            // Provider idempotency expires after 24 hours. Historical recovery
+            // repairs the ledger without sending a stale draw confirmation.
+            notify: Date.now() / 1000 - event.created < 24 * 60 * 60,
+          });
         }
         break;
       }
@@ -269,7 +212,7 @@ export async function POST(req: NextRequest) {
       }
       case "customer.subscription.updated": {
         const sub = event.data.object as Stripe.Subscription;
-        await handleSubscriptionStatusUpdated(supabase, sub);
+        await handleSubscriptionStatusUpdated(supabase, await stripe.subscriptions.retrieve(sub.id));
         break;
       }
       case "customer.subscription.deleted": {
@@ -296,12 +239,12 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    await markStripeEventProcessed(supabase, event);
+    await finishStripeEvent(supabase, event.id, claim.token);
     return NextResponse.json({ received: true });
   } catch (err: unknown) {
     const message = errorMessage(err);
     console.error(`Stripe webhook ${event.id} failed:`, message);
-    await markStripeEventFailed(supabase, event, err);
+    await finishStripeEvent(supabase, event.id, claim.token, message).catch((failure) => console.error("Stripe event failure could not be recorded:", errorMessage(failure)));
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
@@ -347,15 +290,8 @@ async function handleMatchBallSponsorship(
   }
 }
 
-async function upsertNumberSelections(supabase: SupabaseClient, clubId: string, userId: string, currentSubId: string) {
-  return reconcileNumberSelections(supabase, clubId, userId, currentSubId);
-}
-
-function mapStripeSubscriptionStatus(status: Stripe.Subscription.Status) {
-  if (status === "active" || status === "trialing") return "active";
-  if (status === "past_due" || status === "incomplete") return "past_due";
-  if (status === "unpaid") return "unpaid";
-  return "cancelled";
+async function upsertNumberSelections(supabase: SupabaseClient, clubId: string, userId: string) {
+  return reconcileNumberSelections(supabase, clubId, userId);
 }
 
 async function handleSubscriptionStatusUpdated(supabase: SupabaseClient, subscription: Stripe.Subscription) {
@@ -381,7 +317,7 @@ async function handleSubscriptionStatusUpdated(supabase: SupabaseClient, subscri
   );
 
   if (updated?.club_id && updated?.user_id) {
-    await reconcileNumberSelections(supabase, updated.club_id, updated.user_id, subscription.id);
+    await reconcileNumberSelections(supabase, updated.club_id, updated.user_id);
   }
 
   console.log(`Subscription ${subscription.id} status updated to ${status} — numbers reconciled`);
@@ -500,7 +436,7 @@ async function handleSubscriptionCreated(supabase: SupabaseClient, session: Stri
     );
   }
 
-  await upsertNumberSelections(supabase, clubId, userId, subscriptionId);
+  await upsertNumberSelections(supabase, clubId, userId);
 
   await insertPaymentIfMissing(supabase, {
     profile_id: userId,
@@ -525,65 +461,4 @@ async function handleSubscriptionCreated(supabase: SupabaseClient, session: Stri
       true
     );
   }
-}
-
-async function handleSubscriptionRenewal(supabase: SupabaseClient, invoice: StripeInvoiceWithSubscription) {
-  const subscriptionId = ((invoice.parent?.subscription_details?.subscription || invoice.subscription) as string);
-
-  const sub = await requireDb(
-    `Failed to fetch subscription ${subscriptionId}`,
-    await supabase
-      .from("draw_subscriptions")
-      .select("*")
-      .eq("stripe_subscription_id", subscriptionId)
-      .maybeSingle()
-  );
-
-  if (!sub) {
-    throw new Error(`No subscription found for ${subscriptionId}`);
-  }
-
-  const stripeSubscription = (await stripe.subscriptions.retrieve(subscriptionId)) as StripeSubscriptionWithPeriods;
-  const renewalItem = stripeSubscription.items?.data?.[0];
-  const renewalStart = stripeSubscription.current_period_start || renewalItem?.current_period_start || stripeSubscription.start_date;
-  const renewalEnd = stripeSubscription.current_period_end || renewalItem?.current_period_end;
-  await requireDb(
-    `Failed to update renewal period for ${subscriptionId}`,
-    await supabase
-      .from("draw_subscriptions")
-      .update({
-        status: "active",
-        current_period_start: renewalStart ? new Date(renewalStart * 1000).toISOString() : new Date().toISOString(),
-        current_period_end: renewalEnd ? new Date(renewalEnd * 1000).toISOString() : null,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("stripe_subscription_id", subscriptionId)
-  );
-
-  await upsertNumberSelections(supabase, sub.club_id, sub.user_id, subscriptionId);
-
-  await insertPaymentIfMissing(supabase, {
-    profile_id: sub.user_id,
-    club_id: sub.club_id,
-    stripe_payment_intent_id: invoice.payment_intent as string || invoice.id,
-    amount: sub.amount_pence,
-    platform_fee: Math.round(sub.amount_pence * 0.075),
-    currency: "gbp",
-    status: "succeeded",
-    metadata: {
-      numbers: sub.numbers,
-      names: sub.assigned_names,
-      type: "subscription_renewal",
-      draw_week: getNextFriday(),
-    },
-  });
-
-  const stripeCustomer = await stripe.customers.retrieve(sub.stripe_customer_id || stripeSubscription.customer as string);
-  const customerEmail = "email" in stripeCustomer ? stripeCustomer.email : undefined;
-  if (customerEmail && process.env.RESEND_API_KEY) {
-    await sendRenewalConfirmation(customerEmail, sub.numbers, sub.amount_pence, sub.assigned_names);
-    console.log(`Renewal email sent to ${customerEmail}`);
-  }
-
-  console.log(`Subscription ${subscriptionId} renewed — numbers ${sub.numbers.join(", ")} entered for week ${getNextFriday()}`);
 }

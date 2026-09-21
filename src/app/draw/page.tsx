@@ -9,20 +9,7 @@ async function getPotData() {
     return summarizeDrawSelections(await fetchActiveDrawSelections(supabase));
   } catch (error) {
     console.error("Failed to fetch pot data:", error);
-    return {
-      totalPence: 0,
-      totalPounds: "0.00",
-      prizePotPounds: "0.00",
-      first: "0.00",
-      second: "0.00",
-      third: "0.00",
-      totalNumbers: 0,
-      members: 0,
-      progress: 0,
-      targetPounds: "500.00",
-      oneOffNumbers: 0,
-      subscriptionNumbers: 0,
-    };
+    return null;
   }
 }
 

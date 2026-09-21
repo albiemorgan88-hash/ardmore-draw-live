@@ -8,6 +8,14 @@ function getResend(): Resend {
   return _resend;
 }
 
+async function sendEmail(payload: Parameters<Resend["emails"]["send"]>[0], options?: Parameters<Resend["emails"]["send"]>[1]) {
+  const result = await getResend().emails.send(payload, options);
+  if (result.error || !result.data?.id) {
+    throw new Error(`Email provider did not accept the message: ${result.error?.message || "missing provider ID"}`);
+  }
+  return result;
+}
+
 const FROM = process.env.RESEND_FROM || "Ardmore Cricket Club <onboarding@resend.dev>";
 
 const ADMIN_EMAILS = [
@@ -72,7 +80,7 @@ export async function sendPurchaseConfirmation(
     <p style="color:#666;font-size:14px;">Good luck! Results will be emailed after the draw.</p>
   `);
 
-  await getResend().emails.send({
+  await sendEmail({
     from: FROM,
     to: email,
     subject: `Draw Confirmed — Numbers ${sorted.join(", ")}`,
@@ -143,7 +151,7 @@ export async function sendDrawResults(
       : `Ardmore CC Draw Results — ${drawDate}`;
 
     try {
-      await getResend().emails.send({ from: FROM, to: p.email, subject, html: layout(content) });
+      await sendEmail({ from: FROM, to: p.email, subject, html: layout(content) });
     } catch (err) {
       console.error(`Failed to send draw result to ${p.email}:`, err);
     }
@@ -223,7 +231,7 @@ export async function sendAdminDrawCompletedNotification(details: {
 
   for (const adminEmail of ADMIN_EMAILS) {
     try {
-      await getResend().emails.send({
+      await sendEmail({
         from: FROM,
         to: adminEmail,
         subject: `Ardmore CC Draw #${details.drawNumber} winners: ${details.winningNumbers.join(", ")}`,
@@ -261,7 +269,7 @@ export async function sendAdminNewEntryNotification(
 
   for (const adminEmail of ADMIN_EMAILS) {
     try {
-      await getResend().emails.send({
+      await sendEmail({
         from: FROM,
         to: adminEmail,
         subject: `New Draw Entry — ${memberName || memberEmail} picked ${sorted.length} numbers`,
@@ -291,7 +299,7 @@ export async function sendMatchBallSponsorConfirmation(
     <p style="color:#666;font-size:14px;">The club has been notified with your sponsorship details.</p>
   `);
 
-  await getResend().emails.send({
+  await sendEmail({
     from: FROM,
     to: email,
     subject: "Ardmore CC Match Ball Sponsorship Confirmed",
@@ -320,7 +328,7 @@ export async function sendAdminMatchBallSponsorNotification(
 
   for (const adminEmail of ADMIN_EMAILS) {
     try {
-      await getResend().emails.send({
+      await sendEmail({
         from: FROM,
         to: adminEmail,
         subject: `New Match Ball Sponsor — ${sponsorName}`,
@@ -354,7 +362,7 @@ export async function sendMembershipNotification(
 
   for (const adminEmail of ADMIN_EMAILS) {
     try {
-      await getResend().emails.send({
+      await sendEmail({
         from: FROM,
         to: adminEmail,
         subject: `🏏 New Membership — ${memberName || membershipName} (£${(amountPence / 100).toFixed(2)})`,
@@ -378,7 +386,7 @@ export async function sendMembershipNotification(
   `);
 
   try {
-    await getResend().emails.send({
+    await sendEmail({
       from: FROM,
       to: memberEmail,
       subject: `Welcome to Ardmore CC — ${membershipName} Membership Confirmed`,
@@ -416,7 +424,7 @@ export async function sendWinnerClaimEmail(
     <p style="color:#666;font-size:13px;">This link expires in 14 days. Stripe handles your bank details securely — we never see them. Once connected, future winnings are paid automatically.</p>
   `);
 
-  await getResend().emails.send({
+  await sendEmail({
     from: FROM,
     to: email,
     subject: `🎉 You've won £${(amountPence / 100).toFixed(2)} in the Ardmore CC Draw!`,
@@ -441,7 +449,7 @@ export async function sendPayoutConfirmationEmail(
     <p style="color:#666;font-size:14px;">Funds typically arrive within 1-2 business days. Keep playing — your numbers are still in the draw! 🏏</p>
   `);
 
-  await getResend().emails.send({
+  await sendEmail({
     from: FROM,
     to: email,
     subject: `💰 £${(amountPence / 100).toFixed(2)} prize sent to your account`,
@@ -453,12 +461,13 @@ export async function sendRenewalConfirmation(
   email: string,
   numbers: number[],
   amountPence: number,
-  names?: Record<string, string>
+  names?: Record<string, string>,
+  idempotencyKey?: string
 ) {
   const sorted = [...numbers].sort((a, b) => a - b);
   const balls = sorted
     .map((n) => {
-      const name = names?.[String(n)];
+      const name = names?.[String(n)]?.replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]!);
       return `<div style="display:inline-block;text-align:center;margin:6px;">
         <span style="display:block;background:#c9a84c;color:#1a365d;font-weight:bold;width:40px;height:40px;line-height:40px;border-radius:50%;margin:0 auto;font-size:16px;">${n}</span>
         ${name ? `<span style="display:block;font-size:11px;color:#666;margin-top:4px;max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${name}</span>` : ""}
@@ -477,12 +486,14 @@ export async function sendRenewalConfirmation(
     <p style="color:#666;font-size:14px;">Good luck! Results will be emailed after the draw. 🏏</p>
   `);
 
-  await getResend().emails.send({
+  const result = await sendEmail({
     from: FROM,
     to: email,
     subject: `Weekly Draw Renewed — Numbers ${sorted.join(", ")}`,
     html,
-  });
+    text: `Ardmore Cricket Club\nYour weekly subscription has renewed.\nNumbers: ${sorted.join(", ")}\nAmount paid: £${(amountPence / 100).toFixed(2)}\nDraws take place on Fridays at 7pm, Europe/London.\nhttps://ardmorecricket.com/draw`,
+  }, idempotencyKey ? { idempotencyKey } : undefined);
+  return result.data.id;
 }
 
 export async function sendWelcomeEmail(email: string, name: string) {
@@ -495,7 +506,7 @@ export async function sendWelcomeEmail(email: string, name: string) {
     <p style="color:#666;font-size:14px;">Every Friday at 7PM, 3 numbers are drawn. 50% of the pot goes to winners, 40% goes straight to the club.</p>
   `);
 
-  await getResend().emails.send({
+  await sendEmail({
     from: FROM,
     to: email,
     subject: "Welcome to Ardmore Cricket Club 🏏",

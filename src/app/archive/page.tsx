@@ -778,11 +778,6 @@ export default function ArchivePage() {
     };
   }, [lightbox, close, prev, next]);
 
-  // Close lightbox when switching tabs
-  useEffect(() => {
-    setLightbox(null);
-  }, [activeTab]);
-
   return (
     <>
       {/* Hero */}
@@ -828,7 +823,7 @@ export default function ArchivePage() {
                 return (
                   <button
                     key={tab.key}
-                    onClick={() => setActiveTab(tab.key)}
+                    onClick={() => { setActiveTab(tab.key); setLightbox(null); }}
                     className={`px-4 py-2 sm:px-5 sm:py-2.5 rounded-md text-sm font-semibold transition-all duration-200 ${
                       isActive
                         ? "bg-navy text-white shadow-md"

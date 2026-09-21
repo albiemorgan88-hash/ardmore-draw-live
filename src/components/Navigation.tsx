@@ -1,6 +1,9 @@
 "use client";
 
+import Link from "next/link";
+
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "./AuthProvider";
 import { supabase } from "@/lib/supabase";
@@ -10,12 +13,8 @@ const KIT_SHOP_URL = "https://www.oneills.com/shop-by-team/cricket/ardmore-crick
 export default function Navigation() {
   const { user, loading } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [activePath, setActivePath] = useState("/");
+  const activePath = usePathname() || "/";
   const menuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setActivePath(window.location.pathname);
-  }, []);
 
   // Close on outside click
   useEffect(() => {
@@ -33,7 +32,6 @@ export default function Navigation() {
   useEffect(() => {
     const handleNav = () => {
       setMobileOpen(false);
-      setActivePath(window.location.pathname);
     };
     window.addEventListener("popstate", handleNav);
     return () => window.removeEventListener("popstate", handleNav);
@@ -66,7 +64,7 @@ export default function Navigation() {
     <nav className="bg-navy text-white sticky top-0 z-50 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <a href="/" className="flex items-center gap-3" onClick={() => setMobileOpen(false)}>
+          <Link href="/" className="flex items-center gap-3" onClick={() => setMobileOpen(false)}>
             <Image
               src="/images/ardmore-crest-sharp-clean.png"
               alt="Ardmore CC Crest"
@@ -77,7 +75,7 @@ export default function Navigation() {
             />
             <span className="font-heading text-xl font-bold tracking-wide">Ardmore CC</span>
             <span className="hidden sm:inline text-gold text-sm font-body">Est. 1879</span>
-          </a>
+          </Link>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8 text-sm font-medium">

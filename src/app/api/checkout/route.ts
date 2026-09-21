@@ -48,18 +48,22 @@ export async function POST(req: NextRequest) {
 
     // Check which numbers are already paid into the draw.
     const supabase = createServiceClient();
-    const { data: existing } = await supabase
+    const { data: existing, error: selectionError } = await supabase
       .from("number_selections")
       .select("numbers")
       .eq("club_id", CLUB_ID)
       .eq("status", "active");
 
     // Also check active subscriptions in case a webhook has not rebuilt number_selections yet.
-    const { data: subscribed } = await supabase
+    const { data: subscribed, error: subscriptionError } = await supabase
       .from("draw_subscriptions")
       .select("numbers")
       .eq("club_id", CLUB_ID)
-      .eq("status", "active");
+      .in("status", ["active", "past_due"]);
+
+    if (selectionError || subscriptionError) {
+      return NextResponse.json({ error: "We could not check number availability. Please try again shortly." }, { status: 503 });
+    }
 
     const takenSet = new Set<number>();
     if (existing) {

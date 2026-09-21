@@ -18,7 +18,7 @@ export default function JackpotSection() {
 
   useEffect(() => {
     fetch("/api/pot")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error("Pot unavailable"); return r.json(); })
       .then(setPot)
       .catch(() => {});
   }, []);
