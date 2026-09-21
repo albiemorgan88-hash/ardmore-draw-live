@@ -3,7 +3,7 @@ import { sendWelcomeEmail } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   const secret = req.headers.get("x-webhook-secret");
-  if (secret !== process.env.DRAW_SECRET) {
+  if (!process.env.DRAW_SECRET || secret !== process.env.DRAW_SECRET) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -17,8 +17,8 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ received: true });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Auth webhook error:", err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return NextResponse.json({ error: err instanceof Error ? err.message : "Welcome notification failed" }, { status: 500 });
   }
 }

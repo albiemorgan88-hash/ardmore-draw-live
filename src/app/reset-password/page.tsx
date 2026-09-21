@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { useState, useEffect, Suspense } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -12,7 +14,7 @@ function ResetPasswordForm() {
   const [loading, setLoading] = useState(false);
   const [validSession, setValidSession] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
-  
+
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -94,14 +96,14 @@ function ResetPasswordForm() {
           <h1 className="font-heading text-2xl font-bold text-navy mb-2">Invalid Reset Link</h1>
           <p className="text-navy/60 mb-6">{error}</p>
           <div className="space-y-3">
-            <a 
-              href="/forgot-password" 
+            <a
+              href="/forgot-password"
               className="block bg-navy text-white px-6 py-2 rounded-md hover:bg-navy-light transition-colors"
             >
               Request New Reset Link
             </a>
-            <a 
-              href="/login" 
+            <a
+              href="/login"
               className="block text-gold font-semibold hover:underline"
             >
               Back to Login
@@ -121,12 +123,12 @@ function ResetPasswordForm() {
           <p className="text-navy/60 mb-6">
             Your password has been successfully updated. You&apos;ll be redirected to the home page in a moment.
           </p>
-          <a 
-            href="/" 
+          <Link
+            href="/"
             className="inline-block bg-navy text-white px-6 py-2 rounded-md hover:bg-navy-light transition-colors"
           >
             Continue to Site
-          </a>
+          </Link>
         </div>
       </div>
     );
@@ -143,35 +145,35 @@ function ResetPasswordForm() {
         <form onSubmit={handleResetPassword} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-navy mb-1">New Password</label>
-            <input 
-              type="password" 
-              value={password} 
-              onChange={e => setPassword(e.target.value)} 
-              required 
+            <input
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
               minLength={8}
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-md focus:ring-2 focus:ring-gold focus:border-gold outline-none" 
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-md focus:ring-2 focus:ring-gold focus:border-gold outline-none"
               placeholder="Enter new password"
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-navy mb-1">Confirm Password</label>
-            <input 
-              type="password" 
-              value={confirmPassword} 
-              onChange={e => setConfirmPassword(e.target.value)} 
-              required 
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={e => setConfirmPassword(e.target.value)}
+              required
               minLength={8}
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-md focus:ring-2 focus:ring-gold focus:border-gold outline-none" 
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-md focus:ring-2 focus:ring-gold focus:border-gold outline-none"
               placeholder="Confirm new password"
             />
           </div>
-          
+
           {error && <p className="text-red-500 text-sm">{error}</p>}
-          
-          <button 
-            type="submit" 
-            disabled={loading} 
+
+          <button
+            type="submit"
+            disabled={loading}
             className="w-full bg-navy text-white font-semibold py-3 rounded-md hover:bg-navy-light transition-colors disabled:opacity-50"
           >
             {loading ? "Updating..." : "Update Password"}

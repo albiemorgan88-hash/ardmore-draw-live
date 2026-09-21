@@ -4,6 +4,7 @@ import AuthProvider from "@/components/AuthProvider";
 import Navigation from "@/components/Navigation";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://ardmorecricket.com"),
   title: "Ardmore Cricket Club | Est. 1879",
   description: "Home of Ardmore Cricket Club, The Bleach Green, Ardmore, Co. Derry. North West Cricket Union. Founded 1879.",
   openGraph: {
@@ -11,14 +12,23 @@ export const metadata: Metadata = {
     description: "Home of Ardmore Cricket Club, The Bleach Green. North West Cricket Union. Founded 1879. Support the club through our weekly draw!",
     url: "https://ardmorecricket.com",
     siteName: "Ardmore Cricket Club",
-    images: [{ url: "https://ardmorecricket.com/ardmore-og.png", width: 512, height: 512, alt: "Ardmore Cricket Club Crest" }],
+    images: [
+      {
+        url: "https://ardmorecricket.com/ardmore-og-20260525.png",
+        secureUrl: "https://ardmorecricket.com/ardmore-og-20260525.png",
+        width: 1200,
+        height: 630,
+        alt: "Ardmore Cricket Club crest and name",
+        type: "image/png",
+      },
+    ],
     type: "website",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Ardmore Cricket Club | Est. 1879",
     description: "Home of Ardmore Cricket Club, The Bleach Green. North West Cricket Union. Founded 1879.",
-    images: ["https://ardmorecricket.com/ardmore-og.png"],
+    images: ["https://ardmorecricket.com/ardmore-og-20260525.png"],
   },
   icons: {
     icon: "/favicon-32.png",
@@ -86,9 +96,9 @@ function Footer() {
             <h4 className="font-heading text-lg font-semibold mb-3">Quick Links</h4>
             <div className="flex flex-col gap-2 text-sm text-gray-300">
               <a href="/about" className="hover:text-gold transition-colors">About the Club</a>
-              <a href="/committee" className="hover:text-gold transition-colors">Committee</a>
               <a href="/news" className="hover:text-gold transition-colors">Club News</a>
               <a href="/archive" className="hover:text-gold transition-colors">Archive</a>
+              <a href="/membership" className="hover:text-gold transition-colors">Membership</a>
               <a href="/draw" className="hover:text-gold transition-colors">Weekly Draw</a>
               <a href="/sponsors" className="hover:text-gold transition-colors">Sponsors</a>
               <a href="https://northwestcricket.com/clubs/ardmore-cricket-club/" target="_blank" rel="noopener noreferrer" className="hover:text-gold transition-colors">NWCU Profile</a>

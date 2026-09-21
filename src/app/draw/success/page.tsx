@@ -1,24 +1,30 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
+
+function subscribeToStorage(callback: () => void) {
+  window.addEventListener("storage", callback);
+  return () => window.removeEventListener("storage", callback);
+}
+function readStoredNumbers() { return localStorage.getItem("purchased_numbers") || "[]"; }
+function parseStoredNumbers(value: string): number[] {
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed.filter(n => Number.isInteger(n) && n >= 1 && n <= 500) : [];
+  } catch { return []; }
+}
 
 function SuccessContent() {
   const params = useSearchParams();
   const sessionId = params.get("session_id");
   const mode = params.get("mode"); // "subscription" or "one-off"
-  const [numbers, setNumbers] = useState<number[]>([]);
+  const storedNumbers = useSyncExternalStore(subscribeToStorage, readStoredNumbers, () => "[]");
+  const numbers: number[] = parseStoredNumbers(storedNumbers);
   const [copied, setCopied] = useState(false);
 
-  useEffect(() => {
-    const stored = localStorage.getItem("purchased_numbers");
-    if (stored) {
-      setNumbers(JSON.parse(stored));
-      localStorage.removeItem("purchased_numbers");
-      localStorage.removeItem("optimistic_purchased");
-    }
-  }, []);
+  useEffect(() => { localStorage.removeItem("optimistic_purchased"); }, []);
 
   const isSubscription = mode === "subscription";
 
@@ -37,11 +43,11 @@ function SuccessContent() {
             key={i}
             className="absolute w-2 h-2 rounded-full animate-confetti"
             style={{
-              left: `${5 + Math.random() * 90}%`,
+              left: `${5 + ((i * 37) % 90)}%`,
               top: `-5%`,
               backgroundColor: ["#C8A951", "#1B2A4A", "#87CEEB", "#FF6B6B", "#4CAF50"][i % 5],
-              animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${2.5 + Math.random() * 2}s`,
+              animationDelay: `${((i * 17) % 30) / 10}s`,
+              animationDuration: `${2.5 + ((i * 13) % 20) / 10}s`,
             }}
           />
         ))}
@@ -60,7 +66,7 @@ function SuccessContent() {
           <div className="mb-6">
             <p className="text-sm text-navy/50 mb-3">Your numbers:</p>
             <div className="flex flex-wrap gap-2 justify-center">
-              {numbers.sort((a, b) => a - b).map((n) => (
+              {[...numbers].sort((a, b) => a - b).map((n) => (
                 <span key={n} className="bg-gold text-navy text-lg font-bold px-4 py-2 rounded-full">
                   {n}
                 </span>

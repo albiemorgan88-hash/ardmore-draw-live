@@ -8,6 +8,14 @@ function getResend(): Resend {
   return _resend;
 }
 
+async function sendEmail(payload: Parameters<Resend["emails"]["send"]>[0], options?: Parameters<Resend["emails"]["send"]>[1]) {
+  const result = await getResend().emails.send(payload, options);
+  if (result.error || !result.data?.id) {
+    throw new Error(`Email provider did not accept the message: ${result.error?.message || "missing provider ID"}`);
+  }
+  return result;
+}
+
 const FROM = process.env.RESEND_FROM || "Ardmore Cricket Club <onboarding@resend.dev>";
 
 const ADMIN_EMAILS = [
@@ -72,7 +80,7 @@ export async function sendPurchaseConfirmation(
     <p style="color:#666;font-size:14px;">Good luck! Results will be emailed after the draw.</p>
   `);
 
-  await getResend().emails.send({
+  await sendEmail({
     from: FROM,
     to: email,
     subject: `Draw Confirmed — Numbers ${sorted.join(", ")}`,
@@ -85,7 +93,8 @@ export async function sendDrawResults(
   winningNumbers: number[],
   prizes: { first: number; second: number; third: number },
   drawDate: string,
-  winnerNames?: string[]
+  winnerNames?: string[],
+  winnerPrizeSharesByEmail?: Record<string, Record<number, number>>
 ) {
   const winnerMap = new Map<number, { place: string; amount: number; winnerName: string }>();
   winnerMap.set(winningNumbers[0], { place: "1st", amount: prizes.first, winnerName: winnerNames?.[0] || "Unknown" });
@@ -118,7 +127,8 @@ export async function sendDrawResults(
 
     let content: string;
     if (isWinner) {
-      const totalWon = wonNumbers.reduce((sum, n) => sum + winnerMap.get(n)!.amount, 0);
+      const personalPrizeShares = winnerPrizeSharesByEmail?.[p.email] || {};
+      const totalWon = wonNumbers.reduce((sum, n) => sum + (personalPrizeShares[n] ?? winnerMap.get(n)!.amount), 0);
       content = `
         <h2 style="color:#c9a84c;margin:0 0 16px;text-align:center;">🎉 CONGRATULATIONS! 🎉</h2>
         <p style="color:#333;line-height:1.6;text-align:center;font-size:18px;">You've won <strong style="color:#1a365d;">£${(totalWon / 100).toFixed(2)}</strong>!</p>
@@ -141,9 +151,94 @@ export async function sendDrawResults(
       : `Ardmore CC Draw Results — ${drawDate}`;
 
     try {
-      await getResend().emails.send({ from: FROM, to: p.email, subject, html: layout(content) });
+      await sendEmail({ from: FROM, to: p.email, subject, html: layout(content) });
     } catch (err) {
       console.error(`Failed to send draw result to ${p.email}:`, err);
+    }
+  }
+}
+
+export async function sendAdminDrawCompletedNotification(details: {
+  drawNumber: number;
+  drawId: string;
+  drawDate: string;
+  winningNumbers: number[];
+  totalEntries: number;
+  potAmountPence: number;
+  prizes: { first: number; second: number; third: number; club: number; platform: number; fees: number };
+  winners: {
+    place: string;
+    number: number;
+    prize: number;
+    displayName: string;
+    split?: boolean;
+    prize_shares?: { owner: string; amount_pence: number }[];
+  }[];
+  payoutsCreated: number;
+  participantsEmailed: number;
+}) {
+  const liveUrl = "https://ardmorecricket.com/draw/live";
+  const manageUrl = "https://ardmorecricket.com/admin/payouts";
+  const rows = details.winners
+    .map((winner) => {
+      const splitText = winner.split && winner.prize_shares?.length
+        ? `<br><span style="font-size:12px;color:#666;">Split: ${winner.prize_shares
+            .map((share) => `${share.owner} £${(share.amount_pence / 100).toFixed(2)}`)
+            .join(", ")}</span>`
+        : "";
+      return `
+        <tr>
+          <td style="padding:8px;border-bottom:1px solid #e5e7eb;">${winner.place}</td>
+          <td style="padding:8px;border-bottom:1px solid #e5e7eb;font-weight:bold;">${winner.number}</td>
+          <td style="padding:8px;border-bottom:1px solid #e5e7eb;">${winner.displayName}${splitText}</td>
+          <td style="padding:8px;border-bottom:1px solid #e5e7eb;text-align:right;">£${(winner.prize / 100).toFixed(2)}</td>
+        </tr>
+      `;
+    })
+    .join("");
+
+  const html = layout(`
+    <h2 style="color:#1a365d;margin:0 0 16px;">Draw #${details.drawNumber} Complete</h2>
+    <div style="background:#f5f5f0;border-radius:8px;padding:16px;margin:16px 0;">
+      <p style="margin:0;color:#333;"><strong>Date:</strong> ${details.drawDate}</p>
+      <p style="margin:8px 0 0;color:#333;"><strong>Entries:</strong> ${details.totalEntries}</p>
+      <p style="margin:8px 0 0;color:#333;"><strong>Total pot:</strong> £${(details.potAmountPence / 100).toFixed(2)}</p>
+      <p style="margin:8px 0 0;color:#333;"><strong>Winning numbers:</strong> ${details.winningNumbers.join(", ")}</p>
+    </div>
+    <table style="width:100%;border-collapse:collapse;margin:18px 0;color:#333;">
+      <thead>
+        <tr>
+          <th style="padding:8px;text-align:left;border-bottom:2px solid #1a365d;">Prize</th>
+          <th style="padding:8px;text-align:left;border-bottom:2px solid #1a365d;">No.</th>
+          <th style="padding:8px;text-align:left;border-bottom:2px solid #1a365d;">Winner</th>
+          <th style="padding:8px;text-align:right;border-bottom:2px solid #1a365d;">Amount</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div style="background:#fff7db;border:1px solid #f3d36b;border-radius:8px;padding:16px;margin:16px 0;">
+      <p style="margin:0;color:#333;"><strong>Club share:</strong> £${(details.prizes.club / 100).toFixed(2)}</p>
+      <p style="margin:8px 0 0;color:#333;"><strong>Platform:</strong> £${(details.prizes.platform / 100).toFixed(2)}</p>
+      <p style="margin:8px 0 0;color:#333;"><strong>Stripe fees allowance:</strong> £${(details.prizes.fees / 100).toFixed(2)}</p>
+      <p style="margin:8px 0 0;color:#333;"><strong>Payout records:</strong> ${details.payoutsCreated}</p>
+      <p style="margin:8px 0 0;color:#333;"><strong>Winner emails sent:</strong> ${details.participantsEmailed}</p>
+    </div>
+    <p style="margin:20px 0 0;">
+      <a href="${liveUrl}" style="display:inline-block;background:#c9a84c;color:#1a365d;font-weight:bold;padding:12px 20px;border-radius:8px;text-decoration:none;">View live draw page</a>
+      <a href="${manageUrl}" style="display:inline-block;margin-left:8px;background:#1a365d;color:#ffffff;font-weight:bold;padding:12px 20px;border-radius:8px;text-decoration:none;">Review payouts</a>
+    </p>
+  `);
+
+  for (const adminEmail of ADMIN_EMAILS) {
+    try {
+      await sendEmail({
+        from: FROM,
+        to: adminEmail,
+        subject: `Ardmore CC Draw #${details.drawNumber} winners: ${details.winningNumbers.join(", ")}`,
+        html,
+      });
+    } catch (err) {
+      console.error(`Failed to send draw completion notification to ${adminEmail}:`, err);
     }
   }
 }
@@ -174,7 +269,7 @@ export async function sendAdminNewEntryNotification(
 
   for (const adminEmail of ADMIN_EMAILS) {
     try {
-      await getResend().emails.send({
+      await sendEmail({
         from: FROM,
         to: adminEmail,
         subject: `New Draw Entry — ${memberName || memberEmail} picked ${sorted.length} numbers`,
@@ -183,6 +278,122 @@ export async function sendAdminNewEntryNotification(
     } catch (err) {
       console.error(`Failed to send admin notification to ${adminEmail}:`, err);
     }
+  }
+}
+
+export async function sendMatchBallSponsorConfirmation(
+  email: string,
+  sponsorName: string,
+  sponsorMessage?: string,
+  assetUrl?: string
+) {
+  const html = layout(`
+    <h2 style="color:#1a365d;margin:0 0 16px;">Match Ball Sponsorship Confirmed</h2>
+    <p style="color:#333;line-height:1.6;">Thanks for sponsoring Ardmore Cricket Club&apos;s match ball.</p>
+    <div style="background:#f5f5f0;border-radius:8px;padding:16px;margin:16px 0;">
+      <p style="margin:0;color:#333;"><strong>Sponsor:</strong> ${sponsorName}</p>
+      <p style="margin:8px 0 0;color:#333;"><strong>Amount:</strong> £30.00</p>
+      ${sponsorMessage ? `<p style="margin:8px 0 0;color:#333;"><strong>Message:</strong> ${sponsorMessage}</p>` : ""}
+      ${assetUrl ? `<p style="margin:8px 0 0;color:#333;"><strong>Image:</strong> <a href="${assetUrl}">View uploaded logo/photo</a></p>` : ""}
+    </div>
+    <p style="color:#666;font-size:14px;">The club has been notified with your sponsorship details.</p>
+  `);
+
+  await sendEmail({
+    from: FROM,
+    to: email,
+    subject: "Ardmore CC Match Ball Sponsorship Confirmed",
+    html,
+  });
+}
+
+export async function sendAdminMatchBallSponsorNotification(
+  sponsorEmail: string,
+  sponsorName: string,
+  sponsorMessage?: string,
+  assetUrl?: string,
+  assetName?: string
+) {
+  const html = layout(`
+    <h2 style="color:#1a365d;margin:0 0 16px;">🏏 New Match Ball Sponsor</h2>
+    <div style="background:#f5f5f0;border-radius:8px;padding:16px;margin:16px 0;">
+      <p style="margin:0;color:#333;"><strong>Sponsor:</strong> ${sponsorName}</p>
+      <p style="margin:8px 0 0;color:#333;"><strong>Email:</strong> ${sponsorEmail}</p>
+      <p style="margin:8px 0 0;color:#333;"><strong>Amount:</strong> £30.00</p>
+      ${sponsorMessage ? `<p style="margin:8px 0 0;color:#333;"><strong>Message:</strong> ${sponsorMessage}</p>` : ""}
+      ${assetUrl ? `<p style="margin:8px 0 0;color:#333;"><strong>Asset:</strong> <a href="${assetUrl}">${assetName || "View uploaded logo/photo"}</a></p>` : ""}
+      <p style="margin:8px 0 0;color:#333;"><strong>Time:</strong> ${new Date().toLocaleString("en-GB", { timeZone: "Europe/London" })}</p>
+    </div>
+  `);
+
+  for (const adminEmail of ADMIN_EMAILS) {
+    try {
+      await sendEmail({
+        from: FROM,
+        to: adminEmail,
+        subject: `New Match Ball Sponsor — ${sponsorName}`,
+        html,
+      });
+    } catch (err) {
+      console.error(`Failed to send match ball sponsor notification to ${adminEmail}:`, err);
+    }
+  }
+}
+
+export async function sendMembershipNotification(
+  memberEmail: string,
+  membershipType: string,
+  membershipName: string,
+  memberName: string | undefined,
+  amountPence: number,
+  sessionId: string
+) {
+  const html = layout(`
+    <h2 style="color:#1a365d;margin:0 0 16px;">🏏 New Membership Purchased!</h2>
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:16px;margin:16px 0;">
+      <p style="margin:0;color:#333;"><strong>Type:</strong> ${membershipName}</p>
+      <p style="margin:8px 0 0;color:#333;"><strong>Name:</strong> ${memberName || 'Not provided'}</p>
+      <p style="margin:8px 0 0;color:#333;"><strong>Amount:</strong> £${(amountPence / 100).toFixed(2)}</p>
+      <p style="margin:8px 0 0;color:#333;"><strong>Email:</strong> ${memberEmail}</p>
+      <p style="margin:8px 0 0;color:#333;"><strong>Time:</strong> ${new Date().toLocaleString("en-GB", { timeZone: "Europe/London" })}</p>
+      <p style="margin:8px 0 0;color:#333;"><strong>Stripe Session:</strong> ${sessionId}</p>
+    </div>
+  `);
+
+  for (const adminEmail of ADMIN_EMAILS) {
+    try {
+      await sendEmail({
+        from: FROM,
+        to: adminEmail,
+        subject: `🏏 New Membership — ${memberName || membershipName} (£${(amountPence / 100).toFixed(2)})`,
+        html,
+      });
+    } catch (err) {
+      console.error(`Failed to send membership notification to ${adminEmail}:`, err);
+    }
+  }
+
+  const memberHtml = layout(`
+    <h2 style="color:#1a365d;margin:0 0 16px;">Welcome to Ardmore Cricket Club${memberName ? `, ${memberName}` : ""}! 🏏</h2>
+    <p style="color:#333;line-height:1.6;">Thank you for purchasing your <strong>${membershipName}</strong> membership.</p>
+    <div style="background:#f5f5f0;border-radius:8px;padding:16px;margin:16px 0;">
+      <p style="margin:0;color:#333;"><strong>Membership:</strong> ${membershipName}</p>
+      <p style="margin:8px 0 0;color:#333;"><strong>Amount Paid:</strong> £${(amountPence / 100).toFixed(2)}</p>
+      <p style="margin:8px 0 0;color:#333;"><strong>Season:</strong> April 2026 — March 2027</p>
+    </div>
+    <p style="color:#333;line-height:1.6;">Your membership card will be posted to you. If you have any questions, contact us at Ardmorecc1879@hotmail.com.</p>
+    <p style="color:#666;font-size:14px;">See you at The Bleach Green! 🏏</p>
+  `);
+
+  try {
+    await sendEmail({
+      from: FROM,
+      to: memberEmail,
+      subject: `Welcome to Ardmore CC — ${membershipName} Membership Confirmed`,
+      html: memberHtml,
+    });
+  } catch (err) {
+    console.error(`Failed to send membership confirmation to ${memberEmail}:`, err);
   }
 }
 
@@ -213,7 +424,7 @@ export async function sendWinnerClaimEmail(
     <p style="color:#666;font-size:13px;">This link expires in 14 days. Stripe handles your bank details securely — we never see them. Once connected, future winnings are paid automatically.</p>
   `);
 
-  await getResend().emails.send({
+  await sendEmail({
     from: FROM,
     to: email,
     subject: `🎉 You've won £${(amountPence / 100).toFixed(2)} in the Ardmore CC Draw!`,
@@ -238,7 +449,7 @@ export async function sendPayoutConfirmationEmail(
     <p style="color:#666;font-size:14px;">Funds typically arrive within 1-2 business days. Keep playing — your numbers are still in the draw! 🏏</p>
   `);
 
-  await getResend().emails.send({
+  await sendEmail({
     from: FROM,
     to: email,
     subject: `💰 £${(amountPence / 100).toFixed(2)} prize sent to your account`,
@@ -250,12 +461,13 @@ export async function sendRenewalConfirmation(
   email: string,
   numbers: number[],
   amountPence: number,
-  names?: Record<string, string>
+  names?: Record<string, string>,
+  idempotencyKey?: string
 ) {
   const sorted = [...numbers].sort((a, b) => a - b);
   const balls = sorted
     .map((n) => {
-      const name = names?.[String(n)];
+      const name = names?.[String(n)]?.replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]!);
       return `<div style="display:inline-block;text-align:center;margin:6px;">
         <span style="display:block;background:#c9a84c;color:#1a365d;font-weight:bold;width:40px;height:40px;line-height:40px;border-radius:50%;margin:0 auto;font-size:16px;">${n}</span>
         ${name ? `<span style="display:block;font-size:11px;color:#666;margin-top:4px;max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${name}</span>` : ""}
@@ -274,12 +486,14 @@ export async function sendRenewalConfirmation(
     <p style="color:#666;font-size:14px;">Good luck! Results will be emailed after the draw. 🏏</p>
   `);
 
-  await getResend().emails.send({
+  const result = await sendEmail({
     from: FROM,
     to: email,
     subject: `Weekly Draw Renewed — Numbers ${sorted.join(", ")}`,
     html,
-  });
+    text: `Ardmore Cricket Club\nYour weekly subscription has renewed.\nNumbers: ${sorted.join(", ")}\nAmount paid: £${(amountPence / 100).toFixed(2)}\nDraws take place on Fridays at 7pm, Europe/London.\nhttps://ardmorecricket.com/draw`,
+  }, idempotencyKey ? { idempotencyKey } : undefined);
+  return result.data.id;
 }
 
 export async function sendWelcomeEmail(email: string, name: string) {
@@ -292,7 +506,7 @@ export async function sendWelcomeEmail(email: string, name: string) {
     <p style="color:#666;font-size:14px;">Every Friday at 7PM, 3 numbers are drawn. 50% of the pot goes to winners, 40% goes straight to the club.</p>
   `);
 
-  await getResend().emails.send({
+  await sendEmail({
     from: FROM,
     to: email,
     subject: "Welcome to Ardmore Cricket Club 🏏",

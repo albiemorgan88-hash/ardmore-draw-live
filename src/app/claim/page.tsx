@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
+import { supabase } from "@/lib/supabase";
+import Link from "next/link";
 
 function ClaimContent() {
   const searchParams = useSearchParams();
@@ -39,15 +41,14 @@ function ClaimContent() {
       });
   }, [token]);
 
-  useEffect(() => {
-    if (error === "incomplete") {
-      setErrorMsg("Onboarding was not completed. Please try again.");
-    } else if (error === "stripe_error") {
-      setErrorMsg("Something went wrong with Stripe. Please try again.");
-    } else if (error === "missing_params") {
-      setErrorMsg("Invalid link. Please use the link from your email.");
-    }
-  }, [error]);
+  const callbackErrors: Record<string, string> = {
+    incomplete: "Onboarding was not completed. Please try again.",
+    stripe_error: "Something went wrong with Stripe. Please try again.",
+    missing_params: "Invalid link. Please use the link from your email.",
+    invalid_callback: "This onboarding link has expired. Please reopen your prize link and try again.",
+    account_mismatch: "We could not confirm the account for this prize. Please contact the club.",
+  };
+  const displayError = errorMsg || (error ? callbackErrors[error] : null);
 
   const handleClaim = async () => {
     if (!token) return;
@@ -55,9 +56,15 @@ function ClaimContent() {
     setErrorMsg(null);
 
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        setErrorMsg("Please sign in using the same email you used to enter the draw, then reopen your prize link.");
+        setLoading(false);
+        return;
+      }
       const res = await fetch("/api/connect/onboard", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
         body: JSON.stringify({ claim_token: token }),
       });
 
@@ -109,11 +116,12 @@ function ClaimContent() {
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-navy mx-auto mb-4" />
                 <p className="text-navy/50">Loading...</p>
               </div>
-            ) : errorMsg ? (
+            ) : displayError ? (
               <div className="text-center py-8">
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
-                  <p className="text-red-700">{errorMsg}</p>
+                  <p className="text-red-700">{displayError}</p>
                 </div>
+                {displayError?.includes("sign in") && <Link href="/login" className="text-navy underline font-semibold">Sign in to claim</Link>}
                 {error === "incomplete" && token && (
                   <button
                     onClick={handleClaim}

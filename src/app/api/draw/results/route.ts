@@ -3,6 +3,8 @@ import { createClient } from "@supabase/supabase-js";
 
 const CLUB_ID = "31846fb2-b120-4815-bd48-e1120342d52e";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

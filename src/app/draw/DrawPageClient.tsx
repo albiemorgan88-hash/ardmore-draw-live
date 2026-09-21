@@ -3,7 +3,8 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import Image from "next/image";
 import { useAuth } from "@/components/AuthProvider";
-import { supabase } from "@/lib/supabase";
+import MatchBallSponsorshipSection from "@/components/MatchBallSponsorshipSection";
+import { supabase, browserAuthConfigured } from "@/lib/supabase";
 
 const CLUB_ID = "31846fb2-b120-4815-bd48-e1120342d52e";
 
@@ -17,6 +18,19 @@ interface PotData {
   members: number;
   progress: number;
 }
+
+type DrawHistoryWinner = {
+  place: string;
+  name?: string;
+  prize: number;
+};
+
+type DrawHistoryResult = {
+  drawn_at: string;
+  drawn_numbers?: number[];
+  pot_amount: number;
+  winners?: DrawHistoryWinner[];
+};
 
 function getNextFriday7PM(): Date {
   const now = new Date();
@@ -43,7 +57,7 @@ function useCountdown(target: Date) {
   };
 }
 
-export default function DrawPageClient({ initialPotData }: { initialPotData: PotData }) {
+export default function DrawPageClient({ initialPotData }: { initialPotData: PotData | null }) {
   const nextDraw = useMemo(() => getNextFriday7PM(), []);
   const countdown = useCountdown(nextDraw);
   const { user } = useAuth();
@@ -56,15 +70,23 @@ export default function DrawPageClient({ initialPotData }: { initialPotData: Pot
   const [showOneOffOption, setShowOneOffOption] = useState(false);
 
   // Use server-rendered pot data as initial state
-  const [potData, setPotData] = useState<PotData>(initialPotData);
+  const [potData, setPotData] = useState<PotData | null>(initialPotData);
 
   const numbersPerPage = 100;
   const totalPages = 5;
   const pageStart = gridPage * numbersPerPage + 1;
 
-  // Fetch taken numbers from draw_subscriptions (paid only)
+  // Fetch taken numbers from active paid draw entries. Active subscriptions are
+  // included as a fallback while the Stripe webhook rebuilds number selections.
   useEffect(() => {
     const fetchTaken = async () => {
+      if (!browserAuthConfigured) return;
+      const { data: selections } = await supabase
+        .from("number_selections")
+        .select("numbers")
+        .eq("club_id", CLUB_ID)
+        .eq("status", "active");
+
       const { data: subs } = await supabase
         .from("draw_subscriptions")
         .select("numbers")
@@ -72,6 +94,11 @@ export default function DrawPageClient({ initialPotData }: { initialPotData: Pot
         .in("status", ["active", "past_due"]);
 
       const taken = new Set<number>();
+      if (selections) {
+        selections.forEach((row: { numbers: number[] }) => {
+          if (row.numbers) row.numbers.forEach((n) => taken.add(n));
+        });
+      }
       if (subs) {
         subs.forEach((row: { numbers: number[] }) => {
           if (row.numbers) row.numbers.forEach((n) => taken.add(n));
@@ -88,13 +115,13 @@ export default function DrawPageClient({ initialPotData }: { initialPotData: Pot
   // Optionally refresh pot data client-side (for real-time updates)
   useEffect(() => {
     fetch("/api/pot")
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error("Pot unavailable"); return r.json(); })
       .then((data) => setPotData(data))
       .catch(() => {});
   }, []);
 
-  const potPounds = potData.totalPounds;
-  const totalSold = potData.totalNumbers;
+  const potPounds = potData?.totalPounds ?? "—";
+  const totalSold = potData?.totalNumbers ?? "—";
 
   const toggleNumber = (n: number) => {
     if (takenNumbers.has(n)) return;
@@ -154,21 +181,21 @@ export default function DrawPageClient({ initialPotData }: { initialPotData: Pot
     }
   }, [user, selectedNumbers, paymentMode]);
 
-  const [drawResults, setDrawResults] = useState<any[]>([]);
+  const [drawResults, setDrawResults] = useState<DrawHistoryResult[]>([]);
 
   useEffect(() => {
     fetch("/api/draw/results")
-      .then((r) => r.json())
-      .then((data) => {
+      .then((r) => { if (!r.ok) throw new Error("Pot unavailable"); return r.json(); })
+      .then((data: { results?: DrawHistoryResult[] }) => {
         if (data.results) setDrawResults(data.results);
       })
       .catch(() => {});
   }, []);
 
   const previousResults = drawResults.length > 0
-    ? drawResults.map((d: any) => {
+    ? drawResults.map((d) => {
         const w = d.winners || [];
-        const getWinner = (place: string) => w.find((x: any) => x.place === place);
+        const getWinner = (place: string) => w.find((x) => x.place === place);
         const w1 = getWinner("1st");
         const w2 = getWinner("2nd");
         const w3 = getWinner("3rd");
@@ -214,7 +241,7 @@ export default function DrawPageClient({ initialPotData }: { initialPotData: Pot
         <div className="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-center sm:text-left">
             <p className="text-gold text-sm uppercase tracking-wider font-medium">Current Pot</p>
-            {totalSold > 0 ? (
+            {typeof totalSold === "number" && totalSold > 0 ? (
               <>
                 <p className="font-heading text-4xl font-bold">£{potPounds}</p>
                 <p className="text-sm text-gray-400">{totalSold} numbers sold this week</p>
@@ -229,15 +256,15 @@ export default function DrawPageClient({ initialPotData }: { initialPotData: Pot
           <div className="flex gap-8 text-center">
             <div>
               <p className="text-sm text-gray-400">1st Prize (25%)</p>
-              <p className="font-heading text-xl font-bold text-gold">£{potData.first}</p>
+              <p className="font-heading text-xl font-bold text-gold">£{potData?.first ?? "—"}</p>
             </div>
             <div>
               <p className="text-sm text-gray-400">2nd Prize (15%)</p>
-              <p className="font-heading text-xl font-bold text-gold">£{potData.second}</p>
+              <p className="font-heading text-xl font-bold text-gold">£{potData?.second ?? "—"}</p>
             </div>
             <div>
               <p className="text-sm text-gray-400">3rd Prize (10%)</p>
-              <p className="font-heading text-xl font-bold text-gold">£{potData.third}</p>
+              <p className="font-heading text-xl font-bold text-gold">£{potData?.third ?? "—"}</p>
             </div>
           </div>
         </div>
@@ -277,6 +304,8 @@ export default function DrawPageClient({ initialPotData }: { initialPotData: Pot
           </div>
         </div>
       </section>
+
+      <MatchBallSponsorshipSection />
 
       {/* Number Grid */}
       <section className="py-12 bg-white">

@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase";
 import { getAuthenticatedUser } from "@/lib/auth";
-
-const ADMIN_EMAILS = ["contact@bluecanvas.ai", "ardmorecc1879@hotmail.com"];
+import { isAdminEmail } from "@/lib/admin";
 
 export async function POST(req: NextRequest) {
   const user = await getAuthenticatedUser(req);
-  if (!user || !ADMIN_EMAILS.includes(user.email?.toLowerCase() || "")) {
+  if (!user || !isAdminEmail(user.email)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }
 

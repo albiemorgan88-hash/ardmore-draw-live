@@ -17,7 +17,9 @@ export async function POST(req: NextRequest) {
       .from("draw_subscriptions")
       .select("stripe_customer_id")
       .eq("user_id", user.id)
-      .single();
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
 
     if (!subscription) {
       return NextResponse.json({ error: "No subscription found" }, { status: 404 });

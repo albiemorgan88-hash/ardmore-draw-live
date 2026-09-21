@@ -12,20 +12,20 @@ export const metadata: Metadata = {
     siteName: "Ardmore Cricket Club",
     images: [
       {
-        url: "https://ardmorecricket.com/ardmore-og.png",
-        width: 512,
-        height: 512,
-        alt: "Ardmore Cricket Club Crest",
+        url: "https://ardmorecricket.com/ardmore-og-20260428-simple.png",
+        width: 1200,
+        height: 630,
+        alt: "Ardmore Cricket Club crest and website preview",
       },
     ],
     type: "article",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Ardmore Cricket Club AGM 2026",
     description:
       "New captains appointed and positive plans for the season ahead at Ardmore's 2026 AGM.",
-    images: ["https://ardmorecricket.com/ardmore-og.png"],
+    images: ["https://ardmorecricket.com/ardmore-og-20260428-simple.png"],
   },
 };
 

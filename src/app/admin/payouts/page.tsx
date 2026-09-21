@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/components/AuthProvider";
 import { supabase } from "@/lib/supabase";
+import { isAdminEmail } from "@/lib/admin";
 import Link from "next/link";
 
 interface Draw {
@@ -55,9 +56,16 @@ interface MonthSummary {
   }>;
 }
 
-const ADMIN_EMAILS = ["contact@bluecanvas.ai", "ardmorecc1879@hotmail.com"];
-
 type Tab = "draws" | "monthly";
+
+type PayResult = {
+  error?: string;
+  summary?: {
+    paid?: number;
+    unclaimed?: number;
+    failed?: number;
+  };
+};
 
 export default function AdminPayoutsPage() {
   const { user } = useAuth();
@@ -68,23 +76,17 @@ export default function AdminPayoutsPage() {
   const [months, setMonths] = useState<MonthSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [paying, setPaying] = useState(false);
-  const [payResult, setPayResult] = useState<any>(null);
+  const [payResult, setPayResult] = useState<PayResult | null>(null);
   const [markingPaid, setMarkingPaid] = useState<string | null>(null);
 
-  const isAdmin = user && ADMIN_EMAILS.includes(user.email?.toLowerCase() || "");
+  const isAdmin = isAdminEmail(user?.email);
 
-  useEffect(() => {
-    if (!isAdmin) return;
-    fetchDraws();
-    fetchMonthly();
-  }, [isAdmin]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const getAuthHeaders = async () => {
+  const getAuthHeaders = useCallback(async () => {
     const { data: { session } } = await supabase.auth.getSession();
     return { Authorization: `Bearer ${session?.access_token}` };
-  };
+  }, []);
 
-  const fetchDraws = async () => {
+  const fetchDraws = useCallback(async () => {
     const { data } = await supabase
       .from("draws")
       .select("*")
@@ -92,9 +94,9 @@ export default function AdminPayoutsPage() {
       .limit(50);
     setDraws(data || []);
     setLoading(false);
-  };
+  }, []);
 
-  const fetchMonthly = async () => {
+  const fetchMonthly = useCallback(async () => {
     try {
       const headers = await getAuthHeaders();
       const res = await fetch("/api/admin/payouts/monthly", { headers });
@@ -103,14 +105,22 @@ export default function AdminPayoutsPage() {
     } catch {
       // silent
     }
-  };
+  }, [getAuthHeaders]);
+
+  useEffect(() => {
+    if (!isAdmin) return;
+    const loadAdminData = async () => {
+      await Promise.all([fetchDraws(), fetchMonthly()]);
+    };
+    void loadAdminData();
+  }, [fetchDraws, fetchMonthly, isAdmin]);
 
   const fetchPayouts = useCallback(async (drawId: string) => {
     const headers = await getAuthHeaders();
     const res = await fetch(`/api/draw/payout?draw_id=${drawId}`, { headers });
     const data = await res.json();
     setPayouts(data.payouts || []);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [getAuthHeaders]);
 
   const selectDraw = (draw: Draw) => {
     setSelectedDraw(draw);
@@ -136,8 +146,8 @@ export default function AdminPayoutsPage() {
       setPayResult(data);
       fetchPayouts(selectedDraw.id);
       fetchDraws();
-    } catch (err: any) {
-      setPayResult({ error: err.message });
+    } catch (err) {
+      setPayResult({ error: err instanceof Error ? err.message : "Failed to execute payout" });
     }
     setPaying(false);
   };
@@ -248,9 +258,20 @@ export default function AdminPayoutsPage() {
             <h1 className="font-heading text-3xl font-bold text-navy">Payout Management</h1>
             <p className="text-sm text-navy/50 mt-1">Ardmore Cricket Club Weekly Draw</p>
           </div>
-          <Link href="/draw" className="text-sm text-gold font-semibold hover:underline">
-            ← Back to Draw
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link href="/admin" className="text-sm text-gold font-semibold hover:underline">
+              Admin
+            </Link>
+            <Link href="/admin/memberships" className="text-sm text-gold font-semibold hover:underline">
+              Memberships
+            </Link>
+            <Link href="/admin/draw-entries" className="text-sm text-gold font-semibold hover:underline">
+              Draw Entries
+            </Link>
+            <Link href="/draw" className="text-sm text-gold font-semibold hover:underline">
+              ← Back to Draw
+            </Link>
+          </div>
         </div>
 
         {/* Tabs */}

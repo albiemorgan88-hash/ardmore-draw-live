@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { createServiceClient } from "@/lib/supabase";
 import { getAuthenticatedUser } from "@/lib/auth";
+import { createConnectState } from "@/lib/connect-state";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://ardmorecricket.com";
 
@@ -34,6 +35,13 @@ export async function POST(req: NextRequest) {
 
     if (error || !token) {
       return NextResponse.json({ error: "Invalid or expired claim token" }, { status: 400 });
+    }
+
+    // Existing claim links were readable through an over-broad database policy.
+    // The link alone must not authorise connecting a prize to a bank account.
+    const user = await getAuthenticatedUser(req);
+    if (!user || user.id !== token.profile_id) {
+      return NextResponse.json({ error: "Please sign in using the same email you used to enter the draw, then reopen your prize link." }, { status: 401 });
     }
 
     if (new Date(token.expires_at) < new Date()) {
@@ -123,10 +131,15 @@ export async function POST(req: NextRequest) {
   }
 
   // Create onboarding link
+  const callback = new URL("/api/connect/callback", SITE_URL);
+  callback.searchParams.set("account_id", connectAccountId!);
+  callback.searchParams.set("profile_id", profileId);
+  if (claim_token) callback.searchParams.set("claim_token", claim_token);
+  callback.searchParams.set("state", createConnectState(profileId, connectAccountId!, claim_token || null));
   const accountLink = await stripe.accountLinks.create({
     account: connectAccountId!,
     refresh_url: `${SITE_URL}/claim${claim_token ? `?token=${claim_token}` : ""}`,
-    return_url: `${SITE_URL}/api/connect/callback?account_id=${connectAccountId}&profile_id=${profileId}${claim_token ? `&claim_token=${claim_token}` : ""}`,
+    return_url: callback.toString(),
     type: "account_onboarding",
   });
 

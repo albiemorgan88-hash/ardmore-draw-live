@@ -1,9 +1,53 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { sendDrawResults, sendWinnerClaimEmail } from "@/lib/email";
+import { sendAdminDrawCompletedNotification, sendDrawResults } from "@/lib/email";
 import crypto from "crypto";
 
 const CLUB_ID = "31846fb2-b120-4815-bd48-e1120342d52e";
+const LEGACY_SPLIT_SELECTION_IDS_BY_NUMBER = new Map<number, Set<string>>([
+  [97, new Set(["a99fefb6-3b32-4f3f-a8f0-626968727957", "6c517b98-abe2-4fe2-81d6-3b04228d1f25"])],
+]);
+
+function splitPrizePence(total: number, count: number, index: number): number {
+  if (count <= 1) return total;
+  const base = Math.floor(total / count);
+  const remainder = total % count;
+  return base + (index < remainder ? 1 : 0);
+}
+
+function isAllowedLegacySplit(number: number, selectionIds: string[]): boolean {
+  const allowedSelectionIds = LEGACY_SPLIT_SELECTION_IDS_BY_NUMBER.get(number);
+  return Boolean(
+    allowedSelectionIds &&
+      selectionIds.length === allowedSelectionIds.size &&
+      selectionIds.every((id) => allowedSelectionIds.has(id))
+  );
+}
+
+function getLondonDrawWindow(now = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/London",
+    weekday: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(now);
+
+  const value = (type: string) => parts.find((part) => part.type === type)?.value || "";
+  const weekday = value("weekday");
+  const hour = Number(value("hour"));
+  const minute = Number(value("minute"));
+  const isFriday = weekday === "Fri";
+  const isAfterSeven = hour > 19 || (hour === 19 && minute >= 0);
+
+  return {
+    allowed: isFriday && isAfterSeven,
+    weekday,
+    hour,
+    minute,
+    londonTime: `${weekday} ${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`,
+  };
+}
 
 function createServiceClient() {
   return createClient(
@@ -47,6 +91,20 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const force = req.nextUrl.searchParams.get("force") === "true";
+  const window = getLondonDrawWindow();
+  if (!force && !window.allowed) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Draw locked until Friday 7PM Europe/London",
+        london_time: window.londonTime,
+        force_available: true,
+      },
+      { status: 409 }
+    );
+  }
+
   const supabase = createServiceClient();
 
   // Idempotency: check if a draw already exists for this week
@@ -65,6 +123,7 @@ export async function GET(req: NextRequest) {
     .eq("club_id", CLUB_ID)
     .gte("drawn_at", weekStart.toISOString())
     .lt("drawn_at", weekEnd.toISOString())
+    .neq("status", "cancelled")
     .order("draw_number", { ascending: true })
     .limit(1)
     .single();
@@ -96,6 +155,7 @@ export async function GET(req: NextRequest) {
   // Build number pool, ownership map, and number-to-name map
   const allNumbers: number[] = [];
   const ownerMap = new Map<number, string[]>();
+  const selectionIdMap = new Map<number, string[]>();
   const numberNameMap = new Map<number, string>(); // number → display name (assigned name or profile name)
 
   for (const sel of selections) {
@@ -105,6 +165,9 @@ export async function GET(req: NextRequest) {
       const owners = ownerMap.get(n) || [];
       owners.push(sel.profile_id);
       ownerMap.set(n, owners);
+      const selectionIds = selectionIdMap.get(n) || [];
+      selectionIds.push(sel.id);
+      selectionIdMap.set(n, selectionIds);
       // Use assigned name if available (e.g. "Niamh McLoughlin" when Harry buys for Niamh)
       if (names[String(n)]) {
         numberNameMap.set(n, names[String(n)]);
@@ -112,12 +175,38 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  const duplicateActiveNumbers = [...ownerMap.entries()]
+    .filter(([, owners]) => owners.length > 1)
+    .map(([number]) => number)
+    .sort((a, b) => a - b);
+  const unsupportedDuplicateNumbers = duplicateActiveNumbers.filter(
+    (number) => !isAllowedLegacySplit(number, selectionIdMap.get(number) || [])
+  );
+
+  if (unsupportedDuplicateNumbers.length > 0) {
+    return NextResponse.json(
+      {
+        error: "Duplicate active draw numbers require manual resolution before drawing",
+        duplicate_numbers: unsupportedDuplicateNumbers,
+        legacy_split_numbers: [...LEGACY_SPLIT_SELECTION_IDS_BY_NUMBER.keys()],
+      },
+      { status: 409 }
+    );
+  }
+
+  if (duplicateActiveNumbers.length > 0) {
+    console.warn(`Proceeding with legacy split draw number(s): ${duplicateActiveNumbers.join(", ")}`);
+  }
+
   const totalEntries = allNumbers.length;
   const totalPotPence = totalEntries * 100; // £1 per number
 
   // Generate provably fair seed
   const drawSeed = crypto.randomUUID();
-  const winningNumbers = pickWinners(allNumbers, 3, drawSeed);
+  // Draw unique numbers, not duplicate paid rows. If legacy number 97 exists twice, it
+  // should have one chance to win and the prize should be split only if it is drawn.
+  const drawPool = [...new Set(allNumbers)];
+  const winningNumbers = pickWinners(drawPool, 3, drawSeed);
 
   // Calculate prizes — NEW SPLIT: 50% winners, 40% club, 7.5% platform, 2.5% fees
   const prizes = {
@@ -143,7 +232,7 @@ export async function GET(req: NextRequest) {
   const { data: drawRecord, error: drawErr } = await supabase.from("draws").insert({
     club_id: CLUB_ID,
     draw_number: drawNumber,
-    status: "drawn",
+    status: "pending_payout",
     scheduled_at: new Date().toISOString(),
     drawn_at: new Date().toISOString(),
     seed: drawSeed,
@@ -171,22 +260,31 @@ export async function GET(req: NextRequest) {
     .select("id, email, full_name, stripe_connect_id, stripe_connect_status")
     .in("id", profileIds);
 
-  let emailMap = new Map<string, { email: string; name: string; connectId?: string; connectStatus?: string }>();
-  if (profiles && profiles.length > 0 && profiles[0].email) {
+  const emailMap = new Map<string, { email: string; name: string; connectId?: string; connectStatus?: string }>();
+  if (profiles) {
     for (const p of profiles) {
       emailMap.set(p.id, { 
-        email: p.email, 
+        email: p.email || "", 
         name: p.full_name || "",
         connectId: p.stripe_connect_id || undefined,
         connectStatus: p.stripe_connect_status || undefined,
       });
     }
-  } else {
+  }
+
+  const missingProfileEmails = profileIds.filter((id) => !emailMap.get(id)?.email);
+  if (missingProfileEmails.length > 0) {
     const { data: authData } = await supabase.auth.admin.listUsers();
     if (authData?.users) {
       for (const u of authData.users) {
         if (profileIds.includes(u.id)) {
-          emailMap.set(u.id, { email: u.email || "", name: u.user_metadata?.full_name || "" });
+          const existing = emailMap.get(u.id);
+          emailMap.set(u.id, {
+            email: existing?.email || u.email || "",
+            name: existing?.name || u.user_metadata?.full_name || "",
+            connectId: existing?.connectId,
+            connectStatus: existing?.connectStatus,
+          });
         }
       }
     }
@@ -198,14 +296,15 @@ export async function GET(req: NextRequest) {
   // Winner payouts
   const prizeAmounts = [prizes.first, prizes.second, prizes.third];
   const prizeTypes: Array<"winner_1st" | "winner_2nd" | "winner_3rd"> = ["winner_1st", "winner_2nd", "winner_3rd"];
+  const prizeShareByProfileAndNumber = new Map<string, number>();
 
   for (let i = 0; i < winningNumbers.length; i++) {
     const ownerIds = ownerMap.get(winningNumbers[i]) || [];
-    // If multiple owners share a number, split that prize
-    const prizePerOwner = Math.floor(prizeAmounts[i] / Math.max(ownerIds.length, 1));
-
-    for (const ownerId of ownerIds) {
+    for (let ownerIndex = 0; ownerIndex < ownerIds.length; ownerIndex++) {
+      const ownerId = ownerIds[ownerIndex];
       const info = emailMap.get(ownerId);
+      const amountPence = splitPrizePence(prizeAmounts[i], ownerIds.length, ownerIndex);
+      prizeShareByProfileAndNumber.set(`${ownerId}:${winningNumbers[i]}`, amountPence);
       payoutRecords.push({
         draw_id: drawId,
         club_id: CLUB_ID,
@@ -213,7 +312,7 @@ export async function GET(req: NextRequest) {
         recipient_profile_id: ownerId,
         recipient_connect_id: info?.connectStatus === "active" ? info.connectId : null,
         recipient_name: info?.name || null,
-        amount_pence: ownerIds.length > 1 ? prizePerOwner : prizeAmounts[i],
+        amount_pence: amountPence,
         winning_number: winningNumbers[i],
         status: info?.connectStatus === "active" ? "pending" : "unclaimed",
       });
@@ -250,10 +349,15 @@ export async function GET(req: NextRequest) {
     status: "pending",
   });
 
-  // Insert all payout records
+  // Insert all payout records. This is required before any emails/expiry side effects.
   const { error: payoutErr } = await supabase.from("payouts").insert(payoutRecords);
   if (payoutErr) {
     console.error("Failed to insert payout records:", payoutErr);
+    await supabase.from("draws").update({ status: "cancelled" }).eq("id", drawId);
+    return NextResponse.json(
+      { error: "Failed to create payout records; draw side effects were not sent", details: payoutErr.message },
+      { status: 500 }
+    );
   }
 
   // Create claim tokens for winners (for record keeping) but DO NOT send separate claim emails
@@ -267,15 +371,24 @@ export async function GET(req: NextRequest) {
         const expiresAt = new Date();
         expiresAt.setDate(expiresAt.getDate() + 14);
 
-        await supabase.from("claim_tokens").insert({
+        const { error: claimErr } = await supabase.from("claim_tokens").insert({
           draw_id: drawId,
           profile_id: ownerId,
           token: claimToken,
           winning_number: winningNumbers[i],
           prize_place: ["1st", "2nd", "3rd"][i],
-          amount_pence: prizeAmounts[i],
+          amount_pence: prizeShareByProfileAndNumber.get(`${ownerId}:${winningNumbers[i]}`) || prizeAmounts[i],
           expires_at: expiresAt.toISOString(),
         });
+
+        if (claimErr) {
+          console.error("Failed to insert claim token:", claimErr);
+          await supabase.from("draws").update({ status: "cancelled" }).eq("id", drawId);
+          return NextResponse.json(
+            { error: "Failed to create winner claim token; draw side effects were not sent", details: claimErr.message },
+            { status: 500 }
+          );
+        }
         // No separate email — handled by sendDrawResults
       }
     }
@@ -309,12 +422,42 @@ export async function GET(req: NextRequest) {
     return numberNameMap.get(n) || "Unknown";
   });
 
-  // Send ONE draw results email per person (no separate claim emails)
-  if (participants.length > 0 && process.env.RESEND_API_KEY) {
+  // Send result emails to winners only. Non-winners are not emailed from the draw job.
+  const winningProfileIds = new Set<string>();
+  for (const winningNumber of winningNumbers) {
+    for (const ownerId of ownerMap.get(winningNumber) || []) {
+      winningProfileIds.add(ownerId);
+    }
+  }
+
+  const winnerParticipants = participants.filter((participant) => {
+    for (const [profileId, numbers] of profileNumbers) {
+      const info = emailMap.get(profileId);
+      if (info?.email === participant.email && winningProfileIds.has(profileId)) {
+        return numbers.some((number) => winningNumbers.includes(number));
+      }
+    }
+    return false;
+  });
+
+  const winnerPrizeSharesByEmail: Record<string, Record<number, number>> = {};
+  for (const [profileId, numbers] of profileNumbers) {
+    const info = emailMap.get(profileId);
+    if (!info?.email) continue;
+    for (const number of numbers) {
+      const share = prizeShareByProfileAndNumber.get(`${profileId}:${number}`);
+      if (share !== undefined) {
+        winnerPrizeSharesByEmail[info.email] ||= {};
+        winnerPrizeSharesByEmail[info.email][number] = share;
+      }
+    }
+  }
+
+  if (winnerParticipants.length > 0 && process.env.RESEND_API_KEY) {
     try {
-      await sendDrawResults(participants, winningNumbers, prizes, new Date().toISOString().split("T")[0], winnerNames);
+      await sendDrawResults(winnerParticipants, winningNumbers, prizes, new Date().toISOString().split("T")[0], winnerNames, winnerPrizeSharesByEmail);
     } catch (err) {
-      console.error("Failed to send draw emails:", err);
+      console.error("Failed to send winner draw emails:", err);
     }
   }
 
@@ -332,7 +475,7 @@ export async function GET(req: NextRequest) {
   if (expireErr) {
     console.error("Failed to expire one-off entries:", expireErr);
   } else if (oneOffEntries && oneOffEntries.length > 0) {
-    const expiredNumbers = oneOffEntries.flatMap((e: any) => e.numbers);
+    const expiredNumbers = (oneOffEntries as { numbers: number[] | null }[]).flatMap((entry) => entry.numbers || []);
     console.log(`Expired ${oneOffEntries.length} one-off entries after draw (numbers: ${expiredNumbers.join(", ")})`);
   }
 
@@ -344,10 +487,34 @@ export async function GET(req: NextRequest) {
       place: ["1st", "2nd", "3rd"][i],
       number: n,
       prize: prizeAmounts[i],
-      owners: [displayName],
+      owners: ownerIds.map((id) => emailMap.get(id)?.name || "Unknown"),
       displayName,
+      split: ownerIds.length > 1,
+      prize_shares: ownerIds.map((id) => ({
+        owner: emailMap.get(id)?.name || "Unknown",
+        amount_pence: prizeShareByProfileAndNumber.get(`${id}:${n}`) || prizeAmounts[i],
+      })),
     };
   });
+
+  if (process.env.RESEND_API_KEY) {
+    try {
+      await sendAdminDrawCompletedNotification({
+        drawNumber,
+        drawId,
+        drawDate: new Date().toISOString().split("T")[0],
+        winningNumbers,
+        totalEntries,
+        potAmountPence: totalPotPence,
+        prizes,
+        winners,
+        payoutsCreated: payoutRecords.length,
+        participantsEmailed: winnerParticipants.length,
+      });
+    } catch (err) {
+      console.error("Failed to send admin draw notification:", err);
+    }
+  }
 
   return NextResponse.json({
     success: true,
@@ -359,6 +526,7 @@ export async function GET(req: NextRequest) {
     prizes,
     winners,
     payouts_created: payoutRecords.length,
-    participants_emailed: participants.length,
+    participants_emailed: winnerParticipants.length,
+    email_policy: "winner_only",
   });
 }

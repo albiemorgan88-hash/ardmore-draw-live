@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase";
 import { getAuthenticatedUser } from "@/lib/auth";
-
-const ADMIN_EMAILS = ["contact@bluecanvas.ai", "ardmorecc1879@hotmail.com"];
+import { isAdminEmail } from "@/lib/admin";
 
 export async function GET(req: NextRequest) {
   const user = await getAuthenticatedUser(req);
-  if (!user || !ADMIN_EMAILS.includes(user.email?.toLowerCase() || "")) {
+  if (!user || !isAdminEmail(user.email)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }
 
@@ -40,7 +39,7 @@ export async function GET(req: NextRequest) {
     .filter((p) => p.recipient_profile_id)
     .map((p) => p.recipient_profile_id);
 
-  let nameMap = new Map<string, string>();
+  const nameMap = new Map<string, string>();
   if (profileIds.length > 0) {
     const { data: profiles } = await supabase
       .from("profiles")

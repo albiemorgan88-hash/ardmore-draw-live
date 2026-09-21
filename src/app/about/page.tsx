@@ -1,5 +1,20 @@
 import Image from "next/image";
 
+const officeBearers = [
+  { role: "Chairman", name: "Dermot Ward" },
+  { role: "President", name: "George Chambers" },
+  { role: "Secretary & Treasurer", name: "Kevin Brolly" },
+];
+
+const teams = [
+  { name: "1st XI", captain: "Mark Chambers" },
+  { name: "2nd XI", captain: "Mathew Rowlands" },
+  { name: "3rd XI", captain: "Steven Barrow" },
+  { name: "Midweek XI", captain: null },
+  { name: "U13", captain: null },
+  { name: "U11", captain: null },
+];
+
 export default function AboutPage() {
   return (
     <>
@@ -47,41 +62,42 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Office Bearers */}
+      {/* Club Committee */}
       <section className="py-16 bg-cream">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <h2 className="font-heading text-3xl font-bold text-navy mb-8">Office Bearers</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            {[
-              { role: "Chairman", name: "Dermot Ward" },
-              { role: "President", name: "George Chambers" },
-              { role: "Secretary & Treasurer", name: "Kevin Brolly" },
-            ].map(bearer => (
-              <div key={bearer.role} className="bg-white rounded-lg p-5 text-center shadow-sm border border-gray-100">
-                <div className="text-gold font-heading text-sm font-semibold uppercase tracking-wider mb-1">{bearer.role}</div>
-                <div className="font-heading text-lg font-bold text-navy">{bearer.name}</div>
+          <h2 className="font-heading text-3xl font-bold text-navy mb-2 text-center">Club Committee</h2>
+          <p className="text-navy/60 text-center mb-10">Guiding Ardmore Cricket Club since 1879</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {officeBearers.map(bearer => (
+              <div key={bearer.role} className="bg-white rounded-xl p-6 text-center shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                <div className="w-16 h-16 bg-navy rounded-full mx-auto mb-4 flex items-center justify-center">
+                  <span className="text-gold text-2xl font-heading font-bold">{bearer.name.charAt(0)}</span>
+                </div>
+                <div className="font-heading text-xl font-bold text-navy mb-1">{bearer.name}</div>
+                <div className="text-gold font-semibold text-sm uppercase tracking-wider">{bearer.role}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Teams */}
+      {/* Team Captains */}
       <section className="py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <h2 className="font-heading text-3xl font-bold text-navy mb-8">Our Teams</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            {[
-              { name: "1st XI", captain: "Mark Chambers" },
-              { name: "2nd XI", captain: "Mathew Rowlands" },
-              { name: "3rd XI", captain: "Steven Barrow" },
-              { name: "Midweek XI", captain: null },
-              { name: "U13", captain: null },
-              { name: "U11", captain: null },
-            ].map(team => (
-              <div key={team.name} className="bg-white rounded-lg p-4 text-center shadow-sm border border-gray-100">
-                <div className="font-heading text-xl font-bold text-navy">{team.name}</div>
-                {team.captain && <div className="text-sm text-navy/60 mt-1">Captain: {team.captain}</div>}
+          <h2 className="font-heading text-3xl font-bold text-navy mb-2 text-center">Team Captains</h2>
+          <p className="text-navy/60 text-center mb-10">Leading the charge on the field</p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+            {teams.map(team => (
+              <div key={team.name} className="bg-cream rounded-xl p-5 text-center shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                <div className="font-heading text-2xl font-bold text-navy mb-1">{team.name}</div>
+                {team.captain ? (
+                  <div className="text-navy/70">
+                    <span className="text-gold text-sm font-semibold">Captain: </span>
+                    {team.captain}
+                  </div>
+                ) : (
+                  <div className="text-navy/40 text-sm italic">TBC</div>
+                )}
               </div>
             ))}
           </div>

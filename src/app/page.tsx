@@ -1,8 +1,60 @@
 import Image from "next/image";
 import JackpotSection from "@/components/JackpotSection";
 import NextMatch from "@/components/NextMatch";
+import { getCricketEuropeArdmoreArticles } from "@/lib/cricketeurope-news";
 
-export default function HomePage() {
+const newsCategoryColors: Record<string, string> = {
+  Coaching: "text-emerald-800 bg-emerald-100",
+  Photos: "text-sky-800 bg-sky-100",
+  History: "text-amber-800 bg-amber-100",
+  "Match Reports": "text-sky-800 bg-sky-100",
+  CricketEurope: "text-sky-800 bg-sky-100",
+  Cup: "text-emerald-800 bg-emerald-100",
+};
+
+type LatestNewsCard = {
+  href: string;
+  external?: boolean;
+  category: string;
+  date: string;
+  title: string;
+  excerpt: string;
+};
+
+export default async function HomePage() {
+  const cricketEuropeArticles = await getCricketEuropeArdmoreArticles(2);
+  const latestNewsCards: LatestNewsCard[] = [
+    ...cricketEuropeArticles.map((article) => ({
+      href: article.sourceUrl,
+      external: true,
+      category: article.category,
+      date: article.date,
+      title: article.title,
+      excerpt: article.excerpt,
+    })),
+    {
+      href: "/news",
+      category: "Coaching",
+      date: "May 2026",
+      title: "Junior coaching on Friday nights",
+      excerpt: "U11s from 6:00pm, ages 11+ from 7:00-8:00pm. All young players welcome.",
+    },
+    {
+      href: "/news",
+      category: "Photos",
+      date: "May 2026",
+      title: "Photos: Bonds Glen v Ardmore",
+      excerpt: "CricketEurope have posted photos from the 18 May match, with a few Ardmore faces in the gallery.",
+    },
+    {
+      href: "/news/all-time-ardmore-xi",
+      category: "History",
+      date: "March 2025",
+      title: "The All-Time Ardmore XI",
+      excerpt: "Connie McAllister selects his all-time greatest Ardmore XI from 147 years of cricket at The Bleach Green.",
+    },
+  ].slice(0, 3);
+
   return (
     <>
       {/* Hero */}
@@ -33,6 +85,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
       <NextMatch />
 
       {/* About Snippet */}
@@ -80,30 +133,51 @@ export default function HomePage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <h2 className="font-heading text-3xl sm:text-4xl font-bold text-navy mb-8 text-center">Latest News</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            <a href="/news/all-time-ardmore-xi" className="bg-cream rounded-lg p-6 border border-gray-100 hover:shadow-md transition-shadow block">
-              <span className="text-xs font-semibold text-amber-800 bg-amber-100 px-2 py-1 rounded-full">History</span>
-              <span className="text-xs text-navy/40 ml-2">March 2025</span>
-              <h3 className="font-heading text-lg font-bold text-navy mt-3 mb-2">The All-Time Ardmore XI</h3>
-              <p className="text-sm text-navy/70 leading-relaxed">Connie McAllister selects his all-time greatest Ardmore XI from 147 years of cricket at The Bleach Green.</p>
-            </a>
-            <a href="/news/agm-2026" className="bg-cream rounded-lg p-6 border border-gray-100 hover:shadow-md transition-shadow block">
-              <span className="text-xs font-semibold text-emerald-800 bg-emerald-100 px-2 py-1 rounded-full">Club News</span>
-              <span className="text-xs text-navy/40 ml-2">March 2026</span>
-              <h3 className="font-heading text-lg font-bold text-navy mt-3 mb-2">Ardmore Cricket Club AGM 2026</h3>
-              <p className="text-sm text-navy/70 leading-relaxed">Officers elected and positive plans discussed for the upcoming season at Thursday&apos;s Annual General Meeting.</p>
-            </a>
-            <div className="bg-cream rounded-lg p-6 border border-gray-100">
-              <span className="text-xs font-semibold text-violet-700 bg-violet-100 px-2 py-1 rounded-full">Preview</span>
-              <span className="text-xs text-navy/40 ml-2">March 2026</span>
-              <h3 className="font-heading text-lg font-bold text-navy mt-3 mb-2">2026 Championship Season Ahead</h3>
-              <p className="text-sm text-navy/70 leading-relaxed">Ardmore target an immediate bounce-back to the Premiership with two new overseas signings and the core squad intact.</p>
-            </div>
+            {latestNewsCards.map((article) => {
+              const categoryClass = newsCategoryColors[article.category] || "text-gray-700 bg-gray-100";
+              return (
+                <a
+                  key={`${article.href}-${article.title}`}
+                  href={article.href}
+                  target={article.external ? "_blank" : undefined}
+                  rel={article.external ? "noopener noreferrer" : undefined}
+                  className="bg-cream rounded-lg p-6 border border-gray-100 hover:shadow-md transition-shadow block"
+                >
+                  <span className={`text-xs font-semibold px-2 py-1 rounded-full ${categoryClass}`}>{article.category}</span>
+                  <span className="text-xs text-navy/40 ml-2">{article.date}</span>
+                  <h3 className="font-heading text-lg font-bold text-navy mt-3 mb-2">{article.title}</h3>
+                  <p className="text-sm text-navy/70 leading-relaxed">{article.excerpt}</p>
+                </a>
+              );
+            })}
           </div>
           <div className="text-center">
             <a href="/news" className="bg-navy text-white px-6 py-3 rounded-md hover:bg-navy-light transition-colors font-medium">
               View All News
             </a>
           </div>
+        </div>
+      </section>
+
+
+      {/* Kit Shop */}
+      <section className="py-16 bg-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
+          <span className="inline-flex items-center rounded-full bg-navy/10 text-navy px-3 py-1 text-xs font-semibold uppercase tracking-wide">
+            Club Kit
+          </span>
+          <h2 className="font-heading text-3xl sm:text-4xl font-bold text-navy mt-4 mb-4">Ardmore Kit Shop</h2>
+          <p className="text-navy/60 mb-8 max-w-2xl mx-auto">
+            Browse official Ardmore Cricket Club kit and training wear through the club shop at O&apos;Neills.
+          </p>
+          <a
+            href="https://www.oneills.com/shop-by-team/cricket/ardmore-cricket-club.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-navy text-white font-semibold px-8 py-3 rounded-md hover:bg-navy-light transition-colors"
+          >
+            Shop Now at O&apos;Neills
+          </a>
         </div>
       </section>
 

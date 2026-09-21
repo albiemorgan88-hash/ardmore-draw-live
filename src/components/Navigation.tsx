@@ -1,19 +1,20 @@
 "use client";
 
+import Link from "next/link";
+
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "./AuthProvider";
 import { supabase } from "@/lib/supabase";
 
+const KIT_SHOP_URL = "https://www.oneills.com/shop-by-team/cricket/ardmore-cricket-club.html";
+
 export default function Navigation() {
   const { user, loading } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [activePath, setActivePath] = useState("/");
+  const activePath = usePathname() || "/";
   const menuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setActivePath(window.location.pathname);
-  }, []);
 
   // Close on outside click
   useEffect(() => {
@@ -31,7 +32,6 @@ export default function Navigation() {
   useEffect(() => {
     const handleNav = () => {
       setMobileOpen(false);
-      setActivePath(window.location.pathname);
     };
     window.addEventListener("popstate", handleNav);
     return () => window.removeEventListener("popstate", handleNav);
@@ -45,15 +45,17 @@ export default function Navigation() {
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
-    { href: "/committee", label: "Committee" },
     { href: "/fixtures", label: "Fixtures" },
     { href: "/news", label: "News" },
     { href: "/archive", label: "Archive" },
+    { href: "/membership", label: "Membership" },
+    { href: KIT_SHOP_URL, label: "Kit Shop", external: true },
     { href: "/draw", label: "Weekly Draw", highlight: true },
     { href: "/sponsors", label: "Sponsors" },
   ];
 
   const isActive = (href: string) => {
+    if (href.startsWith("http")) return false;
     if (href === "/") return activePath === "/";
     return activePath.startsWith(href);
   };
@@ -62,11 +64,18 @@ export default function Navigation() {
     <nav className="bg-navy text-white sticky top-0 z-50 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <a href="/" className="flex items-center gap-3" onClick={() => setMobileOpen(false)}>
-            <Image src="/images/ardmore-crest.png" alt="Ardmore CC Crest" width={40} height={40} className="rounded-full" />
+          <Link href="/" className="flex items-center gap-3" onClick={() => setMobileOpen(false)}>
+            <Image
+              src="/images/ardmore-crest-sharp-clean.png"
+              alt="Ardmore CC Crest"
+              width={36}
+              height={50}
+              className="h-12 w-auto shrink-0 object-contain"
+              priority
+            />
             <span className="font-heading text-xl font-bold tracking-wide">Ardmore CC</span>
             <span className="hidden sm:inline text-gold text-sm font-body">Est. 1879</span>
-          </a>
+          </Link>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8 text-sm font-medium">
@@ -87,6 +96,8 @@ export default function Navigation() {
                 <a
                   key={link.href}
                   href={link.href}
+                  target={link.external ? "_blank" : undefined}
+                  rel={link.external ? "noopener noreferrer" : undefined}
                   className={`transition-colors ${
                     isActive(link.href) ? "text-gold" : "hover:text-gold"
                   }`}
@@ -150,6 +161,8 @@ export default function Navigation() {
                   <a
                     key={link.href}
                     href={link.href}
+                    target={link.external ? "_blank" : undefined}
+                    rel={link.external ? "noopener noreferrer" : undefined}
                     onClick={() => setMobileOpen(false)}
                     className={`block px-5 py-3 text-sm font-medium transition-colors ${
                       link.highlight
