@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { mapStripeSubscriptionStatus, renewalPayment, type RenewalInvoice } from "../src/lib/subscription-renewal";
 import { createConnectState, verifyConnectState } from "../src/lib/connect-state";
+import { getStripe } from "../src/lib/stripe";
 
 const invoice = { id: "in_synthetic", status: "paid", billing_reason: "subscription_cycle", currency: "gbp", amount_paid: 250 } as RenewalInvoice;
 const member = { user_id: "synthetic-member", club_id: "synthetic-club", numbers: [4,12,90] };
@@ -39,4 +40,9 @@ test("Connect callback state binds the account, member, claim and expiry", () =>
   assert.equal(verifyConnectState(state+"tamper","member-a","acct_a","claim-a",now+1000),false);
   assert.equal(verifyConnectState(state,"member-a","acct_a","claim-a",now+31*60_000),false);
   assert.equal(verifyConnectState(null,"member-a","acct_a","claim-a",now),false);
+});
+
+test("missing preview credentials never become fallback payment credentials", () => {
+  delete process.env.STRIPE_SECRET_KEY;
+  assert.throws(getStripe,/not configured/);
 });

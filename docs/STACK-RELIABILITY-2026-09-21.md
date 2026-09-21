@@ -19,6 +19,8 @@ private backups and participant exports were excluded.
 
 - Upgrade Next.js 16.1.6 to 16.3.5, React to 19.2.4 and Resend to 6.28.1;
   update compatible transitive dependencies. npm audit reports zero findings.
+- Initialise Stripe only when a payment operation is requested. Preview builds
+  do not receive production payment credentials; missing keys fail closed.
 - Restrict public access to draw/payment writes and claim tokens, and restrict
   unguarded legacy draw functions to the service role. Browser availability
   lookup retains only its required columns. Private payout reads retain the
@@ -84,8 +86,8 @@ Do not send historical receipt catch-up messages as part of the recovery.
 - 48 synthetic Postgres assertions cover public/private access, legacy 97
   renewal and payment-failure recovery, new duplicate denial, stable identities,
   atomic rollback and event lease ownership.
-- Four policy tests cover exact paid amounts, rejected invoices, cancelled
-  subscription status and callback tampering/expiry.
+- Five policy tests cover exact paid amounts, rejected invoices, cancelled
+  subscription status, callback tampering/expiry and missing payment credentials.
 - Full lint (zero errors; existing non-blocking warnings), TypeScript and
   production build pass. No real draw, payment or email is used in testing.
 - After approval: apply migrations, verify live privileges, release the reviewed
