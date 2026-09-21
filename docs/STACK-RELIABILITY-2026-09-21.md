@@ -2,10 +2,16 @@
 
 ## Release status
 
-Prepared on `codex/ardmore-stack-reliability-20260921`. Production deployment and
-ledger recovery require the three reviewed migrations below first. Automatic
-approval review rejected the production permission migration; Phil's explicit
-approval for that database scope is pending. No migration in this batch has run.
+Prepared on `codex/ardmore-stack-reliability-20260921`. On 21 September Phil
+explicitly approved the database repairs and deployment, and excluded historical
+invoice reconciliation. The earlier database approval hold is resolved.
+
+All three reviewed migrations were applied and read back at 21:32 UTC. Public
+write grants and private-table read grants are absent; the four restricted
+functions are executable only by the service role. Public number-availability
+reads remain available. Both established number 97 selection identities remain.
+Payment totals and draw counts were unchanged by the migrations. The deployment
+and live verification evidence are recorded with PR #2.
 
 ## Production source reconciliation
 
@@ -66,6 +72,10 @@ All are scoped to Ardmore's existing draw infrastructure in project
 `smhzgkvatlwbaxlyhnbm`. The shared UKTJ and House Price Derry tables are unchanged.
 The current deployed code remains compatible with these database changes.
 
+Applied migration versions: access controls `20260921213146`, renewal integrity
+`20260921213155`, webhook leases `20260921213204`. The management API assigns
+application timestamps; the reviewed source filenames above remain unchanged.
+
 ## Payment recovery evidence
 
 Stripe account `acct_1T69pRASm3u8i3nl` confirms 108 paid renewal invoices totalling
@@ -75,8 +85,10 @@ by two members. All six subscriptions are currently active. The latest 24 events
 their invoice records remain available and were independently matched.
 
 `scripts/recover-renewals.ts` requires the separately reviewed private invoice
-and event evidence files. It defaults to read-only verification. After release,
-use `--sample --execute` for one invoice with a retrievable event, independently
+and event evidence files. It defaults to read-only verification. Historical
+recovery is deferred by Phil's explicit instruction and must not be run as part
+of this release. If separately authorised later, use `--sample --execute` for
+one invoice with a retrievable event, independently
 verify the payment, selection and event records, then use `--execute` for the
 reviewed batch. Sample mode still validates the complete 108-invoice input;
 rerunning selects the same invoice. The full batch records invoices with their
@@ -99,6 +111,6 @@ Do not send historical receipt catch-up messages as part of the recovery.
   one-invoice recovery selection and full-batch validation in sample mode.
 - Full lint (zero errors; existing non-blocking warnings), TypeScript and
   production build pass. No real draw, payment or email is used in testing.
-- After approval: apply migrations, verify live privileges, release the reviewed
-  commit, verify production SHA and protected dry run, run the reviewed ledger
-  recovery, check counts and run public read-only smoke checks.
+- Release verification: confirm the production SHA, protected read-only health,
+  public smoke checks and unchanged draw schedules. Do not run historical ledger
+  recovery, including the one-invoice sample.
