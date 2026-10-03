@@ -21,6 +21,16 @@ type Article = {
 
 const localArticles: Article[] = [
   {
+    id: "reg-hargan",
+    title: "Remembering Raymond “Reg” Hargan",
+    date: "3 October 2026",
+    category: "Club News",
+    excerpt: "The players and officials of Ardmore Cricket Club were deeply saddened by the passing of Raymond “Reg” Hargan.",
+    body: "",
+    link: "/news/reg-hargan",
+    featured: true,
+  },
+  {
     id: 10,
     title: "Junior coaching on Friday nights",
     date: "May 2026",
@@ -132,7 +142,11 @@ export default function NewsPageClient({ cricketEuropeArticles = [] }: { cricket
   const [filter, setFilter] = useState("All");
   const [expanded, setExpanded] = useState<Article["id"] | null>(null);
 
-  const articles: Article[] = [...cricketEuropeArticles, ...localArticles];
+  const articles: Article[] = [
+    ...localArticles.filter(article => article.featured),
+    ...cricketEuropeArticles,
+    ...localArticles.filter(article => !article.featured),
+  ];
   const categories = ["All", ...Array.from(new Set(articles.map(a => a.category)))];
   const filtered = filter === "All" ? articles : articles.filter(a => a.category === filter);
 

@@ -24,6 +24,13 @@ type LatestNewsCard = {
 export default async function HomePage() {
   const cricketEuropeArticles = await getCricketEuropeArdmoreArticles(2);
   const latestNewsCards: LatestNewsCard[] = [
+    {
+      href: "/news/reg-hargan",
+      category: "Club News",
+      date: "3 October 2026",
+      title: "Remembering Raymond “Reg” Hargan",
+      excerpt: "The players and officials of Ardmore Cricket Club were deeply saddened by the passing of Raymond “Reg” Hargan.",
+    },
     ...cricketEuropeArticles.map((article) => ({
       href: article.sourceUrl,
       external: true,
