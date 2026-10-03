@@ -4,7 +4,7 @@ import Link from "next/link";
 
 const title = "Remembering Raymond “Reg” Hargan";
 const description = "The players and officials of Ardmore Cricket Club were deeply saddened by the passing of Raymond “Reg” Hargan.";
-const imagePath = "/images/news/reg-hargan/bowling.jpg";
+const imagePath = "/images/news/reg-hargan/at-the-ground.jpg";
 
 export const metadata: Metadata = {
   title: `${title} — Ardmore Cricket Club`,
@@ -17,13 +17,13 @@ export const metadata: Metadata = {
     siteName: "Ardmore Cricket Club",
     type: "article",
     publishedTime: "2026-10-03",
-    images: [{ url: imagePath, width: 1280, height: 853, alt: "A bowling moment from the photographs shared in memory of Reg Hargan" }],
+    images: [{ url: imagePath, width: 1280, height: 553, alt: "Two friends smiling at the cricket ground, from the photographs shared in memory of Reg Hargan" }],
   },
   twitter: { card: "summary_large_image", title, description, images: [imagePath] },
 };
 
 const photographs = [
-  { src: "at-the-ground.jpg", height: 553, alt: "Two friends seated at the cricket ground, from the photographs shared in memory of Reg Hargan" },
+  { src: "bowling.jpg", height: 853, alt: "A bowling moment from the photographs shared in memory of Reg Hargan" },
   { src: "club-memories.jpg", height: 1017, alt: "Two friends pictured together indoors, from the photographs shared in memory of Reg Hargan" },
   { src: "watching-cricket.jpg", height: 444, alt: "Two spectators at the cricket ground, from the photographs shared in memory of Reg Hargan" },
 ];
@@ -42,9 +42,9 @@ export default function RegHarganTributePage() {
         <article className="max-w-4xl mx-auto px-4 sm:px-6">
           <Image
             src={imagePath}
-            alt="A bowling moment from the photographs shared in memory of Reg Hargan"
+            alt="Two friends smiling at the cricket ground, from the photographs shared in memory of Reg Hargan"
             width={1280}
-            height={853}
+            height={553}
             sizes="(max-width: 896px) 100vw, 848px"
             className="w-full h-auto rounded-lg"
             priority
