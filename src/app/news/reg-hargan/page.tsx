@@ -23,7 +23,6 @@ export const metadata: Metadata = {
 };
 
 const photographs = [
-  { src: "bowling.jpg", height: 853, alt: "A bowling moment from the photographs shared in memory of Reg Hargan" },
   { src: "club-memories.jpg", height: 1017, alt: "Two friends pictured together indoors, from the photographs shared in memory of Reg Hargan" },
   { src: "watching-cricket.jpg", height: 444, alt: "Two spectators at the cricket ground, from the photographs shared in memory of Reg Hargan" },
 ];
